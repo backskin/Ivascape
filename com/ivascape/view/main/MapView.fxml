@@ -34,5 +34,5 @@
             <Insets left="12.0" />
         </padding>
     </ToolBar>
-    <ScrollPane fx:id="surface" cacheShape="false" focusTraversable="false" minViewportHeight="150.0" minViewportWidth="150.0" prefHeight="100.0" VBox.vgrow="ALWAYS" />
+    <ScrollPane fx:id="surface" cacheShape="false" focusTraversable="false" prefHeight="100.0" VBox.vgrow="ALWAYS" />
 </VBox>

@@ -128,7 +128,6 @@ public class GraphViewController {
     private Pair<Double,Double> getCoors(Company company){
 
         VisualVertex vv = visVerMap.get(company);
-
         return new Pair<>(vv.x(),vv.y());
     }
 

@@ -329,9 +329,9 @@ public class RootLayoutController {
             analyseStage.initOwner(mainStage);
             analyseStage.getIcons().add(new Image("resources/ico.png"));
             analyseStage.setTitle(MainApp.bundle.getString("editwindows.analysetitle"));
-            analyseStage.setWidth(580.0);
+            analyseStage.setWidth(460.0);
             analyseStage.setHeight(400.0);
-            analyseStage.setMinWidth(580.0);
+            analyseStage.setMinWidth(400.0);
             analyseStage.setMinHeight(400.0);
             analyseStage.showAndWait();
 

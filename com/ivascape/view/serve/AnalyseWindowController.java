@@ -48,9 +48,7 @@ public class AnalyseWindowController {
     @FXML
     private Label cAmount;
 
-    public AnalyseWindowController(){
-
-    }
+    public AnalyseWindowController(){}
 
     @FXML
     private void initialize(){
@@ -92,7 +90,6 @@ public class AnalyseWindowController {
                 scrollPane.setContent(surface);
                 VBox.setVgrow(scrollPane,Priority.ALWAYS);
                 scrollPane.setPrefHeight(125);
-
                 controller.reloadView();
                 controller.cropIt();
                 controller.setScale(50);
@@ -129,7 +126,6 @@ public class AnalyseWindowController {
             componentTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
             column.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         }
-
         cAmount.setText(Integer.toString(components.size()));
     }
 
