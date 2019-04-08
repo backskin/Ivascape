@@ -34,7 +34,6 @@ public class MainApp extends Application {
 
     public static final Locale ruLoc = new Locale("ru","RU");
     public static final Locale enLoc = new Locale("en", "US");
-    private static final String bundlePath = "ivascape/translate";
 
     private static Stage mainStage;
 
@@ -49,17 +48,12 @@ public class MainApp extends Application {
         greetings();
 
         mainStage = stage;
-
         mainStage.getIcons().add(new Image("resources/ico.png"));
-
-
-
         mainStage.setOnCloseRequest(this::onExit);
 
         loadApp();
 
         mainStage.setMinWidth(mainStage.getWidth());
-
         mainStage.setMinHeight(mainStage.getHeight());
 
     }
@@ -72,9 +66,7 @@ public class MainApp extends Application {
     private void onExit(WindowEvent event){
 
         if (IvascapeProject.isEmpty() || IvascapeProject.isSaved()){
-
             if (getAlert(MyAlertType.ON_EXIT,mainStage).getResult().getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE)
-
                 event.consume();
         } else
 
