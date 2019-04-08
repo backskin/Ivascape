@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<TabPane fx:id="tabPane" minHeight="-Infinity" minWidth="-Infinity" style="-fx-color: white;" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ivascape.view.main.MainWindowController">
+    <Tab closable="false" style="-fx-background-color: #f4f4f4;" text="%tabstitle.cmps">
+        <content>
+            <AnchorPane fx:id="CompaniesView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+        </content>
+    </Tab>
+    <Tab closable="false" style="-fx-background-color: #f4f4f4;" text="%tabstitle.tblv">
+        <content>
+            <AnchorPane fx:id="TableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+        </content>
+    </Tab>
+    <Tab closable="false" style="-fx-background-color: #f4f4f4;" text="%tabstitle.map">
+        <content>
+            <AnchorPane fx:id="MapView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+        </content>
+    </Tab>
+</TabPane>

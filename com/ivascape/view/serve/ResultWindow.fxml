@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="600.0" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml" fx:controller="ivascape.view.serve.ResultWindowController">
+    <HBox alignment="CENTER" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: eaeaea;">
+        <children>
+            <Label text="%editwindows.fullprice">
+                <font>
+                    <Font name="System Italic" size="14.0" />
+                </font>
+            </Label>
+            <Label fx:id="totalPriceLabel" text="10000">
+                <font>
+                    <Font name="System Bold" size="14.0" />
+                </font>
+            </Label>
+        </children>
+    </HBox>
+    <Separator prefWidth="200.0" style="-fx-background-color: lightgray;" />
+    <ToolBar maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: eaeaea;">
+        <items>
+            <Label text="%mainmap.zoom" />
+            <Slider fx:id="zoomSlider" max="200.0" min="20.0" minWidth="150.0" showTickMarks="true" value="100.0" />
+            <ToggleButton fx:id="showHidePrices" mnemonicParsing="false" text="%mainmap.showhide" />
+        </items>
+        <padding>
+            <Insets left="12.0" />
+        </padding>
+    </ToolBar>
+    <SplitPane dividerPositions="0.5" minHeight="0.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" VBox.vgrow="ALWAYS">
+        <items>
+            <ScrollPane fx:id="visualResult" minHeight="265.0" />
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" minHeight="50.0" prefHeight="50.0">
+                <content>
+                    <VBox fx:id="tabledResult" />
+                </content>
+            </ScrollPane>
+        </items>
+    </SplitPane>
+    <HBox alignment="CENTER" maxHeight="40.0" minHeight="40.0" prefHeight="40.0" prefWidth="200.0" spacing="12.0">
+        <children>
+            <Button mnemonicParsing="false" onAction="#handleSaveAs" prefWidth="120.0" text="%menubutton.saveas" />
+            <Button defaultButton="true" mnemonicParsing="false" onAction="#handleClose" prefWidth="120.0" text="%menubutton.close" />
+        </children>
+    </HBox>
+</VBox>
