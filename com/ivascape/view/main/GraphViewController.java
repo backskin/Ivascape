@@ -44,11 +44,11 @@ public class GraphViewController {
     private final BooleanProperty surfaceChanged = new SimpleBooleanProperty(false);
 
 
-    public BooleanProperty surfaceChangedProperty() {
+    BooleanProperty surfaceChangedProperty() {
         return surfaceChanged;
     }
 
-    public void setSurfaceChanged(boolean surfaceChanged) {
+    void setSurfaceChanged(boolean surfaceChanged) {
         this.surfaceChanged.set(surfaceChanged);
     }
 
@@ -150,6 +150,16 @@ public class GraphViewController {
     }
 
 
+    public void shiftGraph(double xShift, double yShift){
+
+        for (int i = 0; i < graph.getVerSize(); i ++){
+
+            VisualVertex vv;
+            vv = visVerMap.get(graph.getVer(i));
+            vv.setAllCoors(vv.x()+xShift, vv.y()+yShift);
+        }
+    }
+
     private void reloadVertices(Map<String,Pair<Double,Double>> verCoorsMap){
 
         for (int i = 0; i < graph.getVerSize(); i ++){
@@ -179,8 +189,8 @@ public class GraphViewController {
             scale.addListener(vertex.getScaleListener());
 
             vertex.setAllCoors(
-                    verCoorsMap.get(graph.getVer(i).getTitle()).getOne() ,
-                    verCoorsMap.get(graph.getVer(i).getTitle()).getTwo());
+                    surface.getLayoutX() + verCoorsMap.get(graph.getVer(i).getTitle()).getOne() ,
+                    surface.getLayoutY() + verCoorsMap.get(graph.getVer(i).getTitle()).getTwo());
         }
 
         reloadEdges();
@@ -239,8 +249,8 @@ public class GraphViewController {
         visVerMap.put(company,vertex);
 
         vertex.setAllCoors(
-                5.0 + (new Random()).nextInt(400),
-                5.0 + (new Random()).nextInt(400)
+                5.0 + (new Random()).nextInt(200),
+                5.0 + (new Random()).nextInt(200)
         );
 
         surface.getChildren().add(vertex.getItem());

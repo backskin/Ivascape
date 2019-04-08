@@ -67,12 +67,8 @@ public class AnalyseWindowController {
              ) {
 
             VBox form = new VBox();
-
             form.setFocusTraversable(false);
-
             form.setAlignment(Pos.CENTER);
-
-            TableView<Company> componentTable = new TableView<>();
 
             try {
 
@@ -81,8 +77,6 @@ public class AnalyseWindowController {
                         MainApp.bundle);
 
                 Pane surface = loader.load();
-
-                surface.setFocusTraversable(false);
                 surface.setMouseTransparent(true);
                 GraphViewController controller = loader.getController();
 
@@ -93,43 +87,28 @@ public class AnalyseWindowController {
                         Color.DARKCYAN,
                         false);
 
-                controller.reloadView();
-
-                controller.cropIt();
-
-                controller.setScale(40);
-
                 ScrollPane scrollPane = new ScrollPane();
-
-                scrollPane.setContent(surface);
-
                 form.getChildren().add(scrollPane);
-
+                scrollPane.setContent(surface);
                 VBox.setVgrow(scrollPane,Priority.ALWAYS);
-
                 scrollPane.setPrefHeight(125);
 
-            } catch (IOException e){
+                controller.reloadView();
+                controller.cropIt();
+                controller.setScale(50);
 
+            } catch (IOException e){
                 e.printStackTrace();
             }
 
-            componentTable.setFocusTraversable(false);
+            TableView<Company> componentTable = new TableView<>();
             form.getChildren().add(componentTable);
             form.setFocusTraversable(false);
             VBox.setVgrow(componentTable, Priority.ALWAYS);
-
             ComponentTables.getChildren().add(form);
-
-
-            componentTable.setMinWidth(260);
-
             componentTable.setPrefHeight(120);
-
             HBox.setHgrow(form, Priority.ALWAYS);
-
             componentTable.setSelectionModel(null);
-
             HBox.setHgrow(componentTable, Priority.ALWAYS);
 
             ObservableList<Company> list = FXCollections.observableArrayList();
@@ -140,20 +119,14 @@ public class AnalyseWindowController {
             while (iterator.hasNext()) list.add(iterator.next());
 
             componentTable.setItems(list);
-
             componentTable.setFocusTraversable(false);
-
             TableColumn<Company,String> column = new TableColumn<>();
-
             column.setSortable(false);
-
             column.setText((components.indexOf(component)+1)
                     + MainApp.bundle.getString("editwindows.component"));
 
             componentTable.getColumns().add(column);
-
             componentTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
             column.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         }
 
