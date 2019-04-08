@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.effect.Shadow?>
 <?import javafx.scene.layout.StackPane?>
@@ -8,8 +9,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="item" alignment="CENTER" cacheShape="false" xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml" fx:controller="ivascape.view.serve.VisualVertex">
+<VBox fx:id="item" alignment="CENTER" cacheShape="false" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ivascape.view.serve.VisualVertex">
     <padding>
         <Insets bottom="15.0" />
     </padding>
@@ -25,7 +25,10 @@
                <Shadow height="10.0" radius="4.5" width="10.0" />
             </effect>
           </Circle>
-            <Circle fx:id="circle" fill="#1f93ff" radius="15.0" strokeLineCap="BUTT" strokeType="INSIDE" strokeWidth="3.0" />
+            <Circle fx:id="circle" fill="#1f93ff" radius="15.0" strokeLineCap="BUTT" strokeType="INSIDE" strokeWidth="3.0">
+            <cursor>
+               <Cursor fx:constant="MOVE" />
+            </cursor></Circle>
         </children>
     </StackPane>
 </VBox>

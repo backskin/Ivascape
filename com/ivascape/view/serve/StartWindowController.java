@@ -19,7 +19,8 @@ public class StartWindowController {
 
     private boolean terminated = true;
 
-    public StartWindowController() {}
+    public StartWindowController() {
+    }
 
     @FXML
     private ImageView splash;
@@ -28,12 +29,14 @@ public class StartWindowController {
     private void initialize() {
 
         splash.setImage(new Image("resources/" + Locale.getDefault().getLanguage() + "splash.png"));
+
     }
 
     @FXML
     public void setStartStage(Stage startStage){
 
         this.startStage = startStage;
+
     }
 
     public boolean isTerminated(){

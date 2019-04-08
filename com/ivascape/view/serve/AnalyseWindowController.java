@@ -83,7 +83,7 @@ public class AnalyseWindowController {
                 Pane surface = loader.load();
 
                 surface.setFocusTraversable(false);
-
+                surface.setMouseTransparent(true);
                 GraphViewController controller = loader.getController();
 
                 controller.setGraph(
@@ -114,8 +114,9 @@ public class AnalyseWindowController {
                 e.printStackTrace();
             }
 
+            componentTable.setFocusTraversable(false);
             form.getChildren().add(componentTable);
-
+            form.setFocusTraversable(false);
             VBox.setVgrow(componentTable, Priority.ALWAYS);
 
             ComponentTables.getChildren().add(form);

@@ -4,7 +4,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<TabPane fx:id="tabPane" minHeight="-Infinity" minWidth="-Infinity" style="-fx-color: white;" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ivascape.view.main.MainWindowController">
+<TabPane fx:id="tabPane" cacheShape="false" centerShape="false" focusTraversable="false" minHeight="-Infinity" minWidth="-Infinity" pickOnBounds="false" scaleShape="false" side="LEFT" style="-fx-color: white;" tabClosingPolicy="UNAVAILABLE" tabMinHeight="30.0" tabMinWidth="100.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ivascape.view.main.MainWindowController">
     <Tab closable="false" style="-fx-background-color: #f4f4f4;" text="%tabstitle.cmps">
         <content>
             <AnchorPane fx:id="CompaniesView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />

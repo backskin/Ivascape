@@ -10,8 +10,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml" fx:controller="ivascape.view.serve.AnalyseWindowController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ivascape.view.serve.AnalyseWindowController">
     <HBox alignment="CENTER_LEFT" maxHeight="40.0" prefHeight="40.0" spacing="8.0">
         <children>
           <Label text="%editwindows.components">
@@ -41,9 +40,9 @@
           <Insets bottom="8.0" left="100.0" right="100.0" />
         </VBox.margin>
     </TextFlow>
-    <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+    <ScrollPane fitToHeight="true" fitToWidth="true" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
         <content>
-          <HBox fx:id="ComponentTables" alignment="CENTER" />
+          <HBox fx:id="ComponentTables" alignment="CENTER" cacheShape="false" centerShape="false" />
         </content>
     </ScrollPane>
     <HBox alignment="CENTER" maxHeight="40.0" prefHeight="40.0" prefWidth="200.0" spacing="12.0">

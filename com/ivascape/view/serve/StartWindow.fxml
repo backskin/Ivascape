@@ -1,73 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.effect.Glow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="450.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="ivascape.view.serve.StartWindowController">
-    <center>
-        <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <ImageView fitHeight="350.0" fitWidth="450.0" pickOnBounds="true" preserveRatio="true">
-                <image>
-                    <Image url="@../../../resources/startbg.png" />
-                </image>
-                <effect>
-                    <Glow />
-                </effect>
+<StackPane minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ivascape.view.serve.StartWindowController">
+   <children>
+      <VBox alignment="CENTER" scaleShape="false" snapToPixel="false" StackPane.alignment="CENTER">
+         <children>
+            <StackPane alignment="CENTER_RIGHT" nodeOrientation="LEFT_TO_RIGHT">
+               <children>
+                  <ImageView fx:id="splash" fitHeight="75.0" fitWidth="450.0" focusTraversable="true" nodeOrientation="INHERIT">
+                     <image>
+                        <Image url="@../../../resources/ensplash.png" />
+                     </image></ImageView>
+                  <Button contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#handleLang" opacity="0.76" prefHeight="35.0" prefWidth="60.0" text="%button.lang" textAlignment="CENTER">
+                     <StackPane.margin>
+                        <Insets right="24.0" />
+                     </StackPane.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+               </children>
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+            </StackPane>
+            <ImageView fitWidth="450.0" nodeOrientation="INHERIT" preserveRatio="true" smooth="false">
+               <image>
+                  <Image url="@../../../resources/startbg.png" />
+               </image>
+               <viewport>
+                  <Rectangle2D />
+               </viewport>
             </ImageView>
-            <ImageView fx:id="splash" fitHeight="75.0" fitWidth="450.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" />
-            <VBox alignment="CENTER" layoutX="59.0" layoutY="63.0" prefHeight="273.0" prefWidth="333.0" spacing="8.0">
-                <children>
-                    <TextFlow prefHeight="60.0" prefWidth="200.0" textAlignment="CENTER">
-                        <children>
-                            <Text fill="WHITE" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="%undername" textAlignment="CENTER">
-                                <font>
-                                    <Font name="System Italic" size="16.0" />
-                                </font>
-                            </Text>
-                        </children>
-                        <VBox.margin>
-                            <Insets bottom="8.0" />
-                        </VBox.margin>
-                  <padding>
-                     <Insets top="8.0" />
-                  </padding>
-                    </TextFlow>
-                    <Button mnemonicParsing="false" onAction="#handleNew" opacity="0.99" prefHeight="40.0" prefWidth="200.0" text="%start.new">
-                        <font>
-                            <Font size="15.0" />
-                        </font>
-                        <VBox.margin>
-                            <Insets bottom="8.0" />
-                        </VBox.margin>
-                    </Button>
-                    <Button mnemonicParsing="false" onAction="#handleOpen" opacity="0.9" prefHeight="40.0" prefWidth="200.0" text="%start.open">
-                        <font>
-                            <Font size="15.0" />
-                        </font>
-                        <VBox.margin>
-                            <Insets bottom="8.0" />
-                        </VBox.margin>
-                    </Button>
-                    <Button mnemonicParsing="false" onAction="#handleExit" opacity="0.9" prefHeight="40.0" prefWidth="200.0" text="%start.exit">
-                        <font>
-                            <Font size="15.0" />
-                        </font>
-                        <VBox.margin>
-                            <Insets bottom="8.0" />
-                        </VBox.margin>
-                    </Button>
-                </children>
-            </VBox>
-            <Button layoutX="391.0" layoutY="17.0" mnemonicParsing="false" onAction="#handleLang" opacity="0.76" prefHeight="30.0" prefWidth="50.0" style="-fx-background-color: crimson;" text="%button.lang" textFill="WHITE" />
-        </AnchorPane>
-    </center>
-</BorderPane>
+         </children>
+      </VBox>
+      <VBox alignment="CENTER" spacing="12.0">
+         <children>
+            <TextFlow maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="77.0" prefWidth="248.0" textAlignment="CENTER">
+               <children>
+                  <Text fill="WHITE" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="%undername" textAlignment="CENTER">
+                     <font>
+                        <Font name="System Italic" size="16.0" />
+                     </font>
+                  </Text>
+               </children>
+            </TextFlow>
+            <Button defaultButton="true" mnemonicParsing="false" onAction="#handleNew" opacity="0.99" prefHeight="40.0" prefWidth="200.0" text="%start.new">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#handleOpen" opacity="0.9" prefHeight="40.0" prefWidth="200.0" text="%start.open">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#handleExit" opacity="0.9" prefHeight="40.0" prefWidth="200.0" text="%start.exit">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+         </children>
+         <StackPane.margin>
+            <Insets top="75.0" />
+         </StackPane.margin>
+      </VBox>
+   </children>
+</StackPane>

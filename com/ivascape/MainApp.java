@@ -10,7 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -65,40 +65,34 @@ public class MainApp extends Application {
 
     private void onExit(WindowEvent event){
 
-        if (IvascapeProject.isEmpty() || IvascapeProject.isSaved()){
-            if (getAlert(MyAlertType.ON_EXIT,mainStage).getResult().getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE)
-                event.consume();
-        } else
-
-            if (getAlert(MyAlertType.ON_EXIT,mainStage, "NOTSAVED").getResult().getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE)
-
+        if (!(IvascapeProject.isEmpty() || IvascapeProject.isSaved()) &&
+            getAlert(MyAlertType.ON_EXIT,mainStage, "NOTSAVED").getResult().getButtonData()
+                    == ButtonBar.ButtonData.CANCEL_CLOSE)
             event.consume();
     }
 
     private void greetings() throws IOException {
 
-        Reader reader = new BufferedReader(new InputStreamReader(
+        bundle = new PropertyResourceBundle(new BufferedReader(new InputStreamReader(
                 getClass().getResourceAsStream(Locale.getDefault().equals(enLoc) ?
                         "translate_en_US.properties" :
-                        "translate_ru_RU.properties"), StandardCharsets.UTF_8));
-
-        bundle = new PropertyResourceBundle(reader);//ResourceBundle.getBundle(bundlePath);
+                        "translate_ru_RU.properties"), StandardCharsets.UTF_8)));
 
         try {
             FXMLLoader loader = new FXMLLoader(
                     MainApp.class.getResource("view/serve/StartWindow.fxml"),
                     bundle);
 
-            BorderPane startPage = loader.load();
+            Pane startPage = loader.load();
             Stage startStage = new Stage();
             startStage.getIcons().add(new Image("resources/ico.png"));
             startStage.setTitle(bundle.getString("welcome"));
             startStage.setScene(new Scene(startPage));
-            startStage.setResizable(false);
 
             StartWindowController SWcontroller = loader.getController();
             SWcontroller.setStartStage(startStage);
 
+            startStage.setResizable(false);
             startStage.showAndWait();
 
             if (SWcontroller.isTerminated()) {
@@ -126,12 +120,10 @@ public class MainApp extends Application {
 
     private void loadApp() throws IOException {
 
-        Reader reader = new BufferedReader(new InputStreamReader(
+        bundle = new PropertyResourceBundle(new BufferedReader(new InputStreamReader(
                 getClass().getResourceAsStream(Locale.getDefault().equals(enLoc) ?
                         "translate_en_US.properties" :
-                        "translate_ru_RU.properties"), StandardCharsets.UTF_8));
-
-        bundle = new PropertyResourceBundle(reader);//ResourceBundle.getBundle(bundlePath);
+                        "translate_ru_RU.properties"), StandardCharsets.UTF_8)));
 
         mainStage.setTitle(bundle.getString("program_name"));
 
