@@ -4,9 +4,12 @@ import ivascape.MainApp;
 import ivascape.controller.FileWorker;
 import ivascape.model.Graph;
 import ivascape.controller.IvascapeProject;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.util.Locale;
@@ -15,9 +18,14 @@ public class StartWindowController {
 
     private Stage startStage;
 
-    private boolean restart = false;
+    private static boolean restart = false;
+    private boolean terminate = false;
 
-    private boolean terminated = true;
+    private static double xOffset = 0;
+    private static double yOffset = 0;
+    private static double x = 0;
+    private static double y = 0;
+
 
     public StartWindowController() {
     }
@@ -28,45 +36,50 @@ public class StartWindowController {
     @FXML
     private void initialize() {
 
-        splash.setImage(new Image("resources/" + Locale.getDefault().getLanguage() + "splash.png"));
+        splash.setImage(new Image("resources/"
+                + Locale.getDefault().getLanguage() + "splash.png"));
+
+        splash.setOnMousePressed(event -> {
+            xOffset = startStage.getX() - event.getScreenX();
+            yOffset = startStage.getY() - event.getScreenY();
+        });
+
+        splash.setOnMouseDragged(event -> {
+            startStage.setX(event.getScreenX() + xOffset);
+            startStage.setY(event.getScreenY() + yOffset);
+            x = startStage.getX();
+            y = startStage.getY();
+        });
 
     }
 
-    @FXML
     public void setStartStage(Stage startStage){
-
         this.startStage = startStage;
+        if (restart && (x + y > 0)) {
+            startStage.setX(x);
+            startStage.setY(y);
+        }
+        restart = false;
 
     }
 
-    public boolean isTerminated(){
+    public boolean isTerminate(){ return terminate;}
 
-        return terminated;
-    }
-
-    public boolean isRestart() {
-        return restart;
-    }
+    public boolean isRestart() { return restart; }
 
     @FXML
-    private void handleExit(){
-
-        startStage.close();
-    }
+    private void handleExit(){ startStage.close(); terminate = true;}
 
     @FXML
     private void handleNew(){
 
         IvascapeProject.EraseProject();
         IvascapeProject.NewProject();
-        terminated = false;
         startStage.close();
     }
 
     @FXML
     private void handleOpen() {
-
-        IvascapeProject.EraseProject();
 
         Graph graph = FileWorker.loadFile(startStage);
 
@@ -76,16 +89,16 @@ public class StartWindowController {
         }
         IvascapeProject.setProject(graph);
         IvascapeProject.setSaved(true);
-        terminated = false;
         startStage.close();
     }
 
     @FXML
     private void handleLang(){
 
-        Locale.setDefault(Locale.getDefault().equals(MainApp.ruLoc) ? MainApp.enLoc : MainApp.ruLoc);
+        MainApp.changeLoc();
         restart = true;
-        terminated = false;
         startStage.close();
     }
 }
+
+

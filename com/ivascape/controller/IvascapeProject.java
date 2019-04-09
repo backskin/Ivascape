@@ -16,9 +16,10 @@ import java.util.Map;
 
 public class IvascapeProject {
 
-    private static final BooleanProperty saved = new SimpleBooleanProperty(false);
+    private static final BooleanProperty saved = new SimpleBooleanProperty(true);
 
     private static String projectName;
+    private static Graph<Company,Link> project;
 
     private static File file = null;
 
@@ -66,7 +67,6 @@ public class IvascapeProject {
         IvascapeProject.projectName = projectName;
     }
 
-    private static Graph<Company,Link> project;
 
     public static Graph<Company,Link> getProject() {
 

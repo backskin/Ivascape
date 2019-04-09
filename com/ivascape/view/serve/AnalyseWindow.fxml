@@ -28,9 +28,9 @@
           <Insets left="48.0" />
         </padding>
     </HBox>
-    <TextFlow textAlignment="CENTER" VBox.vgrow="SOMETIMES">
+    <TextFlow maxHeight="36.0" maxWidth="1.7976931348623157E308" prefHeight="16.0" prefWidth="150.0" textAlignment="CENTER" VBox.vgrow="NEVER">
         <children>
-          <Text fill="#5f5f5f" strokeType="OUTSIDE" strokeWidth="0.0" text="%editwindows.analysetip">
+          <Text boundsType="VISUAL" fill="#5f5f5f" strokeType="OUTSIDE" strokeWidth="0.0" text="%editwindows.analysetip" textOrigin="CENTER">
               <font>
                   <Font name="System Italic" size="13.0" />
               </font>
@@ -40,9 +40,9 @@
           <Insets bottom="8.0" left="100.0" right="100.0" />
         </VBox.margin>
     </TextFlow>
-    <ScrollPane fitToHeight="true" fitToWidth="true" focusTraversable="false" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+    <ScrollPane cacheShape="false" centerShape="false" fitToHeight="true" fitToWidth="true" focusTraversable="false" pickOnBounds="false" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
         <content>
-          <HBox fx:id="ComponentTables" alignment="CENTER" cacheShape="false" centerShape="false" />
+          <HBox fx:id="componentTables" alignment="CENTER" cacheShape="false" centerShape="false" pickOnBounds="false" />
         </content>
     </ScrollPane>
     <HBox alignment="CENTER" maxHeight="40.0" prefHeight="40.0" spacing="12.0">

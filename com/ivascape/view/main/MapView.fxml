@@ -17,14 +17,14 @@
             <padding>
                <Insets right="-2.0" />
             </padding></Label>
-            <Slider fx:id="zoomSlider" disable="true" focusTraversable="false" max="200.0" min="20.0" prefWidth="150.0" showTickMarks="true" value="100.0" />
+            <Slider fx:id="zoomSlider" disable="true" focusTraversable="false" max="200.0" maxWidth="150.0" min="20.0" prefWidth="150.0" showTickMarks="true" value="100.0" />
          <Separator focusTraversable="false" orientation="VERTICAL" prefHeight="200.0">
             <padding>
                <Insets left="4.0" />
             </padding></Separator>
-         <Button fx:id="cropView" disable="true" focusTraversable="false" maxWidth="1.7976931348623157E308" minWidth="110.0" mnemonicParsing="false" onAction="#cropIt" text="%button.crop" />
-            <Button fx:id="ResetZoom" disable="true" focusTraversable="false" maxWidth="1.7976931348623157E308" minWidth="110.0" mnemonicParsing="false" onAction="#handleReset" text="%mainmap.reset" />
-            <ToggleButton fx:id="showHidePrices" disable="true" focusTraversable="false" maxWidth="1.7976931348623157E308" minWidth="110.0" mnemonicParsing="false" text="%mainmap.showhide" />
+         <Button fx:id="cropView" disable="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="110.0" mnemonicParsing="false" onAction="#cropIt" text="%button.crop" />
+            <Button fx:id="ResetZoom" disable="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="110.0" mnemonicParsing="false" onAction="#handleReset" text="%mainmap.reset" />
+            <ToggleButton fx:id="showHidePrices" disable="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="110.0" mnemonicParsing="false" text="%mainmap.showhide" />
          <Separator focusTraversable="false" orientation="VERTICAL" prefHeight="200.0">
             <padding>
                <Insets left="4.0" right="4.0" />
@@ -34,5 +34,5 @@
             <Insets left="12.0" />
         </padding>
     </ToolBar>
-    <ScrollPane fx:id="surface" cacheShape="false" focusTraversable="false" prefHeight="100.0" VBox.vgrow="ALWAYS" />
+    <ScrollPane fx:id="surface" cacheShape="false" focusTraversable="false" prefHeight="100.0" prefWidth="500.0" VBox.vgrow="ALWAYS" />
 </VBox>

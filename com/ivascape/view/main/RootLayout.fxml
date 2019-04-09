@@ -15,11 +15,10 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="rootLayout" focusTraversable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="ivascape.view.main.RootLayoutController">
+<BorderPane fx:id="rootLayout" focusTraversable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ivascape.view.main.RootLayoutController">
     <top>
         <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #eaeaea;">
-            <Menu mnemonicParsing="false" text="%menu.file">
+            <Menu mnemonicParsing="false" style="-fx-focus-color: crimson;" text="%menu.file">
                 <items>
                     <MenuItem mnemonicParsing="false" onAction="#handleFileNew" text="%start.new">
                   <accelerator>
@@ -45,7 +44,7 @@
                   </accelerator></MenuItem>
                 </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="%menu.edit">
+            <Menu mnemonicParsing="false" style="-fx-focus-color: crimson;" text="%menu.edit">
                 <items>
                <MenuItem mnemonicParsing="false" onAction="#handleAddVertex" text="%menubutton.addvertex">
                   <accelerator>
@@ -68,7 +67,7 @@
                   </accelerator></MenuItem>
                 </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="%menu.help">
+            <Menu mnemonicParsing="false" style="-fx-focus-color: crimson;" text="%menu.help">
                 <items>
                     <Menu mnemonicParsing="false" text="%menubutton.lang">
                         <items>
@@ -91,7 +90,7 @@
     <bottom>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
             <Separator />
-            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="12.0">
+            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="0.0" spacing="12.0">
                 <children>
                <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
                   <children>

@@ -12,6 +12,7 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 import java.io.*;
@@ -37,10 +38,7 @@ public class MainApp extends Application {
 
     private static Stage mainStage;
 
-    public static void main(String [] args){
-
-        launch();
-    }
+    public static void main(String [] args){ launch();}
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -71,6 +69,12 @@ public class MainApp extends Application {
             event.consume();
     }
 
+    public static void changeLoc(){
+
+        Locale.setDefault(Locale.getDefault().equals(ruLoc) ?
+                enLoc : ruLoc);
+    }
+
     private void greetings() throws IOException {
 
         bundle = new PropertyResourceBundle(new BufferedReader(new InputStreamReader(
@@ -92,10 +96,12 @@ public class MainApp extends Application {
             StartWindowController SWcontroller = loader.getController();
             SWcontroller.setStartStage(startStage);
 
-            startStage.setResizable(false);
+            startStage.setMinHeight(startStage.getHeight());
+            startStage.setMinWidth(startStage.getWidth());
+            startStage.initStyle(StageStyle.UNDECORATED);
             startStage.showAndWait();
 
-            if (SWcontroller.isTerminated()) {
+            if (SWcontroller.isTerminate()) {
                 Platform.exit();
                 System.exit(0);
             }
