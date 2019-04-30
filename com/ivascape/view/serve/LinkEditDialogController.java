@@ -1,12 +1,10 @@
 package ivascape.view.serve;
 
 import ivascape.MainApp;
-import ivascape.model.Company;
 import ivascape.controller.IvascapeProject;
-import ivascape.model.Link;
+import ivascape.model.*;
 import javafx.fxml.FXML;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -18,22 +16,12 @@ import static ivascape.view.serve.MyAlerts.getAlert;
 public class LinkEditDialogController {
 
     private boolean creating = true;
-
     private boolean okClicked = false;
-
     private boolean updatePrice = false;
-
     private Double editPrice = -1.0;
-
     private Company fstCompany = null;
-
     private Company secCompany = null;
-
     private Link editLink = null;
-
-    public Link getEditLink() {
-        return editLink;
-    }
 
     @FXML
     TextField neighbourOneField;
@@ -46,8 +34,11 @@ public class LinkEditDialogController {
 
     private Stage dialogStage;
 
-
     public LinkEditDialogController(){}
+
+    public Link getEditLink() {
+        return editLink;
+    }
 
     @FXML
     private void initialize(){

@@ -13,8 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="600.0" xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml" fx:controller="ivascape.view.serve.ResultWindowController">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ivascape.view.serve.ResultWindowController">
     <HBox alignment="CENTER" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: eaeaea;">
         <children>
             <Label text="%editwindows.fullprice">
@@ -30,20 +29,23 @@
         </children>
     </HBox>
     <Separator prefWidth="200.0" style="-fx-background-color: lightgray;" />
-    <ToolBar maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: eaeaea;">
+    <ToolBar maxHeight="-Infinity" minHeight="48.0" prefWidth="200.0" style="-fx-background-color: #eaeaea;" VBox.vgrow="NEVER">
         <items>
             <Label text="%mainmap.zoom" />
             <Slider fx:id="zoomSlider" max="200.0" min="20.0" minWidth="150.0" showTickMarks="true" value="100.0" />
-            <ToggleButton fx:id="showHidePrices" mnemonicParsing="false" text="%mainmap.showhide" />
+            <ToggleButton fx:id="showHidePrices" mnemonicParsing="false" text="%mainmap.showhide" textAlignment="CENTER" />
         </items>
-        <padding>
-            <Insets left="12.0" />
-        </padding>
+      <VBox.margin>
+         <Insets />
+      </VBox.margin>
+      <padding>
+         <Insets left="24.0" />
+      </padding>
     </ToolBar>
     <SplitPane dividerPositions="0.5" minHeight="0.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" VBox.vgrow="ALWAYS">
         <items>
             <ScrollPane fx:id="visualResult" minHeight="265.0" />
-            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" minHeight="50.0" prefHeight="50.0">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" minHeight="150.0" prefHeight="150.0">
                 <content>
                     <VBox fx:id="tabledResult" />
                 </content>
@@ -52,8 +54,8 @@
     </SplitPane>
     <HBox alignment="CENTER" maxHeight="40.0" minHeight="40.0" prefHeight="40.0" prefWidth="200.0" spacing="12.0">
         <children>
-            <Button mnemonicParsing="false" onAction="#handleSaveAs" prefWidth="120.0" text="%menubutton.saveas" />
-            <Button defaultButton="true" mnemonicParsing="false" onAction="#handleClose" prefWidth="120.0" text="%menubutton.close" />
+            <Button mnemonicParsing="false" onAction="#handleSaveAs" prefWidth="150.0" text="%menubutton.saveas" />
+            <Button defaultButton="true" mnemonicParsing="false" onAction="#handleClose" prefWidth="150.0" text="%menubutton.close" />
         </children>
     </HBox>
 </VBox>

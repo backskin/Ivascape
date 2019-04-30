@@ -288,15 +288,18 @@ public class RootLayoutController {
             ResultWindowController RWController = loader.getController();
             Stage resStage = new Stage();
             RWController.setResultStage(resStage);
-            resStage.setScene(new Scene(resultWindow));
+            Scene s = new Scene(resultWindow);
+            resStage.setScene(s);
             resStage.initModality(Modality.WINDOW_MODAL);
             resStage.initOwner(mainStage);
             resStage.getIcons().add(new Image("resources/ico.png"));
             resStage.setTitle(MainApp.bundle.getString("result_window"));
-            resStage.setWidth(640.0);
-            resStage.setHeight(480.0);
-            resStage.setMinWidth(600.0);
-            resStage.setMinHeight(400.0);
+
+            Platform.runLater(() -> {
+                resStage.setMinWidth(resStage.getWidth());
+                resStage.setMinHeight(resStage.getHeight());
+            });
+
             resStage.showAndWait();
 
 

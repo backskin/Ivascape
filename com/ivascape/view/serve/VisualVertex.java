@@ -119,7 +119,7 @@ public class VisualVertex {
         stackPane.setPickOnBounds(false);
         circle.radiusProperty().addListener((observable, oldValue, newValue) -> {
             shadow.setRadius(shadow.getRadius() * (newValue.doubleValue() / oldValue.doubleValue()));
-            name.fontProperty().setValue(Font.font("Arial Italic", name.fontProperty().getValue().getSize()*(newValue.doubleValue() / oldValue.doubleValue())));
+            name.fontProperty().setValue(Font.font("Arial", name.fontProperty().getValue().getSize()*(newValue.doubleValue() / oldValue.doubleValue())));
         });
         circle.setRadius(circleRadius.doubleValue());
         circle.setFill(circleColor);

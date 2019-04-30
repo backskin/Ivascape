@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<StackPane minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ivascape.view.serve.StartWindowController">
+<StackPane maxHeight="345.0" maxWidth="450.0" minHeight="345.0" minWidth="450.0" prefHeight="345.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ivascape.view.serve.StartWindowController">
    <children>
       <VBox alignment="CENTER" scaleShape="false" snapToPixel="false" StackPane.alignment="CENTER">
          <children>
@@ -47,7 +47,7 @@
       </VBox>
       <VBox alignment="CENTER" spacing="12.0">
          <children>
-            <TextFlow maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="77.0" prefWidth="248.0" textAlignment="CENTER">
+            <TextFlow maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="59.0" prefWidth="369.0" textAlignment="CENTER">
                <children>
                   <Text fill="WHITE" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="%undername" textAlignment="CENTER">
                      <font>

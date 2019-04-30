@@ -43,7 +43,7 @@ public class AnalyseWindowController {
     }
 
     @FXML
-    private HBox ComponentTables;
+    private HBox componentTables;
 
     @FXML
     private Label cAmount;
@@ -59,8 +59,8 @@ public class AnalyseWindowController {
         if (components.size() == 0) {
             Label label = new Label(MainApp.bundle.getString("editwindows.emptygraph"));
             label.setFont(new Font("System",15));
-            ComponentTables.getChildren().add(label);
-        }
+            componentTables.getChildren().add(label);
+        } else
         for (Graph<Company,Link> component: components
              ) {
 
@@ -102,7 +102,7 @@ public class AnalyseWindowController {
             form.getChildren().add(componentTable);
             form.setFocusTraversable(false);
             VBox.setVgrow(componentTable, Priority.ALWAYS);
-            ComponentTables.getChildren().add(form);
+            componentTables.getChildren().add(form);
             componentTable.setPrefHeight(120);
             HBox.setHgrow(form, Priority.ALWAYS);
             componentTable.setSelectionModel(null);
@@ -126,6 +126,7 @@ public class AnalyseWindowController {
             componentTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
             column.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         }
+
         cAmount.setText(Integer.toString(components.size()));
     }
 
