@@ -9,10 +9,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class IvascapeProject {
 
@@ -28,8 +25,8 @@ public class IvascapeProject {
         return verCoorsMap;
     }
 
-    public static void setVerCoorsMap(Map<String, Pair<Double, Double>> verCoorsMap) {
-        IvascapeProject.verCoorsMap = verCoorsMap;
+    public static void setVerCoorsMap(Map<String, Pair<Double, Double>> vers) {
+        verCoorsMap = vers;
     }
 
     public static File getFile() {
@@ -91,12 +88,16 @@ public class IvascapeProject {
 
         project = null;
         saved.setValue(true);
+        verCoorsMap = new HashMap<>();
+        file = null;
     }
 
     public static void NewProject(){
 
         if (project == null) {
             project = new Graph<>();
+            verCoorsMap = new HashMap<>();
+            saved.setValue(true);
             projectName = "Empty Project";
             file = null;
         }

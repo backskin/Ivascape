@@ -1,7 +1,9 @@
 package ivascape.controller;
 
 import ivascape.MainApp;
+import ivascape.model.Company;
 import ivascape.model.Graph;
+import ivascape.model.Link;
 import ivascape.model.Pair;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -14,7 +16,8 @@ import static ivascape.view.serve.MyAlerts.*;
 
 public class FileWorker {
 
-    public static Graph loadFile(final Stage ownerStage){
+
+    public static Pair<Graph<Company, Link>, Map<String,Pair<Double,Double>>> loadFile(final Stage ownerStage){
 
         FileChooser fileChooser = new FileChooser();
 
@@ -37,7 +40,7 @@ public class FileWorker {
         return openIt(file,ownerStage);
     }
 
-    private static Graph openIt(File file, Stage ownerStage){
+    private static Pair<Graph<Company, Link>, Map<String,Pair<Double,Double>>> openIt(File file, Stage ownerStage){
 
         try {
             FileInputStream fis = new FileInputStream(file.getAbsolutePath());
@@ -65,8 +68,10 @@ public class FileWorker {
 
             if (checked) {
                 IvascapeProject.setFile(file);
-                IvascapeProject.setVerCoorsMap((HashMap)coors);
-                return (Graph) result;
+                Pair<Graph<Company, Link>, Map<String,Pair<Double,Double>>> pair = new Pair<>();
+                pair.setOne((Graph<Company, Link>)result);
+                pair.setTwo((HashMap<String, Pair<Double, Double>>)coors);
+                return pair;
             }
             else {
                 fis.close();

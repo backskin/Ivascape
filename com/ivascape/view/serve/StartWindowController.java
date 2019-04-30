@@ -2,14 +2,18 @@ package ivascape.view.serve;
 
 import ivascape.MainApp;
 import ivascape.controller.FileWorker;
+import ivascape.model.Company;
 import ivascape.model.Graph;
 import ivascape.controller.IvascapeProject;
+import ivascape.model.Link;
+import ivascape.model.Pair;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.util.Locale;
+import java.util.Map;
 
 public class StartWindowController {
 
@@ -68,7 +72,10 @@ public class StartWindowController {
 
         IvascapeProject.EraseProject();
 
-        Graph graph = FileWorker.loadFile(startStage);
+        Pair<Graph<Company, Link>, Map<String, Pair<Double, Double>>> output = FileWorker.loadFile(startStage);
+
+        Graph graph = output.getOne();
+        IvascapeProject.setVerCoorsMap(output.getTwo());
 
         if (graph == null) {
 
@@ -76,6 +83,7 @@ public class StartWindowController {
         }
         IvascapeProject.setProject(graph);
         IvascapeProject.setSaved(true);
+
         terminated = false;
         startStage.close();
     }

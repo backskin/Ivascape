@@ -1,9 +1,11 @@
 package ivascape.view.main;
-
 import ivascape.MainApp;
 import ivascape.controller.FileWorker;
+import ivascape.model.Company;
 import ivascape.model.Graph;
 import ivascape.controller.IvascapeProject;
+import ivascape.model.Link;
+import ivascape.model.Pair;
 import ivascape.view.serve.*;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
@@ -22,6 +24,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Map;
 
 import static ivascape.MainApp.enLoc;
 import static ivascape.MainApp.ruLoc;
@@ -94,10 +97,7 @@ public class RootLayoutController {
             }
         });
 
-        rus.selectedProperty().addListener((observable, oldValue, newValue) -> {
-
-                eng.setSelected(!newValue);
-        });
+        rus.selectedProperty().addListener((observable, oldValue, newValue) -> eng.setSelected(!newValue));
 
         isSaved.setText(MainApp.bundle.getString(IvascapeProject.isSaved() ? "bottombar.saved" : "bottombar.unsaved"));
         saveIcon.setFill(IvascapeProject.isSaved() ? Color.GREEN : Color.DARKRED);
@@ -357,14 +357,16 @@ public class RootLayoutController {
 
         if (permit) {
 
-            Graph graph = FileWorker.loadFile(mainStage);
-
-            if (graph == null) {
-
-                return;
-            }
             IvascapeProject.EraseProject();
+
+            Pair<Graph<Company, Link>, Map<String, Pair<Double, Double>>>
+                    output = FileWorker.loadFile(mainStage);
+
+            assert output != null;
+            Graph graph = output.getOne();
             IvascapeProject.setProject(graph);
+            IvascapeProject.setSaved(true);
+            IvascapeProject.setVerCoorsMap(output.getTwo());
 
             reloadView();
         }

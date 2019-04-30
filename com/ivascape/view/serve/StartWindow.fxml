@@ -56,7 +56,7 @@
                   </Text>
                </children>
             </TextFlow>
-            <Button defaultButton="true" mnemonicParsing="false" onAction="#handleNew" opacity="0.99" prefHeight="40.0" prefWidth="200.0" text="%start.new">
+            <Button defaultButton="true" mnemonicParsing="false" onAction="#handleNew" opacity="0.99" prefHeight="40.0" prefWidth="200.0" text="%start.new" wrapText="true">
                <font>
                   <Font size="15.0" />
                </font>

@@ -44,7 +44,7 @@ public class MapViewController {
 
     public void reloadView(){
 
-        saveGV();
+        if (!IvascapeProject.isSaved()) saveGV();
         zoomSlider.setValue(100);
         GVController.setGraph(
                 IvascapeProject.getProject(),
