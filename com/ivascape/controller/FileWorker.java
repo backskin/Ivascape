@@ -37,6 +37,14 @@ public class FileWorker {
 
         if (file == null) return null;
 
+        if (!IvascapeProject.isSaved() && IvascapeProject.companiesAmount() > 0) {
+
+            if (getAlert(MyAlertType.CLOSE_UNSAVED, ownerStage).getResult().getButtonData().isCancelButton()) {
+
+                return null;
+            }
+        }
+
         return openIt(file,ownerStage);
     }
 

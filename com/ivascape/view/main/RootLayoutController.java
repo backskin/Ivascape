@@ -350,27 +350,19 @@ public class RootLayoutController {
 
         boolean permit = true;
 
-        if (!IvascapeProject.isSaved() && IvascapeProject.companiesAmount() > 0) {
 
-            if (getAlert(MyAlertType.CLOSE_UNSAVED, mainStage).getResult().getButtonData().isCancelButton()) {
+        Pair<Graph<Company, Link>, Map<String, Pair<Double, Double>>>
+                output = FileWorker.loadFile(mainStage);
 
-                permit = false;
-            }
-        }
 
-        if (permit) {
+
+        if (output != null) {
 
             IvascapeProject.EraseProject();
-
-            Pair<Graph<Company, Link>, Map<String, Pair<Double, Double>>>
-                    output = FileWorker.loadFile(mainStage);
-
-            assert output != null;
             Graph graph = output.getOne();
             IvascapeProject.setProject(graph);
             IvascapeProject.setSaved(true);
             IvascapeProject.setVerCoorsMap(output.getTwo());
-
             reloadView();
         }
     }
