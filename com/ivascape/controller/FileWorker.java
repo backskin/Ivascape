@@ -34,7 +34,6 @@ public class FileWorker {
             fileChooser.setInitialDirectory(new File(IvascapeProject.getFile().getParent()));
 
         File file = fileChooser.showOpenDialog(ownerStage);
-
         if (file == null) return null;
 
         if (!IvascapeProject.isSaved() && IvascapeProject.companiesAmount() > 0) {
