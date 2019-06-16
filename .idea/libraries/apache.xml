@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="apache">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/apache/poi-ooxml-3.17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/apache/poi-3.17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/apache/poi-excelant-3.17.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

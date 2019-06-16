@@ -89,13 +89,13 @@ public class StartWindowController {
 
         Pair<Graph<Company, Link>, Map<String, Pair<Double, Double>>> output = FileWorker.loadFile(startStage);
 
+        if (output == null) return;
+
         Graph graph = output.getOne();
+
+        if (graph == null) return;
+
         IvascapeProject.setVerCoorsMap(output.getTwo());
-
-        if (graph == null) {
-
-            return;
-        }
         IvascapeProject.setProject(graph);
         IvascapeProject.setSaved(true);
         startStage.close();

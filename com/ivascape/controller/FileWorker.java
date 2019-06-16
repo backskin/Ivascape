@@ -29,7 +29,7 @@ public class FileWorker {
 
         if (IvascapeProject.getFile() == null)
 
-            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "\\Desktop"));
         else
             fileChooser.setInitialDirectory(new File(IvascapeProject.getFile().getParent()));
 
@@ -107,7 +107,7 @@ public class FileWorker {
 
         if (oldWay == null)
 
-            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+"\\Desktop"));
         else {
             fileChooser.setInitialFileName(oldWay.getName());
             fileChooser.setInitialDirectory(new File(oldWay.getParent()));

@@ -40,7 +40,7 @@
                     <SeparatorMenuItem mnemonicParsing="false" />
                     <MenuItem mnemonicParsing="false" onAction="#handleClose" text="%menubutton.close">
                   <accelerator>
-                     <KeyCodeCombination alt="DOWN" code="Q" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                   </accelerator></MenuItem>
                 </items>
             </Menu>
