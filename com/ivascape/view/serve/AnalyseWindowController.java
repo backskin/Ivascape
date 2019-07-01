@@ -3,9 +3,8 @@ package ivascape.view.serve;
 import ivascape.MainApp;
 import ivascape.controller.GraphWorker;
 import ivascape.model.Company;
-import ivascape.model.Graph;
 import ivascape.controller.IvascapeProject;
-import ivascape.model.Link;
+import ivascape.model.IvaGraph;
 import ivascape.view.main.GraphViewController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -53,15 +52,14 @@ public class AnalyseWindowController {
     @FXML
     private void initialize(){
 
-        List<Graph<Company,Link>> components =
-                IvascapeProject.getGraphWorker().getConnectComponents();
+        List<IvaGraph> components =  IvascapeProject.getComponents();
 
         if (components.size() == 0) {
             Label label = new Label(MainApp.bundle.getString("editwindows.emptygraph"));
             label.setFont(new Font("System",15));
             componentTables.getChildren().add(label);
         } else
-        for (Graph<Company,Link> component: components
+        for (IvaGraph component: components
              ) {
 
             VBox form = new VBox();
@@ -110,8 +108,7 @@ public class AnalyseWindowController {
 
             ObservableList<Company> list = FXCollections.observableArrayList();
 
-            Iterator<Company> iterator = (new GraphWorker<>(component))
-                    .getSortedVerIterator(Comparator.comparing(Company::getTitle));
+            Iterator<Company> iterator = GraphWorker.init(component).getSortedVerIterator(Comparator.comparing(Company::getTitle));
 
             while (iterator.hasNext()) list.add(iterator.next());
 

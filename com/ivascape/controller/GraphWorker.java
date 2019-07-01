@@ -2,17 +2,22 @@ package ivascape.controller;
 
 import ivascape.model.Complex;
 import ivascape.model.Graph;
-import ivascape.model.Pair;
 
+import javafx.util.Pair;
 import java.util.*;
 
 public class GraphWorker<K,V extends Complex<V>> {
 
     private final Graph<K,V> graph;
 
-    public GraphWorker(Graph<K, V> graph) {
+    private GraphWorker(Graph<K, V> graph) {
 
         this.graph = graph;
+    }
+
+    public static <K,V extends Complex<V>> GraphWorker init(Graph<K,V> graph){
+
+        return new GraphWorker<>(graph);
     }
 
     private int indexOf(K ver){
@@ -84,7 +89,7 @@ public class GraphWorker<K,V extends Complex<V>> {
         };
     }
 
-    int getEdgeSize(){
+    public int getEdgeSize(){
         int result = 0;
         for (int i = 0; i < graph.getVerSize(); i++){
             for (int j = i+1; j < graph.getVerSize(); j++){
@@ -155,7 +160,7 @@ public class GraphWorker<K,V extends Complex<V>> {
 
     }
 
-    public List<Graph<K, V>> getConnectComponents(){
+    public List<Graph> getConnectComponents(){
 
         List<K> viewQueue = new ArrayList<>();
 
@@ -164,7 +169,7 @@ public class GraphWorker<K,V extends Complex<V>> {
             viewQueue.add(graph.getVer(i));
         }
 
-        List<Graph<K,V>> components = new ArrayList<>();
+        List<Graph> components = new ArrayList<>();
 
         while (!viewQueue.isEmpty()){
 
@@ -193,16 +198,16 @@ public class GraphWorker<K,V extends Complex<V>> {
 
             return -1;
 
-        V tempValue = queue.get(0).getTwo();
+        V tempValue = queue.get(0).getValue();
 
         int index = 0;
 
         for (Pair<Pair<K,K>,V> i:queue
                 ) {
 
-            if (i.getTwo().compareTo(tempValue) < 0){
+            if (i.getValue().compareTo(tempValue) < 0){
 
-                tempValue = i.getTwo();
+                tempValue = i.getValue();
 
                 index = queue.indexOf(i);
             }
@@ -214,17 +219,15 @@ public class GraphWorker<K,V extends Complex<V>> {
 
         Graph<K,V> tree = new Graph<>();
 
-
-
         for (int i = 0; i < graph.getVerSize(); i ++)
 
             tree.addVer(graph.getVer(i));
 
         for (Pair<K, K> pair : pairs)
             tree.addEdge(
-                    pair.getOne(),
-                    pair.getTwo(),
-                    graph.getEdge(pair.getOne(), pair.getTwo()));
+                    pair.getKey(),
+                    pair.getValue(),
+                    graph.getEdge(pair.getKey(), pair.getValue()));
 
         return tree;
     }
@@ -263,14 +266,14 @@ public class GraphWorker<K,V extends Complex<V>> {
 
             int i = findMinInQueue(queue);
 
-            if (exList.indexOf(queue.get(i).getOne().getTwo()) < 0){
+            if (exList.indexOf(queue.get(i).getKey().getValue()) < 0){
 
-                exList.add(queue.get(i).getOne().getTwo());
+                exList.add(queue.get(i).getKey().getValue());
 
                 pairs.add(
                         new Pair<>(
-                                queue.get(i).getOne().getOne(),
-                                queue.get(i).getOne().getTwo()
+                                queue.get(i).getKey().getKey(),
+                                queue.get(i).getKey().getValue()
                         )
                 );
 
@@ -278,7 +281,7 @@ public class GraphWorker<K,V extends Complex<V>> {
 
                 for (int m = 0; m < graph.getVerSize(); m++){
 
-                    if (graph.getVer(m) == queue.get(i).getOne().getTwo())
+                    if (graph.getVer(m) == queue.get(i).getKey().getValue())
 
                         v = m;
                 }

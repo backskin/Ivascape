@@ -40,19 +40,16 @@ public class ExcelWorker {
         return style;
     }
 
-    public static boolean saveProjectAsXLS(File file){
-
-        return saveItAsXLS(IvascapeProject.getProject(),file);
-    }
 
     public static boolean saveItAsXLS(Graph<Company, Link> graph, File file){
+
+        if (file == null) return false;
 
         HSSFWorkbook workbook = new HSSFWorkbook();
 
         try {
             createFirstSheet(workbook,graph);
             createSecondSheet(workbook,graph);
-
             FileOutputStream outFile = new FileOutputStream(file);
             workbook.unwriteProtectWorkbook();
             workbook.write(outFile);
@@ -60,10 +57,9 @@ public class ExcelWorker {
         }
         catch (NullPointerException | IOException npE){
 
-            getAlert(MyAlertType.UNKNOWN,new Stage());
+            getAlert(MyAlertType.UNKNOWN, null);
             npE.printStackTrace();
         }
-
 
         return false;
     }
@@ -175,7 +171,7 @@ public class ExcelWorker {
                 }
             }
 
-            row = sheet.getRow(1);
+            row = sheet.createRow(count+1);
             cell = row.createCell(4);
             cell.setCellFormula("SUM(C2:C" + count + ")");
 
@@ -186,7 +182,7 @@ public class ExcelWorker {
 
         } catch (NullPointerException npE){
 
-            getAlert(MyAlertType.UNKNOWN,new Stage());
+            getAlert(MyAlertType.UNKNOWN, null);
             npE.printStackTrace();
         }
     }

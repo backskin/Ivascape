@@ -29,13 +29,13 @@ public class GraphViewController {
 
     private final Map<Node,VisualVertex> dragMap = new HashMap<>();
 
-    private final Map<Company,VisualVertex> visVerMap = new HashMap<>();
+    private final Map<Company, VisualVertex> visVerMap = new HashMap<>();
 
     private final Map<Link,VisualEdge> visEdgeMap = new HashMap<>();
 
     private boolean draggable = false;
 
-    private final Pair<Double,Double> dragContext = new Pair<>();
+    private Pair<Double,Double> dragContext = new Pair<>();
 
     private final DoubleProperty scale = new SimpleDoubleProperty(100.0);
 
@@ -59,7 +59,7 @@ public class GraphViewController {
 
     public void cropIt(){
 
-        Iterator verIter = new GraphWorker<>(graph).getVerIterator();
+        Iterator verIter = GraphWorker.init(graph).getVerIterator();
         double minX = Double.MAX_VALUE;
         double minY = Double.MAX_VALUE;
         while (verIter.hasNext()){
@@ -72,7 +72,7 @@ public class GraphViewController {
                 return;
         }
 
-        verIter =  new GraphWorker<>(graph).getVerIterator();
+        verIter =  GraphWorker.init(graph).getVerIterator();
         while (verIter.hasNext()){
 
             VisualVertex vv = visVerMap.get(verIter.next());
@@ -188,8 +188,8 @@ public class GraphViewController {
             scale.addListener(vertex.getScaleListener());
 
             vertex.setAllCoors(
-                    surface.getLayoutX() + verCoorsMap.get(graph.getVer(i).getTitle()).getOne() ,
-                    surface.getLayoutY() + verCoorsMap.get(graph.getVer(i).getTitle()).getTwo());
+                    surface.getLayoutX() + verCoorsMap.get(graph.getVer(i).getTitle()).getKey() ,
+                    surface.getLayoutY() + verCoorsMap.get(graph.getVer(i).getTitle()).getValue());
         }
 
         reloadEdges();
@@ -389,8 +389,9 @@ public class GraphViewController {
 
         Node node = dragMap.get(event.getSource()).getItem();
 
-        dragContext.setOne(node.getBoundsInParent().getMinX() - event.getScreenX());
-        dragContext.setTwo(node.getBoundsInParent().getMinY() - event.getScreenY());
+        dragContext = new Pair<>(
+                node.getBoundsInParent().getMinX() - event.getScreenX(),
+                node.getBoundsInParent().getMinY() - event.getScreenY());
     };
 
     private final EventHandler<MouseEvent> vertexDraggedHandler = event -> {
@@ -398,16 +399,16 @@ public class GraphViewController {
         Node node = dragMap.get(event.getSource()).getItem();
 
         node.relocate(
-                event.getScreenX() + dragContext.getOne() + node.getBoundsInParent().getWidth()/2.0
+                event.getScreenX() + dragContext.getKey() + node.getBoundsInParent().getWidth()/2.0
                         - dragMap.get(event.getSource()).getCircle().getRadius() > 0.0
                         ?
-                        event.getScreenX() + dragContext.getOne()
+                        event.getScreenX() + dragContext.getKey()
                         : node.getLayoutX(),
 
-                event.getScreenY() + dragContext.getTwo() + node.getBoundsInParent().getHeight()/2.0
+                event.getScreenY() + dragContext.getValue() + node.getBoundsInParent().getHeight()/2.0
                         - dragMap.get(event.getSource()).getCircle().getRadius() > 0.0
                         ?
-                        event.getScreenY() + dragContext.getTwo()
+                        event.getScreenY() + dragContext.getValue()
                         : node.getLayoutY()
         );
     };

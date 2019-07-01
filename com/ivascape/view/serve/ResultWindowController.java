@@ -1,7 +1,6 @@
 package ivascape.view.serve;
 
 import ivascape.MainApp;
-import ivascape.controller.ExcelWorker;
 import ivascape.controller.FileWorker;
 import ivascape.controller.IvascapeProject;
 import ivascape.model.*;
@@ -16,7 +15,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
 
 import static ivascape.view.serve.MyAlerts.getAlert;
@@ -27,7 +25,7 @@ public class ResultWindowController {
 
     private GraphViewController GVController;
 
-    private final Graph<Company,Link> graph;
+    private final IvaGraph graph;
 
     private Double totalPrice = 0.0;
 
@@ -119,26 +117,22 @@ public class ResultWindowController {
             getAlert(MyAlerts.MyAlertType.UNKNOWN,resultStage);
             e.printStackTrace();
         }
-
     }
 
     @FXML
     private void handleSaveAs(){
 
         double tmpscale = zoomSlider.getValue();
-
-        Pair<File,String> toSave = FileWorker.Choosing(resultStage,null);
-
-        if (toSave.getOne() != null) {
-            if (toSave.getTwo().equals("*.ivp")) {
-                zoomSlider.setValue(100);
-                FileWorker.saveIt(toSave.getOne(), graph, GVController.getCoorsMap(), resultStage);
-            }
-            else
-                ExcelWorker.saveItAsXLS(graph, toSave.getOne());
-        }
-
+        zoomSlider.setValue(100);
+        FileWorker.saveProject(resultStage,null);
         zoomSlider.setValue(tmpscale);
+    }
+
+    @FXML
+    private void handleExport(){
+
+        FileWorker.exportToXLS(graph, resultStage);
+
     }
 
     @FXML

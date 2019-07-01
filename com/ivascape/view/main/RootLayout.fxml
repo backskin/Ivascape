@@ -37,6 +37,11 @@
                   <accelerator>
                      <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                   </accelerator></MenuItem>
+               <MenuItem mnemonicParsing="false" onAction="#handleExport" text="%menubutton.export">
+                  <accelerator>
+                     <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                  </accelerator>
+               </MenuItem>
                     <SeparatorMenuItem mnemonicParsing="false" />
                     <MenuItem mnemonicParsing="false" onAction="#handleClose" text="%menubutton.close">
                   <accelerator>

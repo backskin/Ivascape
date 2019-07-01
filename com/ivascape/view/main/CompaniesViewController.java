@@ -244,7 +244,6 @@ public class CompaniesViewController {
                 GVController.delVertex(companiesTable.getSelectionModel().getSelectedItem());
                 IvascapeProject.delCompany(companiesTable.getSelectionModel().getSelectedItem());
 
-               // GVController.reloadView();
                 reloadView();
                 MWController.reloadTV();
             }

@@ -140,14 +140,14 @@ public class MainApp extends Application {
             loader.load();
 
             if (XY != null){
-                mainStage.setX(XY.getOne());
-                mainStage.setY(XY.getTwo());
+                mainStage.setX(XY.getKey());
+                mainStage.setY(XY.getValue());
             }
 
             if (windowsize != null){
 
-                mainStage.setWidth(windowsize.getOne());
-                mainStage.setHeight(windowsize.getTwo());
+                mainStage.setWidth(windowsize.getKey());
+                mainStage.setHeight(windowsize.getValue());
             }
 
             RootLayoutController RLController = loader.getController();

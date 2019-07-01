@@ -2,17 +2,11 @@ package ivascape.view.serve;
 
 import ivascape.MainApp;
 import ivascape.controller.FileWorker;
-import ivascape.model.Company;
-import ivascape.model.Graph;
+import ivascape.model.*;
 import ivascape.controller.IvascapeProject;
-import javafx.event.EventHandler;
-import ivascape.model.Link;
-import ivascape.model.Pair;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.util.Locale;
@@ -77,26 +71,26 @@ public class StartWindowController {
     @FXML
     private void handleNew(){
 
-        IvascapeProject.EraseProject();
-        IvascapeProject.NewProject();
+        IvascapeProject.eraseProject();
+        IvascapeProject.newProject();
         startStage.close();
     }
 
     @FXML
     private void handleOpen() {
 
-        IvascapeProject.EraseProject();
+        IvascapeProject.eraseProject();
 
-        Pair<Graph<Company, Link>, Map<String, Pair<Double, Double>>> output = FileWorker.loadFile(startStage);
+        Pair<Graph, Map> output = FileWorker.loadFile(startStage);
 
         if (output == null) return;
 
-        Graph graph = output.getOne();
+        Graph graph = output.getKey();
 
         if (graph == null) return;
 
-        IvascapeProject.setVerCoorsMap(output.getTwo());
-        IvascapeProject.setProject(graph);
+        IvascapeProject.setVerCoorsMap(output.getValue());
+        IvascapeProject.setGraph(IvaGraph.cast(graph));
         IvascapeProject.setSaved(true);
         startStage.close();
     }

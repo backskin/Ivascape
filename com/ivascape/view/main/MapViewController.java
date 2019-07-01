@@ -12,7 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.paint.Color;
 
 import java.io.IOException;
 
@@ -21,7 +20,6 @@ import static ivascape.view.serve.MyAlerts.*;
 public class MapViewController {
 
     private GraphViewController GVController;
-
 
     @FXML
     private Button cropView;
@@ -38,7 +36,7 @@ public class MapViewController {
     @FXML
     private ScrollPane surface;
 
-    public GraphViewController getGVController() {
+    GraphViewController getGVController() {
         return GVController;
     }
 
@@ -47,7 +45,7 @@ public class MapViewController {
         if (!IvascapeProject.isSaved()) saveGV();
         zoomSlider.setValue(100);
         GVController.setGraph(
-                IvascapeProject.getProject(),
+                IvascapeProject.getGraph(),
                 IvascapeProject.getVerCoorsMap(),
                 VisualVertex.defaultColor,
                 VisualEdge.defaultColor,
@@ -56,7 +54,7 @@ public class MapViewController {
         GVController.reloadView();
     }
 
-    public void saveGV(){
+    void saveGV(){
 
         if (!IvascapeProject.isEmpty() && GVController.getSurface().getChildren().size() > 0)
             IvascapeProject.setVerCoorsMap(GVController.getCoorsMap());

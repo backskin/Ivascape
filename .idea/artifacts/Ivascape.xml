@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Ivascape">
+    <output-path>$PROJECT_DIR$/out/artifacts/Ivascape</output-path>
+    <root id="archive" name="Ivascape.jar">
+      <element id="library" level="project" name="apache" />
+      <element id="module-output" name="Ivascape" />
+      <element id="library" level="project" name="controlsfx-8.40.14" />
+    </root>
+  </artifact>
+</component>

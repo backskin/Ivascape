@@ -22,9 +22,6 @@ public class MyAlerts {
 
             case ON_EXIT:{
                 alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.initOwner(owner);
-                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image("resources/ico.png"));
                 alert.setTitle(MainApp.bundle.getString("alert.text.onexit"));
                 alert.setHeaderText(MainApp.bundle.getString("alert.text.conf.onexit"));
                 alert.setContentText(args.length > 0 ? MainApp.bundle.getString("alert.text.warn.onexit") : MainApp.bundle.getString("alert.text.warn.onsafeexit"));
@@ -36,9 +33,6 @@ public class MyAlerts {
 
             case CLOSE_UNSAVED:{
                 alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.initOwner(owner);
-                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image("resources/ico.png"));
                 alert.setTitle(MainApp.bundle.getString("alert.text.unsave"));
                 alert.setHeaderText(MainApp.bundle.getString("alert.text.conf.unsave"));
                 alert.setContentText(MainApp.bundle.getString("alert.text.warn.unsave"));
@@ -50,9 +44,6 @@ public class MyAlerts {
 
             case DELETE_CONFIRM:{
                 alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.initOwner(owner);
-                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image("resources/ico.png"));
                 alert.setTitle(MainApp.bundle.getString("alert.text.delete"));
                 alert.setHeaderText(MainApp.bundle.getString("alert.text.conf.delete"));
                 alert.setContentText(MainApp.bundle.getString("alert.text.warn.delete"));
@@ -65,9 +56,6 @@ public class MyAlerts {
             case SAVE_FAILED:{
 
                 alert = new Alert(Alert.AlertType.ERROR);
-                alert.initOwner(owner);
-                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image("resources/ico.png"));
                 alert.setTitle(MainApp.bundle.getString("alert.text.saveerr"));
                 alert.setHeaderText(MainApp.bundle.getString("alert.text.conf.saveerr"));
                 alert.setContentText(MainApp.bundle.getString("alert.text.warn.saveerr"));
@@ -79,9 +67,6 @@ public class MyAlerts {
             case LOAD_FAILED:{
 
                 alert = new Alert(Alert.AlertType.ERROR);
-                alert.initOwner(owner);
-                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image("resources/ico.png"));
                 alert.setTitle(MainApp.bundle.getString("alert.text.loaderr"));
                 alert.setHeaderText(MainApp.bundle.getString("alert.text.conf.loaderr"));
                 alert.setContentText(MainApp.bundle.getString("alert.text.warn.loaderr"));
@@ -92,9 +77,6 @@ public class MyAlerts {
             case INVALID_FIELDS:{
 
                 alert = new Alert(Alert.AlertType.ERROR);
-                alert.initOwner(owner);
-                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image("resources/ico.png"));
                 alert.setTitle(MainApp.bundle.getString("alert.text.invalidfield"));
                 alert.setHeaderText(MainApp.bundle.getString("alert.text.conf.invalidfield"));
                 alert.setContentText(args[0]);
@@ -106,9 +88,6 @@ public class MyAlerts {
             case UPDATE_EDGE:{
 
                 alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.initOwner(owner);
-                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image("resources/ico.png"));
                 alert.setTitle(MainApp.bundle.getString("alert.text.linkupd"));
                 alert.setHeaderText(MainApp.bundle.getString("alert.text.conf.linkupd"));
                 alert.setContentText(MainApp.bundle.getString("alert.text.warn.linkupd"));
@@ -121,9 +100,6 @@ public class MyAlerts {
             case ALGORITHM_EXEC:{
 
                 alert = new Alert(Alert.AlertType.WARNING);
-                alert.initOwner(owner);
-                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image("resources/ico.png"));
                 alert.setTitle(MainApp.bundle.getString("alert.text.prim"));
                 alert.setHeaderText(MainApp.bundle.getString("alert.text.conf.prim"));
                 alert.setContentText(MainApp.bundle.getString("alert.text.warn.prim"));
@@ -133,13 +109,10 @@ public class MyAlerts {
             case ABOUT:{
 
                 alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.initOwner(owner);
                 ImageView imageView = new ImageView("resources/ico.png");
                 imageView.setFitHeight(64);
                 imageView.setFitWidth(64);
                 alert.setGraphic(imageView);
-                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image("resources/ico.png"));
                 alert.setTitle(MainApp.bundle.getString("alert.text.about"));
                 alert.setHeaderText(MainApp.bundle.getString("alert.text.conf.about"));
                 alert.setContentText(MainApp.bundle.getString("alert.text.warn.about"));
@@ -148,16 +121,15 @@ public class MyAlerts {
 
             default:{
                 alert = new Alert(Alert.AlertType.ERROR);
-                alert.initOwner(owner);
-                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image("resources/ico.png"));
                 alert.setTitle("Unknown error");
                 alert.setHeaderText("Oops...");
                 break;
             }
         }
+        if (owner != null) alert.initOwner(owner);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image("resources/ico.png"));
         alert.showAndWait();
         return alert;
     }
 }
-

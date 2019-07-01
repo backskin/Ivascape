@@ -13,11 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static ivascape.view.serve.MyAlerts.*;
-
+import static ivascape.view.serve.MyAlerts.MyAlertType.*;
 public class FileWorker {
 
 
-    public static Pair<Graph<Company, Link>, Map<String,Pair<Double,Double>>> loadFile(final Stage ownerStage){
+    public static Pair<Graph, Map> loadFile(final Stage ownerStage){
 
         FileChooser fileChooser = new FileChooser();
 
@@ -38,7 +38,7 @@ public class FileWorker {
 
         if (!IvascapeProject.isSaved() && IvascapeProject.companiesAmount() > 0) {
 
-            if (getAlert(MyAlertType.CLOSE_UNSAVED, ownerStage).getResult().getButtonData().isCancelButton()) {
+            if (getAlert(CLOSE_UNSAVED, ownerStage).getResult().getButtonData().isCancelButton()) {
 
                 return null;
             }
@@ -47,7 +47,7 @@ public class FileWorker {
         return openIt(file,ownerStage);
     }
 
-    private static Pair<Graph<Company, Link>, Map<String,Pair<Double,Double>>> openIt(File file, Stage ownerStage){
+    private static Pair<Graph, Map> openIt(File file, Stage ownerStage){
 
         try {
             FileInputStream fis = new FileInputStream(file.getAbsolutePath());
@@ -65,20 +65,16 @@ public class FileWorker {
                 fis.close();
                 oin.close();
 
-                getAlert(MyAlertType.LOAD_FAILED,ownerStage);
+                getAlert(LOAD_FAILED, ownerStage);
                 e.printStackTrace();
                 return null;
             }
-
 
             boolean checked =  result instanceof Graph && coors instanceof HashMap;
 
             if (checked) {
                 IvascapeProject.setFile(file);
-                Pair<Graph<Company, Link>, Map<String,Pair<Double,Double>>> pair = new Pair<>();
-                pair.setOne((Graph<Company, Link>)result);
-                pair.setTwo((HashMap<String, Pair<Double, Double>>)coors);
-                return pair;
+                return new Pair<>((Graph) result, (HashMap) coors);
             }
             else {
                 fis.close();
@@ -88,65 +84,57 @@ public class FileWorker {
 
         } catch (ClassNotFoundException | IOException e){
 
-            getAlert(MyAlertType.LOAD_FAILED,ownerStage);
+            getAlert(LOAD_FAILED, ownerStage, e.getMessage());
             e.printStackTrace();
             return null;
         }
     }
 
-    public static Pair<File,String> Choosing(final Stage ownerStage, File oldWay) {
+    public static boolean saveProject(final Stage ownerStage, File file){
 
         FileChooser fileChooser = new FileChooser();
 
         fileChooser.setTitle(MainApp.bundle.getString("filewindow.title.save"));
 
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter(MainApp.bundle.getString("filewindow.type.ivp"), "*.ivp"),
+                new FileChooser.ExtensionFilter(
+                        MainApp.bundle.getString("filewindow.type.ivp"), "*.ivp"));
+
+        if (file == null)
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+"\\Desktop"));
+        else {
+            fileChooser.setInitialFileName(IvascapeProject.getFile().getName());
+            fileChooser.setInitialDirectory(new File(IvascapeProject.getFile().getParent()));
+        }
+
+        return saveIt(
+                fileChooser.showSaveDialog(ownerStage),
+                IvascapeProject.getGraph(),
+                IvascapeProject.getVerCoorsMap());
+    }
+
+    public static void exportToXLS(Graph graph, final Stage ownerStage){
+
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.setTitle(MainApp.bundle.getString("filewindow.title.save"));
+
+        fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter(MainApp.bundle.getString("filewindow.type.xls"),"*.xls")
         );
 
-        if (oldWay == null)
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+"\\Desktop"));
 
-            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+"\\Desktop"));
-        else {
-            fileChooser.setInitialFileName(oldWay.getName());
-            fileChooser.setInitialDirectory(new File(oldWay.getParent()));
-        }
-
-        return new Pair<>(
-                fileChooser.showSaveDialog(ownerStage),
-                fileChooser.getSelectedExtensionFilter() != null ? fileChooser.getSelectedExtensionFilter().getExtensions().get(0) : "");
+        ExcelWorker.saveItAsXLS(graph, fileChooser.showSaveDialog(ownerStage));
     }
 
-    public static boolean saveProject(final Stage ownerStage) {
+    public static boolean saveIt(File file, Graph graph, Map<String,Pair<Double,Double>> verCoorsMap){
 
-        Pair<File,String> choice = Choosing(ownerStage,IvascapeProject.getFile());
-
-        if (choice.getOne() != null)
-
-            if (choice.getTwo().equals("*.ivp"))
-
-                return saveProject(ownerStage,choice.getOne());
-            else
-
-                return ExcelWorker.saveProjectAsXLS(choice.getOne());
-        else
-            return false;
-    }
-
-    public static boolean saveProject(Stage ownerStage, File file){
-
-        if (saveIt(file,IvascapeProject.getProject(), IvascapeProject.getVerCoorsMap(), ownerStage)) {
-            IvascapeProject.setFile(file);
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean saveIt(File file, Graph graph, Map<String,Pair<Double,Double>> verCoorsMap, Stage ownerStage){
+        if (file == null) return false;
 
         FileOutputStream fos;
         ObjectOutputStream oos;
+
         try {
             fos = new FileOutputStream(file.getAbsolutePath());
             oos = new ObjectOutputStream(fos);
@@ -157,10 +145,13 @@ public class FileWorker {
 
         } catch (IOException e){
 
-            getAlert(MyAlertType.SAVE_FAILED,ownerStage);
+            getAlert(SAVE_FAILED, null);
             e.printStackTrace();
             return false;
         }
+
+        IvascapeProject.setFile(file);
+
         return true;
     }
 }

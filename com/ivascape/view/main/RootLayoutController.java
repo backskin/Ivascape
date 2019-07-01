@@ -1,11 +1,8 @@
 package ivascape.view.main;
 import ivascape.MainApp;
 import ivascape.controller.FileWorker;
-import ivascape.model.Company;
-import ivascape.model.Graph;
+import ivascape.model.*;
 import ivascape.controller.IvascapeProject;
-import ivascape.model.Link;
-import ivascape.model.Pair;
 import ivascape.view.serve.*;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
@@ -350,19 +347,15 @@ public class RootLayoutController {
 
         boolean permit = true;
 
-
-        Pair<Graph<Company, Link>, Map<String, Pair<Double, Double>>>
-                output = FileWorker.loadFile(mainStage);
-
-
+        Pair<Graph, Map> output = FileWorker.loadFile(mainStage);
 
         if (output != null) {
 
-            IvascapeProject.EraseProject();
-            Graph graph = output.getOne();
-            IvascapeProject.setProject(graph);
+            IvascapeProject.eraseProject();
+            Graph graph = output.getKey();
+            IvascapeProject.setGraph(IvaGraph.cast(graph));
             IvascapeProject.setSaved(true);
-            IvascapeProject.setVerCoorsMap(output.getTwo());
+            IvascapeProject.setVerCoorsMap(output.getValue());
             reloadView();
         }
     }
@@ -382,8 +375,8 @@ public class RootLayoutController {
 
         if (permit) {
 
-            IvascapeProject.EraseProject();
-            IvascapeProject.NewProject();
+            IvascapeProject.eraseProject();
+            IvascapeProject.newProject();
 
             reloadView();
         }
@@ -391,17 +384,11 @@ public class RootLayoutController {
 
     @FXML
     private  void handleFileSave(){
-        if (IvascapeProject.companiesAmount() > 0) {
 
-            IvascapeProject.setVerCoorsMap(MWController.getMVController().getGVController().getCoorsMap());
-
-            if (IvascapeProject.getFile() == null)
-
-                IvascapeProject.setSaved( FileWorker.saveProject(mainStage) || IvascapeProject.isSaved());
-
-            else IvascapeProject.setSaved(FileWorker.saveProject(mainStage,IvascapeProject.getFile()) || IvascapeProject.isSaved());
-        }
-
+        if (IvascapeProject.getFile() == null)
+            handleFileSaveAs();
+        else
+            IvascapeProject.saveProject();
         reloadStatusBar();
     }
 
@@ -412,9 +399,17 @@ public class RootLayoutController {
 
             IvascapeProject.setVerCoorsMap(MWController.getMVController().getGVController().getCoorsMap());
 
-            IvascapeProject.setSaved(FileWorker.saveProject(mainStage) || IvascapeProject.isSaved());
+            IvascapeProject.setSaved(
+                    FileWorker.saveProject(mainStage, IvascapeProject.getFile()) || IvascapeProject.isSaved());
         }
+
         reloadStatusBar();
+    }
+
+    @FXML
+    private void handleExport(){
+
+        FileWorker.exportToXLS(IvascapeProject.getGraph(), mainStage);
     }
 
     @FXML

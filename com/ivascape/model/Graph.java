@@ -6,13 +6,19 @@ import java.util.List;
 
 public class Graph<K, V extends Complex<V>> implements Serializable {
 
-        private final List<K> vers; // Список вершин в графе
-        private final List<List<V>> edges; //таблица рёбер
+        final List<K> vers; // Список вершин в графе
+        final List<List<V>> edges; //таблица рёбер
 
         public Graph() {
 
                 vers = new ArrayList<>();
                 edges = new ArrayList<>();
+        }
+
+        protected Graph(List<K> vers, List<List<V>> edges){
+
+                this.vers = vers;
+                this.edges = edges;
         }
 
         public void addVer(K ver) {

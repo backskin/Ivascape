@@ -1,9 +1,6 @@
 package ivascape.controller;
 
-import ivascape.model.Company;
-import ivascape.model.Graph;
-import ivascape.model.Link;
-import ivascape.model.Pair;
+import ivascape.model.*;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -16,11 +13,11 @@ public class IvascapeProject {
     private static final BooleanProperty saved = new SimpleBooleanProperty(true);
 
     private static String projectName;
-    private static Graph<Company,Link> project;
+    private static Graph<Company,Link> graph;
 
     private static File file = null;
 
-    private static Map<String,Pair<Double,Double>> verCoorsMap;
+    private static Map<String, Pair<Double,Double>> verCoorsMap;
 
     public static Map<String, Pair<Double, Double>> getVerCoorsMap() {
         return verCoorsMap;
@@ -34,7 +31,7 @@ public class IvascapeProject {
         return file;
     }
 
-    public static void setFile(File file) {
+    static void setFile(File file) {
 
         IvascapeProject.file = file;
 
@@ -65,37 +62,36 @@ public class IvascapeProject {
     }
 
 
-    public static Graph<Company,Link> getProject() {
+    public static Graph getGraph() {
 
-        return project;
+        return graph;
     }
 
     public static boolean isEmpty(){
 
-        return project == null;
+        return graph == null;
     }
 
-    public static void setProject(Graph graph){
+    public static void setGraph(Graph<Company, Link> instance){
 
-        if (project == null) {
+        if (graph == null) {
 
-            project = graph;
+            graph = instance;
         }
-
     }
 
-    public static void EraseProject(){
+    public static void eraseProject(){
 
-        project = null;
+        graph = null;
         saved.setValue(true);
         verCoorsMap = new HashMap<>();
         file = null;
     }
 
-    public static void NewProject(){
+    public static void newProject(){
 
-        if (project == null) {
-            project = new Graph<>();
+        if (graph == null) {
+            graph = new IvaGraph();
             verCoorsMap = new HashMap<>();
             saved.setValue(true);
             projectName = "Empty Project";
@@ -103,30 +99,35 @@ public class IvascapeProject {
         }
     }
 
+    public static void saveProject(){
+
+        FileWorker.saveIt(file, graph, verCoorsMap);
+    }
+
     public static Company getCompany(String title){
 
-        for (int i = 0; i < project.getVerSize(); i++){
+        for (int i = 0; i < graph.getVerSize(); i++){
 
-            if (project.getVer(i).getTitle().equals(title))
+            if (graph.getVer(i).getTitle().equals(title))
 
-                return project.getVer(i);
+                return graph.getVer(i);
         }
         return null;
     }
 
     public static Link getLink(Company companyOne, Company companyTwo){
 
-        return project.getEdge(companyOne,companyTwo);
+        return graph.getEdge(companyOne,companyTwo);
     }
 
     public static ArrayList<String> getCompaniesListExcept(Company exCompany){
 
         ArrayList<String> output = new ArrayList<>();
-        for (int i = 0; i < project.getVerSize(); i++){
+        for (int i = 0; i < graph.getVerSize(); i++){
 
-            if (project.getVer(i) != exCompany)
+            if (graph.getVer(i) != exCompany)
 
-                output.add(project.getVer(i).getTitle());
+                output.add(graph.getVer(i).getTitle());
         }
         return output;
     }
@@ -135,72 +136,72 @@ public class IvascapeProject {
 
         ArrayList<String> output = new ArrayList<>();
 
-        for (int i = 0; i < project.getVerSize(); i++)
+        for (int i = 0; i < graph.getVerSize(); i++)
 
-            output.add(project.getVer(i).getTitle());
+            output.add(graph.getVer(i).getTitle());
 
         return output;
     }
 
-    public static Graph<Company,Link> algorithmResult(){
+    public static IvaGraph algorithmResult(){
 
-        return (new GraphWorker<>(project)).getPrimResult();
+        return (IvaGraph) GraphWorker.init(graph).getPrimResult();
     }
 
     public static boolean isProjectStrongGraph(){
 
-        return (new GraphWorker<>(project)).isStrong();
+        return GraphWorker.init(graph).isStrong();
     }
 
     public static int linksAmount(){
 
-        return (new GraphWorker<>(project)).getEdgeSize();
+        return GraphWorker.init(graph).getEdgeSize();
     }
 
     public static int companiesAmount(){
 
-        return project.getVerSize();
+        return graph.getVerSize();
     }
 
     public static Link addLink(Company one, Company two, double price){
 
-        project.addEdge(one,two,new Link(one,two,price));
+        graph.addEdge(one,two,new Link(one,two,price));
 
         setSaved(false);
 
-        return project.getEdge(one,two);
+        return graph.getEdge(one,two);
     }
 
     public static void delLink(Link link){
 
-        project.delEdge(link.getOne(),link.getTwo());
+        graph.delEdge(link.getOne(),link.getTwo());
         setSaved(false);
     }
 
     public static void addCompany(Company company){
 
-        project.addVer(company);
+        graph.addVer(company);
         setSaved(false);
     }
 
     public static void delCompany(Company company){
 
-        project.delVer(company);
+        graph.delVer(company);
         setSaved(false);
     }
 
-    public static GraphWorker<Company,Link> getGraphWorker(){
+    public static List<IvaGraph> getComponents(){
 
-        return new GraphWorker<>(project);
+       return GraphWorker.init(graph).getConnectComponents();
     }
 
     public static Iterator<Company> getCompanyIterator(){
 
-        return (new GraphWorker<>(project)).getVerIterator();
+        return GraphWorker.init(graph).getVerIterator();
     }
 
     public static Iterator<Company> getCompanySortedIterator(){
 
-        return (new GraphWorker<>(project)).getSortedVerIterator(Comparator.comparing(Company::getTitle));
+        return GraphWorker.init(graph).getSortedVerIterator(Comparator.comparing(Company::getTitle));
     }
 }
