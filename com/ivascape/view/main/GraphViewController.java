@@ -1,8 +1,10 @@
 package ivascape.view.main;
 
-import ivascape.controller.CoorsMap;
-import ivascape.controller.Project;
-import ivascape.model.*;
+import ivascape.models.Company;
+import ivascape.models.CoorsMap;
+import ivascape.models.Link;
+import ivascape.models.Project;
+import ivascape.logic.*;
 import ivascape.view.serve.VisualEdge;
 import ivascape.view.serve.VisualVertex;
 import javafx.beans.property.*;

@@ -1,8 +1,8 @@
 package ivascape.view.main;
 
 import ivascape.MainApp;
-import ivascape.controller.Project;
-import ivascape.model.Link;
+import ivascape.models.Project;
+import ivascape.models.Link;
 import ivascape.view.serve.LinkEditDialogController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

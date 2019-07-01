@@ -1,4 +1,4 @@
-package ivascape.model;
+package ivascape.logic;
 import java.util.Iterator;
 
 public interface Graph<K, V> {

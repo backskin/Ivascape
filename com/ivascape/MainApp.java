@@ -1,7 +1,7 @@
 package ivascape;
 
-import ivascape.controller.Project;
-import ivascape.model.Pair;
+import ivascape.models.Project;
+import ivascape.logic.Pair;
 import ivascape.view.main.RootLayoutController;
 import ivascape.view.serve.StartWindowController;
 import javafx.application.Application;

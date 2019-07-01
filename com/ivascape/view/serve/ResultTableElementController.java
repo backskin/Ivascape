@@ -1,6 +1,6 @@
 package ivascape.view.serve;
 
-import ivascape.model.Link;
+import ivascape.models.Link;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 

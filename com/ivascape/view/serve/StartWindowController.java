@@ -1,17 +1,17 @@
 package ivascape.view.serve;
 
 import ivascape.MainApp;
-import ivascape.controller.CoorsMap;
+import ivascape.models.CoorsMap;
 import ivascape.controller.FileHandler;
-import ivascape.controller.Project;
-import ivascape.model.*;
+import ivascape.models.IvaGraph;
+import ivascape.models.Project;
+import ivascape.logic.*;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.util.Locale;
-import java.util.Map;
 
 public class StartWindowController {
 

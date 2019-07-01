@@ -1,7 +1,7 @@
 package ivascape.view.main;
 
 import ivascape.MainApp;
-import ivascape.controller.Project;
+import ivascape.models.Project;
 import ivascape.view.serve.VisualEdge;
 import ivascape.view.serve.VisualVertex;
 import javafx.collections.ListChangeListener;

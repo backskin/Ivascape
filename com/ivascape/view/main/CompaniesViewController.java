@@ -1,8 +1,8 @@
 package ivascape.view.main;
 
 import ivascape.MainApp;
-import ivascape.model.Company;
-import ivascape.controller.Project;
+import ivascape.models.Company;
+import ivascape.models.Project;
 import ivascape.view.serve.CompanyEditDialogController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

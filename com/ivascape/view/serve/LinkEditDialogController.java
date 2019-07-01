@@ -1,8 +1,9 @@
 package ivascape.view.serve;
 
 import ivascape.MainApp;
-import ivascape.controller.Project;
-import ivascape.model.*;
+import ivascape.models.Company;
+import ivascape.models.Link;
+import ivascape.models.Project;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;

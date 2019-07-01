@@ -1,8 +1,8 @@
 package ivascape.view.serve;
 
 import ivascape.MainApp;
-import ivascape.model.Company;
-import ivascape.controller.Project;
+import ivascape.models.Company;
+import ivascape.models.Project;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;

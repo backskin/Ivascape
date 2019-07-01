@@ -1,8 +1,8 @@
 package ivascape.view.main;
 
 import ivascape.MainApp;
-import ivascape.controller.Project;
-import ivascape.model.Company;
+import ivascape.models.Project;
+import ivascape.models.Company;
 import ivascape.view.serve.MyAlerts;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

@@ -1,26 +1,26 @@
 package ivascape.controller;
 
-import ivascape.model.Complex;
-import ivascape.model.Graph;
-import ivascape.model.GenericGraph;
+import ivascape.logic.Complex;
+import ivascape.logic.Graph;
+import ivascape.logic.GenericGraph;
 import javafx.util.Pair;
 import java.util.*;
 
-class GraphWorker<K extends Comparable<K>, V extends Complex<V>> {
+public class GraphHandler<K extends Comparable<K>, V extends Complex<V>> {
 
     private final GenericGraph<K,V> graph;
 
-    private GraphWorker(GenericGraph<K, V> graph) {
+    private GraphHandler(GenericGraph<K, V> graph) {
 
         this.graph = graph;
     }
 
-    static <K extends Comparable<K>, V extends Complex<V>> GraphWorker<K,V> factory(GenericGraph<K, V> graph){
+    public static <K extends Comparable<K>, V extends Complex<V>> GraphHandler<K,V> factory(GenericGraph<K, V> graph){
 
-        return new GraphWorker<>(graph);
+        return new GraphHandler<>(graph);
     }
 
-    int getEdgeSize(){
+    public int getEdgeSize(){
         int result = 0;
         for (int i = 0; i < graph.size(); i++){
             for (int j = i+1; j < graph.size(); j++){
@@ -53,7 +53,7 @@ class GraphWorker<K extends Comparable<K>, V extends Complex<V>> {
         return false;
     }
 
-    boolean isStrong(){
+    public boolean isStrong(){
 
         if (graph.size() < 1) return false;
 
@@ -90,7 +90,7 @@ class GraphWorker<K extends Comparable<K>, V extends Complex<V>> {
         }
     }
 
-    List<GenericGraph<K,V>> getConnectComponents(){
+    public List<GenericGraph<K,V>> getConnectComponents(){
 
         List<K> viewQueue = new ArrayList<>();
 
@@ -163,7 +163,7 @@ class GraphWorker<K extends Comparable<K>, V extends Complex<V>> {
         return tree;
     }
 
-    GenericGraph<K,V> getPrimResult() {
+    public GenericGraph<K,V> getPrimResult() {
 
         if (!isStrong())
 

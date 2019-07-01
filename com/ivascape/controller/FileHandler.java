@@ -1,8 +1,10 @@
 package ivascape.controller;
 
 import ivascape.MainApp;
-import ivascape.model.IvaGraph;
-import ivascape.model.Pair;
+import ivascape.logic.Pair;
+import ivascape.models.CoorsMap;
+import ivascape.models.IvaGraph;
+import ivascape.models.Project;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -71,7 +73,7 @@ public class FileHandler {
             boolean checked =  result instanceof IvaGraph && coors instanceof CoorsMap;
 
             if (checked) {
-                Project.getInstance().file = file;
+                Project.getInstance().setFile(file);
                 return new Pair<>((IvaGraph) result, (CoorsMap) coors);
             }
             else {
@@ -108,7 +110,8 @@ public class FileHandler {
         return saveIt(
                 fileChooser.showSaveDialog(ownerStage),
                 project.getGraph(),
-                project.getCoorsMap());
+                project.getCoorsMap()
+        );
     }
 
     public static void exportToXLS(IvaGraph graph, final Stage ownerStage){
@@ -126,7 +129,7 @@ public class FileHandler {
         ExcelHandler.saveItAsXLS(graph, fileChooser.showSaveDialog(ownerStage));
     }
 
-    static boolean saveIt(File file, IvaGraph graph, CoorsMap map){
+    public static boolean saveIt(File file, IvaGraph graph, CoorsMap map){
 
         if (file == null) return false;
 

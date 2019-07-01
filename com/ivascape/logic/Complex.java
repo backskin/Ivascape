@@ -1,4 +1,4 @@
-package ivascape.model;
+package ivascape.logic;
 
 public interface Complex<T> extends Comparable<T> {
 

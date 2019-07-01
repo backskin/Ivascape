@@ -1,6 +1,7 @@
-package ivascape.controller;
+package ivascape.models;
 
-import ivascape.model.*;
+import ivascape.controller.*;
+import ivascape.logic.*;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -22,7 +23,7 @@ public class Project implements Serializable {
     private IvaGraph graph;
     private CoorsMap coorsMap;
     private final BooleanProperty saved;
-    File file;
+    private File file;
 
     private Project(){ saved = new SimpleBooleanProperty(true); }
 
@@ -32,7 +33,7 @@ public class Project implements Serializable {
 
     public File getFile() { return file; }
 
-    void setFile(File file) {
+    public void setFile(File file) {
 
         this.file = file;
         saved.setValue(true);
@@ -98,17 +99,17 @@ public class Project implements Serializable {
 
     public IvaGraph algorithmResult(){
 
-        return (IvaGraph) GraphWorker.factory(graph).getPrimResult();
+        return (IvaGraph) GraphHandler.factory(graph).getPrimResult();
     }
 
     public boolean isGraphStrong(){
 
-        return GraphWorker.factory(graph).isStrong();
+        return GraphHandler.factory(graph).isStrong();
     }
 
     public int linksAmount(){
 
-        return GraphWorker.factory(graph).getEdgeSize();
+        return GraphHandler.factory(graph).getEdgeSize();
     }
 
     public Link addLink(Company one, Company two, double price){
@@ -133,7 +134,7 @@ public class Project implements Serializable {
 
     public List<GenericGraph<Company,Link>> getComponents(){
 
-       return GraphWorker.factory(graph).getConnectComponents();
+       return GraphHandler.factory(graph).getConnectComponents();
     }
 
     public void modifyLink(Company one, Company another, Double price) {

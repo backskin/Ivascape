@@ -1,8 +1,10 @@
 package ivascape.view.serve;
 
 import ivascape.MainApp;
-import ivascape.model.*;
-import ivascape.controller.Project;
+import ivascape.models.Company;
+import ivascape.models.Link;
+import ivascape.logic.*;
+import ivascape.models.Project;
 import ivascape.view.main.GraphViewController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

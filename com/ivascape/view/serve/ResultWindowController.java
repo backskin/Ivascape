@@ -2,8 +2,8 @@ package ivascape.view.serve;
 
 import ivascape.MainApp;
 import ivascape.controller.FileHandler;
-import ivascape.controller.Project;
-import ivascape.model.*;
+import ivascape.models.IvaGraph;
+import ivascape.models.Project;
 import ivascape.view.main.GraphViewController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

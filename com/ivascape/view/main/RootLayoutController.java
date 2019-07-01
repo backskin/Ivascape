@@ -1,9 +1,10 @@
 package ivascape.view.main;
 import ivascape.MainApp;
-import ivascape.controller.CoorsMap;
+import ivascape.models.CoorsMap;
 import ivascape.controller.FileHandler;
-import ivascape.controller.Project;
-import ivascape.model.*;
+import ivascape.models.IvaGraph;
+import ivascape.models.Project;
+import ivascape.logic.*;
 import ivascape.view.serve.*;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;

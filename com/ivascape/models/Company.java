@@ -1,4 +1,4 @@
-package ivascape.model;
+package ivascape.models;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
