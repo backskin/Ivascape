@@ -1,6 +1,7 @@
 package ivascape.view.main;
 
 import ivascape.controller.GraphWorker;
+import ivascape.controller.IvascapeProject;
 import ivascape.model.Company;
 import ivascape.model.Graph;
 import ivascape.model.Link;
@@ -414,5 +415,8 @@ public class GraphViewController {
     };
 
     private final EventHandler<MouseEvent> vertexReleasedHandler
-            = event -> surfaceChanged.setValue(true);
+            = event -> {
+        surfaceChanged.setValue(true);
+        IvascapeProject.setVerCoorsMap(getCoorsMap());
+    };
 }

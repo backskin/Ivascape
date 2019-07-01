@@ -171,7 +171,7 @@ public class ExcelWorker {
                 }
             }
 
-            row = sheet.createRow(count+1);
+            row = sheet.createRow(count);
             cell = row.createCell(4);
             cell.setCellFormula("SUM(C2:C" + count + ")");
 
