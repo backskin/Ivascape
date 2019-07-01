@@ -1,8 +1,8 @@
 package ivascape.view.serve;
 
 import ivascape.MainApp;
-import ivascape.controller.FileWorker;
-import ivascape.controller.IvascapeProject;
+import ivascape.controller.FileHandler;
+import ivascape.controller.Project;
 import ivascape.model.*;
 import ivascape.view.main.GraphViewController;
 import javafx.fxml.FXML;
@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static ivascape.view.serve.MyAlerts.getAlert;
 
@@ -26,6 +27,7 @@ public class ResultWindowController {
     private GraphViewController GVController;
 
     private final IvaGraph graph;
+    private final Map map;
 
     private Double totalPrice = 0.0;
 
@@ -48,14 +50,15 @@ public class ResultWindowController {
 
         this.resultStage = resultStage;
         resultStage.setOnCloseRequest(event -> {
-            VisualVertex.resetColor();
-            VisualEdge.resetColor();
+            VisualVertex.setColor(VisualVertex.defaultColor);
+            VisualEdge.setColor(VisualEdge.defaultColor);
         });
     }
 
     public ResultWindowController(){
 
-        graph = IvascapeProject.algorithmResult();
+        graph = Project.getInstance().algorithmResult();
+        map = Project.getInstance().getCoorsMap();
     }
 
     @FXML
@@ -72,8 +75,7 @@ public class ResultWindowController {
             GVController = loader.getController();
 
             GVController.setGraph(
-                    graph,
-                    IvascapeProject.getVerCoorsMap(),
+                    graph, map,
                     Color.CORNFLOWERBLUE,
                     Color.CORNFLOWERBLUE,true);
 
@@ -88,9 +90,9 @@ public class ResultWindowController {
 
             GVController.reloadView();
 
-            for (int i = 0; i < graph.getVerSize(); i ++){
+            for (int i = 0; i < graph.size(); i ++){
 
-                for (int j = i; j < graph.getVerSize(); j++){
+                for (int j = i; j < graph.size(); j++){
 
                     if (graph.getEdge(i,j) != null){
 
@@ -124,14 +126,14 @@ public class ResultWindowController {
 
         double tmpscale = zoomSlider.getValue();
         zoomSlider.setValue(100);
-        FileWorker.saveProject(resultStage,null);
+        FileHandler.saveProject(resultStage,null);
         zoomSlider.setValue(tmpscale);
     }
 
     @FXML
     private void handleExport(){
 
-        FileWorker.exportToXLS(graph, resultStage);
+        FileHandler.exportToXLS(graph, resultStage);
 
     }
 

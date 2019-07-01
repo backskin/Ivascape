@@ -6,7 +6,7 @@ import javafx.beans.property.StringProperty;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Company implements Serializable {
+public class Company implements Serializable, Comparable<Company> {
 
     private String title;
     private double moneyCapital;
@@ -56,5 +56,10 @@ public class Company implements Serializable {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    @Override
+    public int compareTo(Company o) {
+        return title.compareTo(o.title);
     }
 }

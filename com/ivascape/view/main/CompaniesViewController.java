@@ -2,7 +2,7 @@ package ivascape.view.main;
 
 import ivascape.MainApp;
 import ivascape.model.Company;
-import ivascape.controller.IvascapeProject;
+import ivascape.controller.Project;
 import ivascape.view.serve.CompanyEditDialogController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,6 +30,7 @@ public class CompaniesViewController {
     private int lastSelected = 0;
 
     private MainWindowController MWController;
+    private Project project = Project.getInstance();
 
     void setMWController(MainWindowController MWController) {
 
@@ -66,7 +67,7 @@ public class CompaniesViewController {
 
         ObservableList<Company> list = FXCollections.observableArrayList();
 
-        Iterator<Company> companyIterator = IvascapeProject.getCompanyIterator();
+        Iterator<Company> companyIterator = project.getGraph().getVertexIterator();
 
         while (companyIterator.hasNext()) list.add(companyIterator.next());
 
@@ -242,7 +243,7 @@ public class CompaniesViewController {
             if (alert.getResult().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
 
                 GVController.delVertex(companiesTable.getSelectionModel().getSelectedItem());
-                IvascapeProject.delCompany(companiesTable.getSelectionModel().getSelectedItem());
+                project.removeCompany(companiesTable.getSelectionModel().getSelectedItem());
 
                 reloadView();
                 MWController.reloadTV();

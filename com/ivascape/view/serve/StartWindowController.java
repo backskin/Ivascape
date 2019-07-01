@@ -1,9 +1,10 @@
 package ivascape.view.serve;
 
 import ivascape.MainApp;
-import ivascape.controller.FileWorker;
+import ivascape.controller.CoorsMap;
+import ivascape.controller.FileHandler;
+import ivascape.controller.Project;
 import ivascape.model.*;
-import ivascape.controller.IvascapeProject;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -23,7 +24,6 @@ public class StartWindowController {
     private static double yOffset = 0;
     private static double x = 0;
     private static double y = 0;
-
 
     public StartWindowController() {
     }
@@ -71,27 +71,18 @@ public class StartWindowController {
     @FXML
     private void handleNew(){
 
-        IvascapeProject.eraseProject();
-        IvascapeProject.newProject();
+        Project.getInstance().newProject();
         startStage.close();
     }
 
     @FXML
     private void handleOpen() {
 
-        IvascapeProject.eraseProject();
+        Pair<IvaGraph, CoorsMap> output = FileHandler.loadFile(startStage);
 
-        Pair<Graph, Map> output = FileWorker.loadFile(startStage);
+        if (output == null || output.getKey() == null) return;
 
-        if (output == null) return;
-
-        Graph graph = output.getKey();
-
-        if (graph == null) return;
-
-        IvascapeProject.setVerCoorsMap(output.getValue());
-        IvascapeProject.setGraph(IvaGraph.cast(graph));
-        IvascapeProject.setSaved(true);
+        Project.getInstance().loadProject(output.getKey(), output.getValue());
         startStage.close();
     }
 

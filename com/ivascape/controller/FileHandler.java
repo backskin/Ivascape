@@ -1,23 +1,21 @@
 package ivascape.controller;
 
 import ivascape.MainApp;
-import ivascape.model.Company;
-import ivascape.model.Graph;
-import ivascape.model.Link;
+import ivascape.model.IvaGraph;
 import ivascape.model.Pair;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
 import static ivascape.view.serve.MyAlerts.*;
 import static ivascape.view.serve.MyAlerts.MyAlertType.*;
-public class FileWorker {
 
+public class FileHandler {
 
-    public static Pair<Graph, Map> loadFile(final Stage ownerStage){
+    private static Project project = Project.getInstance();
+
+    public static Pair<IvaGraph, CoorsMap> loadFile(final Stage ownerStage){
 
         FileChooser fileChooser = new FileChooser();
 
@@ -27,16 +25,16 @@ public class FileWorker {
 
         fileChooser.setTitle(MainApp.bundle.getString("filewindow.title.open"));
 
-        if (IvascapeProject.getFile() == null)
+        if (project.getFile() == null)
 
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "\\Desktop"));
         else
-            fileChooser.setInitialDirectory(new File(IvascapeProject.getFile().getParent()));
+            fileChooser.setInitialDirectory(new File(project.getFile().getParent()));
 
         File file = fileChooser.showOpenDialog(ownerStage);
         if (file == null) return null;
 
-        if (!IvascapeProject.isSaved() && IvascapeProject.companiesAmount() > 0) {
+        if (!project.isSaved() && project.getGraph().size() > 0) {
 
             if (getAlert(CLOSE_UNSAVED, ownerStage).getResult().getButtonData().isCancelButton()) {
 
@@ -47,7 +45,7 @@ public class FileWorker {
         return openIt(file,ownerStage);
     }
 
-    private static Pair<Graph, Map> openIt(File file, Stage ownerStage){
+    private static Pair<IvaGraph, CoorsMap> openIt(File file, Stage ownerStage){
 
         try {
             FileInputStream fis = new FileInputStream(file.getAbsolutePath());
@@ -70,11 +68,11 @@ public class FileWorker {
                 return null;
             }
 
-            boolean checked =  result instanceof Graph && coors instanceof HashMap;
+            boolean checked =  result instanceof IvaGraph && coors instanceof CoorsMap;
 
             if (checked) {
-                IvascapeProject.setFile(file);
-                return new Pair<>((Graph) result, (HashMap) coors);
+                Project.getInstance().file = file;
+                return new Pair<>((IvaGraph) result, (CoorsMap) coors);
             }
             else {
                 fis.close();
@@ -103,17 +101,17 @@ public class FileWorker {
         if (file == null)
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+"\\Desktop"));
         else {
-            fileChooser.setInitialFileName(IvascapeProject.getFile().getName());
-            fileChooser.setInitialDirectory(new File(IvascapeProject.getFile().getParent()));
+            fileChooser.setInitialFileName(project.getFile().getName());
+            fileChooser.setInitialDirectory(new File(project.getFile().getParent()));
         }
 
         return saveIt(
                 fileChooser.showSaveDialog(ownerStage),
-                IvascapeProject.getGraph(),
-                IvascapeProject.getVerCoorsMap());
+                project.getGraph(),
+                project.getCoorsMap());
     }
 
-    public static void exportToXLS(Graph graph, final Stage ownerStage){
+    public static void exportToXLS(IvaGraph graph, final Stage ownerStage){
 
         FileChooser fileChooser = new FileChooser();
 
@@ -125,10 +123,10 @@ public class FileWorker {
 
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+"\\Desktop"));
 
-        ExcelWorker.saveItAsXLS(graph, fileChooser.showSaveDialog(ownerStage));
+        ExcelHandler.saveItAsXLS(graph, fileChooser.showSaveDialog(ownerStage));
     }
 
-    public static boolean saveIt(File file, Graph graph, Map<String,Pair<Double,Double>> verCoorsMap){
+    static boolean saveIt(File file, IvaGraph graph, CoorsMap map){
 
         if (file == null) return false;
 
@@ -139,7 +137,7 @@ public class FileWorker {
             fos = new FileOutputStream(file.getAbsolutePath());
             oos = new ObjectOutputStream(fos);
             oos.writeObject(graph);
-            oos.writeObject(verCoorsMap);
+            oos.writeObject(map);
             oos.flush();
             oos.close();
 
@@ -150,7 +148,7 @@ public class FileWorker {
             return false;
         }
 
-        IvascapeProject.setFile(file);
+        project.setFile(file);
 
         return true;
     }

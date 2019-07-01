@@ -2,7 +2,7 @@ package ivascape.view.serve;
 
 import ivascape.MainApp;
 import ivascape.model.Company;
-import ivascape.controller.IvascapeProject;
+import ivascape.controller.Project;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
@@ -14,9 +14,8 @@ import static ivascape.view.serve.MyAlerts.getAlert;
 
 public class CompanyEditDialogController {
 
-
+    private Project project = Project.getInstance();
     private boolean okClicked = false;
-
     public boolean isOkClicked() {
         return okClicked;
     }
@@ -93,7 +92,7 @@ public class CompanyEditDialogController {
             errorMessage += MainApp.bundle.getString("error.emptyname") + "\n";
 
         if (editCompany == null && !titleField.getText().isEmpty()
-                && IvascapeProject.getCompany(titleField.getText()) != null)
+                && project.getCompany(titleField.getText()) != null)
                 errorMessage +=  MainApp.bundle.getString("error.dubc")+ "\n";
 
         if (errorMessage.length() == 0) {
@@ -123,7 +122,7 @@ public class CompanyEditDialogController {
                         datePicker.getValue()
                         );
 
-                IvascapeProject.addCompany(editCompany);
+                project.getGraph().addVertex(editCompany);
                 okClicked = true;
             } else {
 
@@ -137,7 +136,7 @@ public class CompanyEditDialogController {
                     editCompany.setMoneyCapital(editCapital);
                     editCompany.setDate(datePicker.getValue());
 
-                    IvascapeProject.setSaved(false);
+                    project.setSaved(false);
 
                     okClicked = true;
                 }

@@ -1,10 +1,8 @@
 package ivascape.view.serve;
 
 import ivascape.MainApp;
-import ivascape.controller.GraphWorker;
-import ivascape.model.Company;
-import ivascape.controller.IvascapeProject;
-import ivascape.model.IvaGraph;
+import ivascape.model.*;
+import ivascape.controller.Project;
 import ivascape.view.main.GraphViewController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,20 +22,20 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
 public class AnalyseWindowController {
 
     private Stage analyseStage;
+    private Project project = Project.getInstance();
 
     public void setAnalyseStage(Stage analyseStage) {
         this.analyseStage = analyseStage;
 
         analyseStage.setOnCloseRequest(event -> {
-            VisualVertex.resetColor();
-            VisualEdge.resetColor();
+            VisualVertex.setColor(VisualVertex.defaultColor);
+            VisualEdge.setColor(VisualEdge.defaultColor);
         });
     }
 
@@ -52,14 +50,14 @@ public class AnalyseWindowController {
     @FXML
     private void initialize(){
 
-        List<IvaGraph> components =  IvascapeProject.getComponents();
+        List<GenericGraph<Company, Link>> components =  project.getComponents();
 
         if (components.size() == 0) {
             Label label = new Label(MainApp.bundle.getString("editwindows.emptygraph"));
             label.setFont(new Font("System",15));
             componentTables.getChildren().add(label);
         } else
-        for (IvaGraph component: components
+        for (GenericGraph<Company, Link> component: components
              ) {
 
             VBox form = new VBox();
@@ -78,7 +76,7 @@ public class AnalyseWindowController {
 
                 controller.setGraph(
                         component,
-                        IvascapeProject.getVerCoorsMap(),
+                        project.getCoorsMap(),
                         Color.DARKCYAN,
                         Color.DARKCYAN,
                         false);
@@ -108,8 +106,7 @@ public class AnalyseWindowController {
 
             ObservableList<Company> list = FXCollections.observableArrayList();
 
-            Iterator<Company> iterator = GraphWorker.init(component).getSortedVerIterator(Comparator.comparing(Company::getTitle));
-
+            Iterator<Company> iterator = component.getVertexIterator();
             while (iterator.hasNext()) list.add(iterator.next());
 
             componentTable.setItems(list);

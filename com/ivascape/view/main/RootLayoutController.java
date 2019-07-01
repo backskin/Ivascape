@@ -1,8 +1,9 @@
 package ivascape.view.main;
 import ivascape.MainApp;
-import ivascape.controller.FileWorker;
+import ivascape.controller.CoorsMap;
+import ivascape.controller.FileHandler;
+import ivascape.controller.Project;
 import ivascape.model.*;
-import ivascape.controller.IvascapeProject;
 import ivascape.view.serve.*;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
@@ -21,7 +22,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Locale;
-import java.util.Map;
 
 import static ivascape.MainApp.enLoc;
 import static ivascape.MainApp.ruLoc;
@@ -38,6 +38,8 @@ public class RootLayoutController {
     }
 
     private MainApp mainApp;
+
+    private Project project = Project.getInstance();
 
     @FXML
     private BorderPane rootLayout;
@@ -86,7 +88,6 @@ public class RootLayoutController {
         eng.selectedProperty().addListener((observable, oldValue, newValue) -> {
 
                 Locale.setDefault(newValue? enLoc : ruLoc);
-                MWController.saveGV();
             try {
                 mainApp.reloadApp();
             } catch (IOException e) {
@@ -96,14 +97,14 @@ public class RootLayoutController {
 
         rus.selectedProperty().addListener((observable, oldValue, newValue) -> eng.setSelected(!newValue));
 
-        isSaved.setText(MainApp.bundle.getString(IvascapeProject.isSaved() ? "bottombar.saved" : "bottombar.unsaved"));
-        saveIcon.setFill(IvascapeProject.isSaved() ? Color.GREEN : Color.DARKRED);
+        isSaved.setText(MainApp.bundle.getString(project.isSaved() ? "bottombar.saved" : "bottombar.unsaved"));
+        saveIcon.setFill(project.isSaved() ? Color.GREEN : Color.DARKRED);
 
         addEdge.setDisable(true);
         Save.setDisable(true);
         SaveAs.setDisable(true);
 
-        IvascapeProject.savedProperty().addListener((observable, oldValue, newValue) -> {
+        project.savedProperty().addListener((observable, oldValue, newValue) -> {
 
             Save.setDisable(newValue);
             SaveAs.setDisable(false);
@@ -120,15 +121,11 @@ public class RootLayoutController {
 
     void reloadStatusBar(){
 
-        fileName.setText(IvascapeProject.getProjectName());
-
-        cAmount.setText(Integer.toString(IvascapeProject.companiesAmount()));
-
-        lAmount.setText(Integer.toString(IvascapeProject.linksAmount()));
-
-        SaveAs.setDisable(IvascapeProject.companiesAmount() == 0);
-
-        Save.setDisable(IvascapeProject.companiesAmount() == 0 || IvascapeProject.isSaved());
+        fileName.setText(project.getFile() != null ? project.getFile().getName() : "Empty");
+        cAmount.setText(Integer.toString(project.getGraph().size()));
+        lAmount.setText(Integer.toString(project.linksAmount()));
+        SaveAs.setDisable(project.getGraph().size() == 0);
+        Save.setDisable(project.getGraph().size() == 0 || project.isSaved());
     }
 
     public void initMainWindow(Stage mainStage){
@@ -146,10 +143,10 @@ public class RootLayoutController {
             MWController.setMainStage(mainStage);
             MWController.setRootController(this);
 
-            MWController.getMVController().getGVController().surfaceChangedProperty().addListener(
+            MWController.getMVController().getGVController().getSurfaceChangedProperty().addListener(
                     (observable, oldValue, newValue) -> {
                         if (newValue) {
-                            IvascapeProject.setSaved(false);
+                            project.setSaved(false);
                         }
                     });
 
@@ -170,7 +167,7 @@ public class RootLayoutController {
 
             mainStage.setScene(new Scene(rootLayout));
 
-            if (!IvascapeProject.isEmpty() && IvascapeProject.companiesAmount() > 0){
+            if (!project.isEmpty() && project.getGraph().size() > 0){
 
                 reloadView();
             }
@@ -243,9 +240,7 @@ public class RootLayoutController {
             Scene scene = new Scene(editDialog);
             dialogStage.setScene(scene);
             LEDController.setDialogStage(dialogStage);
-
-            LEDController.setCompanies(IvascapeProject.getCompaniesList());
-
+            LEDController.setList(project.getCompaniesList());
             dialogStage.showAndWait();
 
             if (LEDController.isOkClicked()) {
@@ -268,15 +263,13 @@ public class RootLayoutController {
     @FXML
     private void handleEditRun(){
 
-        if (!IvascapeProject.isProjectStrongGraph()){
+        if (!project.isGraphStrong()){
 
             getAlert(MyAlertType.ALGORITHM_EXEC, mainStage);
             return;
         }
 
         try {
-            IvascapeProject.setVerCoorsMap(MWController.getMVController().getGVController().getCoorsMap());
-
             FXMLLoader loader = new FXMLLoader(
                     MainApp.class.getResource("view/serve/ResultWindow.fxml"),
                     MainApp.bundle);
@@ -311,7 +304,7 @@ public class RootLayoutController {
     private void handleEditAnalyse(){
 
         try {
-            IvascapeProject.setVerCoorsMap(MWController.getMVController().getGVController().getCoorsMap());
+            project.setCoorsMap(MWController.getMVController().getGVController().getCoorsMap());
 
             FXMLLoader loader = new FXMLLoader(
                     MainApp.class.getResource("view/serve/AnalyseWindow.fxml"),
@@ -345,18 +338,20 @@ public class RootLayoutController {
     @FXML
     private void handleFileOpen(){
 
-        boolean permit = true;
+        boolean permit = !project.isSaved()
+                && project.getGraph().size() > 0
+                && getAlert(
+                        MyAlertType.CLOSE_UNSAVED, mainStage).getResult().getButtonData().isCancelButton();
 
-        Pair<Graph, Map> output = FileWorker.loadFile(mainStage);
+        if (permit) {
 
-        if (output != null) {
+            Pair<IvaGraph, CoorsMap> output = FileHandler.loadFile(mainStage);
 
-            IvascapeProject.eraseProject();
-            Graph graph = output.getKey();
-            IvascapeProject.setGraph(IvaGraph.cast(graph));
-            IvascapeProject.setSaved(true);
-            IvascapeProject.setVerCoorsMap(output.getValue());
-            reloadView();
+            if (output != null) {
+
+                project.loadProject(output.getKey(),output.getValue());
+                reloadView();
+            }
         }
     }
 
@@ -365,7 +360,7 @@ public class RootLayoutController {
 
         boolean permit = true;
 
-        if (!IvascapeProject.isSaved() && IvascapeProject.companiesAmount() > 0) {
+        if (!project.isSaved() && project.getGraph().size() > 0) {
 
             if (getAlert(MyAlertType.CLOSE_UNSAVED,mainStage).getResult().getButtonData().isCancelButton()) {
 
@@ -375,9 +370,7 @@ public class RootLayoutController {
 
         if (permit) {
 
-            IvascapeProject.eraseProject();
-            IvascapeProject.newProject();
-
+            project.newProject();
             reloadView();
         }
     }
@@ -385,22 +378,22 @@ public class RootLayoutController {
     @FXML
     private  void handleFileSave(){
 
-        if (IvascapeProject.getFile() == null)
+        if (project.getFile() == null)
             handleFileSaveAs();
         else
-            IvascapeProject.saveProject();
+            project.saveProject();
         reloadStatusBar();
     }
 
     @FXML
     private void handleFileSaveAs(){
 
-        if (IvascapeProject.companiesAmount() > 0) {
+        if (project.getGraph().size() > 0) {
 
-            IvascapeProject.setVerCoorsMap(MWController.getMVController().getGVController().getCoorsMap());
+            project.setCoorsMap(MWController.getMVController().getGVController().getCoorsMap());
 
-            IvascapeProject.setSaved(
-                    FileWorker.saveProject(mainStage, IvascapeProject.getFile()) || IvascapeProject.isSaved());
+            project.setSaved(
+                    FileHandler.saveProject(mainStage, project.getFile()) || project.isSaved());
         }
 
         reloadStatusBar();
@@ -409,14 +402,16 @@ public class RootLayoutController {
     @FXML
     private void handleExport(){
 
-        FileWorker.exportToXLS(IvascapeProject.getGraph(), mainStage);
+        FileHandler.exportToXLS(project.getGraph(), mainStage);
     }
 
     @FXML
     private void handleClose() {
 
-        if (IvascapeProject.companiesAmount() >= 1 && !IvascapeProject.isSaved()) {
-            if (getAlert(MyAlertType.ON_EXIT, mainStage, "NOTSAVED").getResult().getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE)
+        if (project.getGraph().size() > 0
+                && !project.isSaved()
+                && (getAlert(MyAlertType.ON_EXIT, mainStage, "NOTSAVED").getResult()
+                                .getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE)) {
             return;
         }
 

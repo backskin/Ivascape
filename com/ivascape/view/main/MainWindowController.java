@@ -24,16 +24,12 @@ public class MainWindowController {
 
     private MapViewController MVController;
 
-    public MapViewController getMVController() {
+    MapViewController getMVController() {
         return MVController;
     }
 
-    public CompaniesViewController getCVController() {
+    CompaniesViewController getCVController() {
         return CVController;
-    }
-
-    public LinksViewController getTVController() {
-        return TVController;
     }
 
     @FXML
@@ -57,7 +53,7 @@ public class MainWindowController {
         tabPane.getSelectionModel().select(MainApp.currentTab);
     }
 
-    public void setMainStage(Stage mainStage) {
+    void setMainStage(Stage mainStage) {
 
         this.mainStage = mainStage;
         CVController.setMWController(this);
@@ -66,11 +62,11 @@ public class MainWindowController {
         TVController.setGVController(MVController.getGVController());
     }
 
-    public Stage getMainStage() {
+    Stage getMainStage() {
         return mainStage;
     }
 
-    public void setRootController(RootLayoutController rootController) {
+    void setRootController(RootLayoutController rootController) {
 
         this.rootController = rootController;
     }
@@ -102,20 +98,15 @@ public class MainWindowController {
         return null;
     }
 
-    public void reloadCV(){
+    void reloadCV(){
         CVController.reloadView();
     }
 
-    public void reloadTV(){
+    void reloadTV(){
         TVController.reloadView();
     }
 
-    public void saveGV(){
-
-        MVController.saveGV();
-    }
-
-    public void reloadAll(){
+    void reloadAll(){
 
         reloadCV();
         reloadTV();

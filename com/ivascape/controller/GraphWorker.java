@@ -2,97 +2,28 @@ package ivascape.controller;
 
 import ivascape.model.Complex;
 import ivascape.model.Graph;
-
+import ivascape.model.GenericGraph;
 import javafx.util.Pair;
 import java.util.*;
 
-public class GraphWorker<K,V extends Complex<V>> {
+class GraphWorker<K extends Comparable<K>, V extends Complex<V>> {
 
-    private final Graph<K,V> graph;
+    private final GenericGraph<K,V> graph;
 
-    private GraphWorker(Graph<K, V> graph) {
+    private GraphWorker(GenericGraph<K, V> graph) {
 
         this.graph = graph;
     }
 
-    public static <K,V extends Complex<V>> GraphWorker init(Graph<K,V> graph){
+    static <K extends Comparable<K>, V extends Complex<V>> GraphWorker<K,V> factory(GenericGraph<K, V> graph){
 
         return new GraphWorker<>(graph);
     }
 
-    private int indexOf(K ver){
-
-        for (int i = 0; i < graph.getVerSize(); i ++){
-
-            if (graph.getVer(i) == ver)
-                return i;
-        }
-
-        return -1;
-    }
-
-    public Iterator<K> getSortedVerIterator(Comparator<K> comparator){
-
-        List<K> sortedList = new ArrayList<>();
-
-        Iterator<K> verIter = getVerIterator();
-
-        while (verIter.hasNext())
-
-            sortedList.add(verIter.next());
-
-        sortedList.sort(comparator);
-
-        return new Iterator<K>() {
-
-            final List<K> list = sortedList;
-
-            int it = 0;
-
-            @Override
-            public boolean hasNext() {
-
-                return it < list.size();
-            }
-
-            @Override
-            public K next() {
-
-                if (hasNext())
-                    return list.get(it++);
-
-                return null;
-            }
-        };
-    }
-
-    public Iterator<K> getVerIterator(){
-
-        return new Iterator<K>() {
-
-            int it = 0;
-
-            @Override
-            public boolean hasNext() {
-
-                return it < graph.getVerSize();
-            }
-
-            @Override
-            public K next() {
-
-                if (hasNext())
-                    return graph.getVer(it++);
-
-                return null;
-            }
-        };
-    }
-
-    public int getEdgeSize(){
+    int getEdgeSize(){
         int result = 0;
-        for (int i = 0; i < graph.getVerSize(); i++){
-            for (int j = i+1; j < graph.getVerSize(); j++){
+        for (int i = 0; i < graph.size(); i++){
+            for (int j = i+1; j < graph.size(); j++){
 
                 if (graph.getEdge(i,j) != null)
                     result += 1;
@@ -108,7 +39,7 @@ public class GraphWorker<K,V extends Complex<V>> {
 
         visited[start] = true;
 
-        for (int i = 0; i < graph.getVerSize(); i++){
+        for (int i = 0; i < graph.size(); i++){
 
             if (graph.getEdge(start,i) != null)
 
@@ -118,20 +49,19 @@ public class GraphWorker<K,V extends Complex<V>> {
 
                         return true;
         }
+
         return false;
     }
 
     boolean isStrong(){
 
-        if (graph.getVerSize() < 1)
+        if (graph.size() < 1) return false;
 
-            return false;
+        for (int i = 0; i < graph.size(); i++){
 
-        for (int i = 0; i < graph.getVerSize(); i++){
+            for (int j = 0; j < graph.size(); j++){
 
-            for (int j = 0; j < graph.getVerSize(); j++){
-
-                if (!dfs(i,j,new boolean[graph.getVerSize()]))
+                if (!dfs(i, j, new boolean[graph.size()]))
 
                     return false;
             }
@@ -144,51 +74,52 @@ public class GraphWorker<K,V extends Complex<V>> {
 
         if (visited[ver]) return;
         visited[ver] = true;
-        component.addVer(original.getVer(ver));
 
-        for (int i = 0; i < original.getVerSize(); i ++){
+        component.addVertex(original.getVertex(ver));
+
+        for (int i = 0; i < original.size(); i ++){
 
             if (original.getEdge(ver,i) != null ){
                 buildComponent(i,original,component,visited);
                 component.addEdge(
-                        original.getVer(ver),
-                        original.getVer(i),
+                        original.getVertex(ver),
+                        original.getVertex(i),
                         original.getEdge(ver,i)
                 );
             }
         }
-
     }
 
-    public List<Graph> getConnectComponents(){
+    List<GenericGraph<K,V>> getConnectComponents(){
 
         List<K> viewQueue = new ArrayList<>();
 
-        for (int i = 0; i < graph.getVerSize(); i++){
+        for (int i = 0; i < graph.size(); i++){
 
-            viewQueue.add(graph.getVer(i));
+            viewQueue.add(graph.getVertex(i));
         }
 
-        List<Graph> components = new ArrayList<>();
+        List<GenericGraph<K,V>> components = new ArrayList<>();
 
         while (!viewQueue.isEmpty()){
 
-            Graph<K,V> newComponent = new Graph<>();
+            GenericGraph<K,V> newComponent = new GenericGraph<>();
 
             components.add(newComponent);
 
             buildComponent(
-                    indexOf(viewQueue.get(0)),
+                    graph.indexOf(viewQueue.get(0)),
                     graph,
                     newComponent,
-                    new boolean[graph.getVerSize()]
+                    new boolean[graph.size()]
             );
 
-            for (int i = 0; i < newComponent.getVerSize(); i ++){
+            for (int i = 0; i < newComponent.size(); i ++){
 
-                viewQueue.remove(newComponent.getVer(i));
+                viewQueue.remove(newComponent.getVertex(i));
             }
         }
+
         return components;
     }
 
@@ -215,13 +146,13 @@ public class GraphWorker<K,V extends Complex<V>> {
         return index;
     }
 
-    private Graph<K,V> setTreeFromPairs(List<Pair<K,K>> pairs){
+    private GenericGraph<K,V> setTreeFromPairs(List<Pair<K,K>> pairs){
 
-        Graph<K,V> tree = new Graph<>();
+        GenericGraph<K,V> tree = new GenericGraph<>();
 
-        for (int i = 0; i < graph.getVerSize(); i ++)
+        for (int i = 0; i < graph.size(); i ++)
 
-            tree.addVer(graph.getVer(i));
+            tree.addVertex(graph.getVertex(i));
 
         for (Pair<K, K> pair : pairs)
             tree.addEdge(
@@ -232,13 +163,13 @@ public class GraphWorker<K,V extends Complex<V>> {
         return tree;
     }
 
-    Graph<K,V> getPrimResult() {
+    GenericGraph<K,V> getPrimResult() {
 
         if (!isStrong())
 
             return null;
 
-        int v = (new Random()).nextInt(graph.getVerSize()-1);
+        int v = (new Random()).nextInt(graph.size()-1);
 
         List<Pair<Pair<K,K>,V>> queue = new ArrayList<>();
 
@@ -246,21 +177,21 @@ public class GraphWorker<K,V extends Complex<V>> {
 
         List<K> exList = new ArrayList<>();
 
-        for (int i = 0; i < graph.getVerSize(); i++){
+        for (int i = 0; i < graph.size(); i++){
 
             if (graph.getEdge( v, i ) != null)
 
                 queue.add(
                         new Pair<>(
                                 new Pair<>(
-                                        graph.getVer(v),
-                                        graph.getVer(i)),
+                                        graph.getVertex(v),
+                                        graph.getVertex(i)),
                                         graph.getEdge( v, i )
                         )
                 );
         }
 
-        exList.add(graph.getVer(v));
+        exList.add(graph.getVertex(v));
 
         while (queue.size()>0){
 
@@ -279,25 +210,21 @@ public class GraphWorker<K,V extends Complex<V>> {
 
                 v = -1;
 
-                for (int m = 0; m < graph.getVerSize(); m++){
+                for (int m = 0; m < graph.size(); m++){
 
-                    if (graph.getVer(m) == queue.get(i).getKey().getValue())
+                    if (graph.getVertex(m) == queue.get(i).getKey().getValue())
 
                         v = m;
                 }
 
-                for (int k = 0; k < graph.getVerSize(); k++){
+                for (int k = 0; k < graph.size(); k++){
 
                     if (graph.getEdge( v, k ) != null
-                            && exList.indexOf(graph.getVer(k)) < 0)
-                    {
-                        queue.add(
-                                new Pair<>(
-                                        new Pair<>(
-                                                graph.getVer(v),
-                                                graph.getVer(k)),
-                                                graph.getEdge( v, k )
-                                )
+                            && exList.indexOf(graph.getVertex(k)) < 0) {
+                        queue.add( new Pair<>( new Pair<>(
+                                graph.getVertex(v),
+                                graph.getVertex(k)),
+                                graph.getEdge( v, k ))
                         );
                     }
                 }

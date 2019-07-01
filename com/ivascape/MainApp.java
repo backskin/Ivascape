@@ -1,6 +1,6 @@
 package ivascape;
 
-import ivascape.controller.IvascapeProject;
+import ivascape.controller.Project;
 import ivascape.model.Pair;
 import ivascape.view.main.RootLayoutController;
 import ivascape.view.serve.StartWindowController;
@@ -26,8 +26,9 @@ import static ivascape.view.serve.MyAlerts.*;
 public class MainApp extends Application {
 
     private static Pair<Double,Double> XY = null;
-
     private static Pair<Double,Double> windowsize = null;
+
+    private Project project = Project.getInstance();
 
     public static int currentTab = 0;
 
@@ -63,7 +64,7 @@ public class MainApp extends Application {
 
     private void onExit(WindowEvent event){
 
-        if (!(IvascapeProject.isEmpty() || IvascapeProject.isSaved()) &&
+        if (!(project.isEmpty() || project.isSaved()) &&
             getAlert(MyAlertType.ON_EXIT,mainStage, "NOTSAVED").getResult().getButtonData()
                     == ButtonBar.ButtonData.CANCEL_CLOSE)
             event.consume();

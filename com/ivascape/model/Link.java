@@ -6,16 +6,16 @@ public class Link implements Complex<Link>, Serializable {
 
     private Link mate = null;
 
-    private final Company one;
+    private final Company start;
 
-    private final Company two;
+    private final Company end;
 
     private Double price;
 
-    public Link(Company first, Company second, double price) {
+    public Link(Company start, Company end, double price) {
 
-        one = first;
-        two = second;
+        this.start = start;
+        this.end = end;
         this.price = Math.round(price*100)/100.0;
     }
 
@@ -34,12 +34,12 @@ public class Link implements Complex<Link>, Serializable {
         return price;
     }
 
-    public Company getOne() {
-        return one;
+    public Company one() {
+        return start;
     }
 
-    public Company getTwo() {
-        return two;
+    public Company another() {
+        return end;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class Link implements Complex<Link>, Serializable {
     @Override
     public Link createMating() {
 
-        mate = new Link(two,one,price);
+        mate = new Link(end, start, price);
         return mate;
     }
 

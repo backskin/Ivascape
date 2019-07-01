@@ -1,8 +1,8 @@
 package ivascape.view.main;
 
 import ivascape.MainApp;
+import ivascape.controller.Project;
 import ivascape.model.Company;
-import ivascape.controller.IvascapeProject;
 import ivascape.view.serve.MyAlerts;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,14 +20,14 @@ import static ivascape.view.serve.MyAlerts.getAlert;
 public class LinksViewController {
 
     private MainWindowController MWController;
-
     private GraphViewController GVController;
+    private Project project = Project.getInstance();
 
-    public void setGVController(GraphViewController GVController) {
+    void setGVController(GraphViewController GVController) {
         this.GVController = GVController;
     }
 
-    public void setMWController(MainWindowController MWController) {
+    void setMWController(MainWindowController MWController) {
 
         this.MWController = MWController;
     }
@@ -46,9 +46,9 @@ public class LinksViewController {
 
         try {
 
-            Iterator<Company> iIterator = IvascapeProject.getCompanySortedIterator();//IvascapeProject.getCompanyIterator();
+            Iterator<Company> iterator = project.getGraph().getVertexIterator();
 
-            while (iIterator.hasNext()){
+            while (iterator.hasNext()){
 
                 FXMLLoader loader = new FXMLLoader(
                         MainApp.class.getResource("view/main/LinksViewItem.fxml"),
@@ -58,7 +58,7 @@ public class LinksViewController {
 
                 LinksViewItemController TVIController = loader.getController();
 
-                Company iCompany = iIterator.next();
+                Company iCompany = iterator.next();
 
                 TVIController.setCompany(iCompany);
 
@@ -68,13 +68,13 @@ public class LinksViewController {
 
                 TVIController.setGVController(GVController);
 
-                Iterator<Company> jIterator = IvascapeProject.getCompanyIterator();
+                Iterator<Company> jIterator = project.getGraph().getVertexIterator();
 
                 while (jIterator.hasNext()){
 
                     Company jCompany = jIterator.next();
 
-                    if (IvascapeProject.getLink(iCompany,jCompany) != null){
+                    if (project.getGraph().getEdge(iCompany,jCompany) != null){
 
                         FXMLLoader anotherLoader = new FXMLLoader(
                                 MainApp.class.getResource("view/main/LinksViewCell.fxml"),
@@ -83,7 +83,7 @@ public class LinksViewController {
                         VBox cell = anotherLoader.load();
                         LinksViewCellController TVCController = anotherLoader.getController();
 
-                        TVCController.setLink(IvascapeProject.getLink(iCompany,jCompany));
+                        TVCController.setLink(project.getGraph().getEdge(iCompany,jCompany));
 
                         TVCController.setMWController(MWController);
 

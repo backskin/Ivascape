@@ -1,7 +1,7 @@
 package ivascape.view.main;
 
 import ivascape.MainApp;
-import ivascape.controller.IvascapeProject;
+import ivascape.controller.Project;
 import ivascape.model.Link;
 import ivascape.view.serve.LinkEditDialogController;
 import javafx.fxml.FXML;
@@ -21,20 +21,19 @@ import static ivascape.view.serve.MyAlerts.*;
 public class LinksViewCellController {
 
     private MainWindowController MWController;
-
     private GraphViewController GVController;
+    private Project project = Project.getInstance();
 
-    public void setGVController(GraphViewController GVController) {
+    void setGVController(GraphViewController GVController) {
         this.GVController = GVController;
     }
 
-    public void setMWController(MainWindowController MWController) {
+    void setMWController(MainWindowController MWController) {
 
         this.MWController = MWController;
     }
 
     private Link link;
-
     @FXML
     private Label name;
     @FXML
@@ -55,7 +54,7 @@ public class LinksViewCellController {
 
         if (link!=null){
 
-            name.setText(link.getTwo().getTitle());
+            name.setText(link.another().getTitle());
             price.setText(Double.toString(Math.round(link.getPrice()*100)/100.0));
 
         } else {
@@ -84,10 +83,8 @@ public class LinksViewCellController {
                 .getResult().getButtonData() == ButtonBar.ButtonData.OK_DONE){
 
             GVController.delEdge(link);
-            IvascapeProject.delLink(link);
-
+            project.removeLink(link);
             MWController.reloadTV();
-           //GVController.reloadView();
         }
     }
 

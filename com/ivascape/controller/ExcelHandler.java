@@ -2,8 +2,8 @@ package ivascape.controller;
 
 import ivascape.MainApp;
 import ivascape.model.Company;
-import ivascape.model.Graph;
 import ivascape.model.Link;
+import ivascape.model.IvaGraph;
 
 import javafx.stage.Stage;
 
@@ -18,10 +18,11 @@ import org.apache.poi.ss.usermodel.Row;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Iterator;
 
 import static ivascape.view.serve.MyAlerts.*;
 
-public class ExcelWorker {
+class ExcelHandler {
 
     private static HSSFCellStyle createStyleForTitle(HSSFWorkbook workbook) {
         HSSFFont font = workbook.createFont();
@@ -41,15 +42,16 @@ public class ExcelWorker {
     }
 
 
-    public static boolean saveItAsXLS(Graph<Company, Link> graph, File file){
+    static void saveItAsXLS(IvaGraph graph, File file){
 
-        if (file == null) return false;
+        if (file == null) return;
 
         HSSFWorkbook workbook = new HSSFWorkbook();
 
         try {
-            createFirstSheet(workbook,graph);
-            createSecondSheet(workbook,graph);
+            createFirstSheet(workbook, graph);
+            createSecondSheet(workbook, graph);
+
             FileOutputStream outFile = new FileOutputStream(file);
             workbook.unwriteProtectWorkbook();
             workbook.write(outFile);
@@ -61,10 +63,9 @@ public class ExcelWorker {
             npE.printStackTrace();
         }
 
-        return false;
     }
 
-    private static void createFirstSheet(HSSFWorkbook workbook, Graph<Company, Link> graph){
+    private static void createFirstSheet(HSSFWorkbook workbook, IvaGraph graph){
 
         try {
 
@@ -91,23 +92,27 @@ public class ExcelWorker {
             cell.setCellValue(MainApp.bundle.getString("tabletext.date"));
             cell.setCellStyle(styleForTitle);
 
-            for (int i = 0; i < graph.getVerSize(); i ++){
+            Iterator<Company> iterator = graph.getVertexIterator();
 
-                row = sheet.createRow(i+1);
+            while(iterator.hasNext()){
+
+                Company company = iterator.next();
+
+                row = sheet.createRow(sheet.getLastRowNum()+1);
 
                 cell = row.createCell(0);
-                cell.setCellValue(graph.getVer(i).getTitle());
+                cell.setCellValue(company.getTitle());
 
                 cell = row.createCell(1);
-                cell.setCellValue(graph.getVer(i).getMoneyCapital());
+                cell.setCellValue(company.getMoneyCapital());
                 cell.setCellStyle(styleRegular);
 
                 cell = row.createCell( 2);
-                cell.setCellValue(graph.getVer(i).getAddress());
+                cell.setCellValue(company.getAddress());
                 cell.setCellStyle(styleRegular);
 
                 cell = row.createCell(3);
-                cell.setCellValue(graph.getVer(i).getDate().toString());
+                cell.setCellValue(company.getDate().toString());
                 cell.setCellStyle(styleRegular);
             }
             sheet.autoSizeColumn(0);
@@ -123,7 +128,7 @@ public class ExcelWorker {
     }
 
 
-    private static void createSecondSheet(HSSFWorkbook workbook, Graph<Company,Link> graph){
+    private static void createSecondSheet(HSSFWorkbook workbook, IvaGraph graph){
 
         try {
             HSSFSheet sheet = workbook.createSheet(MainApp.bundle.getString("excelsheet.links"));
@@ -148,20 +153,40 @@ public class ExcelWorker {
             cell.setCellStyle(styleForTitle);
 
             int count = 1;
-            for (int i = 0; i < graph.getVerSize(); i ++) {
 
-                for (int j = i; j < graph.getVerSize(); j ++){
+            for(Iterator<Link> iterator = graph.getEdgeIterator(); iterator.hasNext();) {
+
+                Link link = iterator.next();
+
+                row = sheet.createRow(count++);
+
+                cell = row.createCell(0);
+                cell.setCellValue(link.one().getTitle());
+                cell.setCellStyle(styleRegular);
+
+                cell = row.createCell(1);
+                cell.setCellValue(link.another().getTitle());
+                cell.setCellStyle(styleRegular);
+
+                cell = row.createCell(2);
+                cell.setCellValue(link.getPrice());
+                cell.setCellStyle(styleRegular);
+            }
+
+            for (int i = 0; i < graph.size(); i ++) {
+
+                for (int j = i; j < graph.size(); j ++){
 
                     if (graph.getEdge(i,j) != null){
 
                         row = sheet.createRow(count++);
 
                         cell = row.createCell(0);
-                        cell.setCellValue(graph.getEdge(i,j).getOne().getTitle());
+                        cell.setCellValue(graph.getEdge(i,j).one().getTitle());
                         cell.setCellStyle(styleRegular);
 
                         cell = row.createCell(1);
-                        cell.setCellValue(graph.getEdge(i,j).getTwo().getTitle());
+                        cell.setCellValue(graph.getEdge(i,j).another().getTitle());
                         cell.setCellStyle(styleRegular);
 
                         cell = row.createCell(2);

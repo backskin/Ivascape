@@ -10,13 +10,13 @@ import javafx.scene.text.Font;
 
 public class VisualEdge {
 
-    private class scaleListener implements ChangeListener<Number>{
+    private class ScaleListener implements ChangeListener<Number>{
 
         final Label price;
 
         final Line line;
 
-        scaleListener(Label price,Line line) {
+        ScaleListener(Label price, Line line) {
 
             this.line = line;
             this.price = price;
@@ -32,11 +32,11 @@ public class VisualEdge {
         }
     }
 
-    class priceVisibleListener implements ChangeListener<Boolean>{
+    class PriceListener implements ChangeListener<Boolean>{
 
         final Label price;
 
-        priceVisibleListener(Label price){
+        PriceListener(Label price){
 
             this.price = price;
         }
@@ -50,20 +50,28 @@ public class VisualEdge {
 
     private final ChangeListener[] myOwnListener = new ChangeListener[2];
 
+    private final ChangeListener<Number> scaleListener;
+    private final ChangeListener<Boolean> priceListener;
+
     public ChangeListener getListener(int index) {
         return myOwnListener[index];
     }
 
-    public void setListeners() {
-        this.myOwnListener[1] = new scaleListener(price,line);
-        this.myOwnListener[0] = new priceVisibleListener(price);
+    public ChangeListener<Boolean> getPriceListener(){
+
+        return priceListener;
+    }
+
+    public ChangeListener<Number> getScaleListener(){
+
+        return scaleListener;
     }
 
     private final Label price = new Label("0.0");
 
     public void setPrice(double price){
 
-        this.price.setText("$" + Double.toString(price));
+        this.price.setText("$" + price);
     }
 
     public Label getPrice() {
@@ -85,7 +93,7 @@ public class VisualEdge {
         edgeColor = color;
     }
 
-    public static void resetColor(){
+    static void resetColor(){
 
         edgeColor = defaultColor;
     }
@@ -129,12 +137,14 @@ public class VisualEdge {
 
         price.setLayoutX((line.getStartX()+line.getEndX() - price.getWidth())/2.0);
         price.setLayoutY((line.getStartY()+line.getEndY() - price.getHeight())/2.0);
+
+        scaleListener = new ScaleListener(price,line);
+        priceListener = new PriceListener(price);
     }
 
     public VisualEdge(VisualVertex start, VisualVertex end, double price){
 
         this(start.xCenterProperty(),start.yCenterProperty(),end.xCenterProperty(),end.yCenterProperty());
-        this.price.setText("$" + Double.toString(price));
-
+        this.price.setText("$" + price);
     }
 }

@@ -2,7 +2,7 @@ package ivascape.view.main;
 
 import ivascape.MainApp;
 import ivascape.model.Company;
-import ivascape.controller.IvascapeProject;
+import ivascape.controller.Project;
 import ivascape.view.serve.LinkEditDialogController;
 import ivascape.view.serve.MyAlerts;
 import javafx.fxml.FXML;
@@ -25,12 +25,12 @@ public class LinksViewItemController {
     private List<VBox> cells;
 
     private Company company;
-
     private MainWindowController MWController;
-
     private GraphViewController GVController;
 
-    public void setGVController(GraphViewController GVController) {
+    private Project project = Project.getInstance();
+
+    void setGVController(GraphViewController GVController) {
         this.GVController = GVController;
     }
 
@@ -56,16 +56,16 @@ public class LinksViewItemController {
         this.company = company;
         theItem.setText(company.getTitle());
 
-        if (IvascapeProject.companiesAmount() < 2)
+        if (project.getGraph().size() < 2)
             Add.setDisable(true);
     }
 
-    public void setMWController(MainWindowController MWController) {
+    void setMWController(MainWindowController MWController) {
 
         this.MWController = MWController;
     }
 
-    public void setCells(List<VBox> cells){
+    void setCells(List<VBox> cells){
 
         this.cells = cells;
 
@@ -101,8 +101,7 @@ public class LinksViewItemController {
             dialogStage.setScene(scene);
 
             LEDController.setDialogStage(dialogStage);
-
-            LEDController.setCompanies(IvascapeProject.getCompaniesListExcept(company));
+            LEDController.setList(project.getCompaniesList(), company.getTitle());
 
             LEDController.setCompanyOne(company);
 

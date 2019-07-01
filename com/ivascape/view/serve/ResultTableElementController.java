@@ -18,8 +18,8 @@ public class ResultTableElementController {
 
     public void setLink(Link link){
 
-        this.companyOne.setText(link.getOne().getTitle());
-        this.companyTwo.setText(link.getTwo().getTitle());
+        this.companyOne.setText(link.one().getTitle());
+        this.companyTwo.setText(link.another().getTitle());
         this.linkPrice.setText(link.getPrice().toString());
     }
 

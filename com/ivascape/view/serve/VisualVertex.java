@@ -1,17 +1,11 @@
 package ivascape.view.serve;
 
-import ivascape.model.Company;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -71,11 +65,6 @@ public class VisualVertex {
         VisualVertex.circleColor = color;
     }
 
-    public static void resetColor(){
-
-        VisualVertex.circleColor = defaultColor;
-    }
-
     @FXML
     private Circle circle;
 
@@ -98,15 +87,15 @@ public class VisualVertex {
     public VisualVertex(){
     }
 
-    public DoubleProperty xCenterProperty() {
+    DoubleProperty xCenterProperty() {
         return xCenter;
     }
 
-    public double x() { return getItem().getLayoutX(); }
+    public double x() { return item.getLayoutX(); }
 
-    public double y() { return getItem().getLayoutY(); }
+    public double y() { return item.getLayoutY(); }
 
-    public DoubleProperty yCenterProperty() {
+    DoubleProperty yCenterProperty() {
         return yCenter;
     }
 
@@ -131,7 +120,6 @@ public class VisualVertex {
         item.widthProperty().addListener((ov,oldval,newval)->xCenter.setValue(xCenter.get()+0.5*((Double) newval-(Double) oldval)));
 
         item.heightProperty().addListener((ov,oldval,newval)->yCenter.setValue(yCenter.get()+0.5*((Double) newval-(Double) oldval)));
-
     }
 
     public void setTitle(String title) {
@@ -153,24 +141,4 @@ public class VisualVertex {
         item.setLayoutX(xCoors);
         item.setLayoutY(yCoors);
     }
-
-
-    private void setVerCM(VisualVertex vertex, Company company){
-
-        final ContextMenu contextMenu = new ContextMenu();
-
-        MenuItem addLink = new MenuItem("add link");
-
-        addLink.setOnAction(event -> {});
-
-        contextMenu.getItems().add(new MenuItem("add link"));
-        contextMenu.getItems().add(new MenuItem("edit..."));
-        contextMenu.getItems().add(new MenuItem("delete"));
-        vertex.getCircle().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if (event.getButton() == MouseButton.SECONDARY)
-                contextMenu.show(vertex.getCircle(), event.getScreenX()+10, event.getScreenY()+10);
-        });
-    }
-
 }
-

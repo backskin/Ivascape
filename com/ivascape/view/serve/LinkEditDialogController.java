@@ -1,14 +1,14 @@
 package ivascape.view.serve;
 
 import ivascape.MainApp;
-import ivascape.controller.IvascapeProject;
+import ivascape.controller.Project;
 import ivascape.model.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static ivascape.view.serve.MyAlerts.MyAlertType.*;
 import static ivascape.view.serve.MyAlerts.getAlert;
@@ -18,10 +18,12 @@ public class LinkEditDialogController {
     private boolean creating = true;
     private boolean okClicked = false;
     private boolean updatePrice = false;
-    private Double editPrice = -1.0;
-    private Company fstCompany = null;
-    private Company secCompany = null;
+    private Double price = -1.0;
+    private Company first = null;
+    private Company second = null;
     private Link editLink = null;
+
+    private Project project = Project.getInstance();
 
     @FXML
     TextField neighbourOneField;
@@ -49,23 +51,25 @@ public class LinkEditDialogController {
             neighbourTwoField.requestFocus();
     }
 
+
     public void setDialogStage(Stage dialogStage) {
 
         this.dialogStage = dialogStage;
     }
 
-    public void setCompanies(ArrayList<String> companies) {
+    public void setList(List<String> list, String... removed) {
 
-        if (creating)
-            TextFields.bindAutoCompletion(neighbourOneField, companies);
-
-        TextFields.bindAutoCompletion(neighbourTwoField, companies);
-
+        for (String s: removed
+             ) {
+            list.remove(s);
+        }
+        if (creating) TextFields.bindAutoCompletion(neighbourOneField, list);
+        TextFields.bindAutoCompletion(neighbourTwoField, list);
     }
 
     public void setCompanyOne(Company companyOne) {
 
-        fstCompany = companyOne;
+        first = companyOne;
         neighbourOneField.setText(companyOne.getTitle());
         neighbourOneField.setDisable(true);
         creating = false;
@@ -74,8 +78,8 @@ public class LinkEditDialogController {
     private void reloadView(){
 
         if (editLink != null){
-            neighbourOneField.setText(editLink.getOne().getTitle());
-            neighbourTwoField.setText(editLink.getTwo().getTitle());
+            neighbourOneField.setText(editLink.one().getTitle());
+            neighbourTwoField.setText(editLink.another().getTitle());
             priceField.setText(editLink.getPrice().toString());
 
         } else {
@@ -86,7 +90,7 @@ public class LinkEditDialogController {
     public void setLink(Link link){
 
         editLink = link;
-        secCompany = editLink.getOne();
+        second = editLink.one();
         neighbourOneField.setDisable(true);
         neighbourTwoField.setDisable(true);
         priceField.requestFocus();
@@ -98,10 +102,10 @@ public class LinkEditDialogController {
 
         String errorMessage = "";
 
-        try{
-            editPrice = Double.parseDouble(priceField.getText());
+        try {
+            price = Double.parseDouble(priceField.getText());
 
-            if (editPrice <= 0.0)
+            if (price <= 0.0)
                 errorMessage += MainApp.bundle.getString("error.negmoney") + "\n";
 
         } catch (NumberFormatException e){
@@ -110,18 +114,18 @@ public class LinkEditDialogController {
 
         if (!neighbourOneField.isDisabled()) {
 
-            fstCompany = IvascapeProject.getCompany(neighbourOneField.getText());
+            first = project.getCompany(neighbourOneField.getText());
 
-            if (fstCompany == null || fstCompany.getTitle().equals(neighbourTwoField.getText()))
+            if (first == null || first.getTitle().equals(neighbourTwoField.getText()))
 
                 errorMessage +=  MainApp.bundle.getString("error.wrongnb") + "\n";
         }
 
         if (!neighbourTwoField.isDisabled()) {
 
-            secCompany = IvascapeProject.getCompany(neighbourTwoField.getText());
+            second = project.getCompany(neighbourTwoField.getText());
 
-            if (secCompany == null || secCompany.getTitle().equals(neighbourOneField.getText()))
+            if (second == null || second.getTitle().equals(neighbourOneField.getText()))
 
                 errorMessage +=  MainApp.bundle.getString("error.wrongnb") + "\n";
         }
@@ -131,7 +135,7 @@ public class LinkEditDialogController {
             return true;
 
         } else {
-            getAlert(INVALID_FIELDS,dialogStage,errorMessage);
+            getAlert(INVALID_FIELDS, dialogStage, errorMessage);
             return false;
         }
     }
@@ -163,49 +167,44 @@ public class LinkEditDialogController {
         if (isInputValid()) {
 
             if (editLink != null) {
-                if (editPrice.equals(editLink.getPrice())){
+                if (price.equals(editLink.getPrice())){
 
                     dialogStage.close();
 
                 } else {
 
-                    editLink.setPrice(editPrice);
-                    IvascapeProject.getLink(editLink.getTwo(),editLink.getOne()).setPrice(editPrice);
-                    IvascapeProject.setSaved(false);
+                    editLink.setPrice(price);
+                    project.modifyLink(editLink.one(),editLink.another(), price);
                     okClicked = true;
+
                     dialogStage.close();
                 }
             } else {
 
-                editLink = IvascapeProject.getLink(secCompany, IvascapeProject.getCompany(neighbourOneField.getText()));
+                editLink = project.getLink(second, project.getCompany(neighbourOneField.getText()));
 
                 if (editLink != null) {
 
-                    if (!editPrice.equals(editLink.getPrice())) {
+                    if (!price.equals(editLink.getPrice())) {
 
                         if (getAlert(UPDATE_EDGE,dialogStage).getResult().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
 
-                            editLink.setPrice(editPrice);
-                            IvascapeProject.getLink(editLink.getTwo(),editLink.getOne()).setPrice(editPrice);
+                            editLink.setPrice(price);
+                            project.getLink(editLink.another(),editLink.one()).setPrice(price);
                             okClicked = true;
                             updatePrice = true;
 
                             dialogStage.close();
 
-
                         } else {
                             editLink = null;
-
                         }
                     } else {
                         dialogStage.close();
                     }
                 } else {
 
-                    editLink = IvascapeProject
-                            .addLink(fstCompany,
-                                    secCompany,
-                                    editPrice);
+                    editLink = project.addLink(first, second, price);
                     okClicked = true;
                     dialogStage.close();
                 }

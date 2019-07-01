@@ -1,7 +1,7 @@
 package ivascape.view.main;
 
 import ivascape.MainApp;
-import ivascape.controller.IvascapeProject;
+import ivascape.controller.Project;
 import ivascape.view.serve.VisualEdge;
 import ivascape.view.serve.VisualVertex;
 import javafx.collections.ListChangeListener;
@@ -20,7 +20,8 @@ import static ivascape.view.serve.MyAlerts.*;
 public class MapViewController {
 
     private GraphViewController GVController;
-
+    private Project project = Project.getInstance();
+    
     @FXML
     private Button cropView;
 
@@ -42,22 +43,15 @@ public class MapViewController {
 
     public void reloadView(){
 
-        if (!IvascapeProject.isSaved()) saveGV();
         zoomSlider.setValue(100);
         GVController.setGraph(
-                IvascapeProject.getGraph(),
-                IvascapeProject.getVerCoorsMap(),
+                project.getGraph(),
+                project.getCoorsMap(),
                 VisualVertex.defaultColor,
                 VisualEdge.defaultColor,
                 true);
 
         GVController.reloadView();
-    }
-
-    void saveGV(){
-
-        if (!IvascapeProject.isEmpty() && GVController.getSurface().getChildren().size() > 0)
-            IvascapeProject.setVerCoorsMap(GVController.getCoorsMap());
     }
 
     public MapViewController(){}
@@ -75,9 +69,12 @@ public class MapViewController {
 
             GVController = loader.getController();
 
-            IvascapeProject.savedProperty().addListener((observable, oldValue, newValue) ->  { if (newValue) GVController.setSurfaceChanged(false);});
+            project.savedProperty().addListener(
+                    (obs, ol, val) -> {
+                        if (val) GVController.getSurfaceChangedProperty().setValue(false);
+                    });
 
-            GVController.setVertexRadius(VisualVertex.defaultCircleRadius);
+            VisualVertex.setCircleRadius(VisualVertex.defaultCircleRadius);
 
             showHidePrices.selectedProperty().addListener((observable, oldValue, newValue) -> GVController.setPricesVisible(newValue));
 
@@ -103,8 +100,6 @@ public class MapViewController {
                     cropView.setDisable(false);
                 }
             });
-
-
 
         } catch (IOException e){
 
