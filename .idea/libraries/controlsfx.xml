@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="controlsfx-8.40.14">
+  <library name="controlsfx">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/lib/controlsfx/controlsfx-8.40.14.jar!/" />
     </CLASSES>
