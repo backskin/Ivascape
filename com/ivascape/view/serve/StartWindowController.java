@@ -1,10 +1,10 @@
 package ivascape.view.serve;
 
 import ivascape.MainApp;
-import ivascape.models.CoorsMap;
-import ivascape.controller.FileHandler;
-import ivascape.models.IvaGraph;
-import ivascape.models.Project;
+import ivascape.model.CoorsMap;
+import ivascape.handler.FileHandler;
+import ivascape.model.IvaGraph;
+import ivascape.model.Project;
 import ivascape.logic.*;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
@@ -73,7 +73,7 @@ public class StartWindowController {
     @FXML
     private void handleNew(){
 
-        Project.getInstance().newProject();
+        Project.get().newProject();
         startStage.close();
     }
 
@@ -84,7 +84,7 @@ public class StartWindowController {
 
         if (output == null) return;
 
-        Project.getInstance().loadProject(output.getOne(), output.getTwo(), output.getThree());
+        Project.get().loadProject(output.getOne(), output.getTwo(), output.getThree());
         startStage.close();
     }
 

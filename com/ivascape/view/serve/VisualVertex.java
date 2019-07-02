@@ -38,23 +38,12 @@ public class VisualVertex {
         }
     }
 
-    public static final Double defaultCircleRadius = 20.0;
+    private static final Double defaultCircleRadius = 20.0;
 
-    private vertexScaleListener myOwnListener;
+    private vertexScaleListener myOwnListener = new vertexScaleListener(this);
 
     public vertexScaleListener getScaleListener() {
         return myOwnListener;
-    }
-
-    public void setScaleListener() {
-        this.myOwnListener = new vertexScaleListener(this);
-    }
-
-    private static final DoubleProperty circleRadius = new SimpleDoubleProperty(60.0);
-
-    public static void setCircleRadius(double crcRadius) {
-
-        circleRadius.set(crcRadius);
     }
 
     public static final Color defaultColor = Color.CRIMSON;
@@ -110,7 +99,7 @@ public class VisualVertex {
             shadow.setRadius(shadow.getRadius() * (newValue.doubleValue() / oldValue.doubleValue()));
             name.fontProperty().setValue(Font.font("Arial", name.fontProperty().getValue().getSize()*(newValue.doubleValue() / oldValue.doubleValue())));
         });
-        circle.setRadius(circleRadius.doubleValue());
+        circle.setRadius(defaultCircleRadius);
         circle.setFill(circleColor);
 
         item.layoutXProperty().addListener((ov,oldval,newval)->xCenter.setValue(xCenter.get()+((Double) newval-(Double) oldval)));

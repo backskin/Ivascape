@@ -1,9 +1,9 @@
 package ivascape.view.main;
 import ivascape.MainApp;
-import ivascape.models.CoorsMap;
-import ivascape.controller.FileHandler;
-import ivascape.models.IvaGraph;
-import ivascape.models.Project;
+import ivascape.model.CoorsMap;
+import ivascape.handler.FileHandler;
+import ivascape.model.IvaGraph;
+import ivascape.model.Project;
 import ivascape.logic.*;
 import ivascape.view.serve.*;
 import javafx.application.Platform;
@@ -41,7 +41,7 @@ public class RootLayoutController {
 
     private MainApp mainApp;
 
-    private Project project = Project.getInstance();
+    private Project project = Project.get();
 
     @FXML
     private BorderPane rootLayout;
@@ -63,6 +63,9 @@ public class RootLayoutController {
 
     @FXML
     private MenuItem addEdge;
+
+    @FXML
+    private MenuItem export;
 
     @FXML
     private MenuItem SaveAs;

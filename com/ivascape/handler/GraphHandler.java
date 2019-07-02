@@ -1,4 +1,4 @@
-package ivascape.controller;
+package ivascape.handler;
 
 import ivascape.logic.Complex;
 import ivascape.logic.Graph;
@@ -15,7 +15,8 @@ public class GraphHandler<K extends Comparable<K>, V extends Complex<V>> {
         this.graph = graph;
     }
 
-    public static <K extends Comparable<K>, V extends Complex<V>> GraphHandler<K,V> factory(GenericGraph<K, V> graph){
+    public static <K extends Comparable<K>, V extends Complex<V>> GraphHandler<K,V>
+            factory(GenericGraph<K, V> graph){
 
         return new GraphHandler<>(graph);
     }

@@ -1,8 +1,8 @@
 package ivascape.view.serve;
 
 import ivascape.MainApp;
-import ivascape.models.Company;
-import ivascape.models.Project;
+import ivascape.model.Company;
+import ivascape.model.Project;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
@@ -14,7 +14,7 @@ import static ivascape.view.serve.MyAlerts.getAlert;
 
 public class CompanyEditDialogController {
 
-    private Project project = Project.getInstance();
+    private Project project = Project.get();
     private boolean okClicked = false;
     public boolean isOkClicked() {
         return okClicked;

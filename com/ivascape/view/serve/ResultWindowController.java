@@ -1,10 +1,10 @@
 package ivascape.view.serve;
 
 import ivascape.MainApp;
-import ivascape.controller.FileHandler;
-import ivascape.models.CoorsMap;
-import ivascape.models.IvaGraph;
-import ivascape.models.Project;
+import ivascape.handler.FileHandler;
+import ivascape.model.CoorsMap;
+import ivascape.model.IvaGraph;
+import ivascape.model.Project;
 import ivascape.view.main.GraphViewController;
 
 import javafx.fxml.FXML;
@@ -58,8 +58,8 @@ public class ResultWindowController {
 
     public ResultWindowController(){
 
-        graph = Project.getInstance().algorithmResult();
-        map = Project.getInstance().getCoorsMap();
+        graph = Project.get().algorithmResult();
+        map = Project.get().getCoorsMap();
     }
 
     @FXML

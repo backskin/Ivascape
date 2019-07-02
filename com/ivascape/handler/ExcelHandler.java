@@ -1,10 +1,10 @@
-package ivascape.controller;
+package ivascape.handler;
 
 import ivascape.MainApp;
 
-import ivascape.models.Company;
-import ivascape.models.IvaGraph;
-import ivascape.models.Link;
+import ivascape.model.Company;
+import ivascape.model.IvaGraph;
+import ivascape.model.Link;
 import javafx.stage.Stage;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;

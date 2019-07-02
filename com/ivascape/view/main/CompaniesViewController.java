@@ -1,8 +1,8 @@
 package ivascape.view.main;
 
 import ivascape.MainApp;
-import ivascape.models.Company;
-import ivascape.models.Project;
+import ivascape.model.Company;
+import ivascape.model.Project;
 import ivascape.view.serve.CompanyEditDialogController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,7 +30,7 @@ public class CompaniesViewController {
     private int lastSelected = 0;
 
     private MainWindowController MWController;
-    private Project project = Project.getInstance();
+    private Project project = Project.get();
 
     void setMWController(MainWindowController MWController) {
 

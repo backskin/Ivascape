@@ -1,6 +1,6 @@
 package ivascape;
 
-import ivascape.models.Project;
+import ivascape.model.Project;
 import ivascape.logic.Pair;
 import ivascape.view.main.RootLayoutController;
 import ivascape.view.serve.StartWindowController;
@@ -28,7 +28,7 @@ public class MainApp extends Application {
     private static Pair<Double,Double> XY = null;
     private static Pair<Double,Double> windowsize = null;
 
-    private Project project = Project.getInstance();
+    private Project project = Project.get();
 
     public static int currentTab = 0;
 

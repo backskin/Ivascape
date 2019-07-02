@@ -1,6 +1,6 @@
 package ivascape.view.serve;
 
-import ivascape.models.Link;
+import ivascape.model.Link;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -16,7 +16,7 @@ public class ResultTableElementController {
     private Label linkPrice;
 
 
-    public void setLink(Link link){
+    void setLink(Link link){
 
         this.companyOne.setText(link.one().getTitle());
         this.companyTwo.setText(link.another().getTitle());

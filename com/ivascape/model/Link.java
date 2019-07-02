@@ -1,4 +1,4 @@
-package ivascape.models;
+package ivascape.model;
 
 import ivascape.logic.Complex;
 import java.io.Serializable;

@@ -15,24 +15,11 @@ public class Triplet<A,B,C> {
     public A getOne() {
         return one;
     }
-
-    public void setOne(A one) {
-        this.one = one;
-    }
-
     public B getTwo() {
         return two;
     }
-
-    public void setTwo(B two) {
-        this.two = two;
-    }
-
     public C getThree() {
         return three;
     }
 
-    public void setThree(C three) {
-        this.three = three;
-    }
 }

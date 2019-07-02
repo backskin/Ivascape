@@ -1,8 +1,8 @@
 package ivascape.view.serve;
 
 import ivascape.MainApp;
-import ivascape.models.Company;
-import ivascape.models.Project;
+import ivascape.model.Company;
+import ivascape.model.Project;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -17,14 +17,12 @@ public class LinkEditDialogController {
 
     private double price = .0;
     private boolean confirmed = false;
-    private Project project = Project.getInstance();
+    private Project project = Project.get();
 
     @FXML
     TextField firstField;
-
     @FXML
     TextField secondField;
-
     @FXML
     TextField priceField;
 
@@ -41,25 +39,24 @@ public class LinkEditDialogController {
             secondField.requestFocus();
     }
 
-
     public void setDialogStage(Stage dialogStage) {
 
         this.dialogStage = dialogStage;
     }
 
-
     public void setFields(Company... coms) {
 
-        TextFields.bindAutoCompletion(firstField, project.getCompaniesList());
         List<String> namesList = project.getCompaniesList();
+        TextFields.bindAutoCompletion(firstField, namesList);
 
         if (coms.length > 0){
 
             firstField.setText(coms[0].getTitle());
             namesList.remove(coms[0].getTitle());
             firstField.setDisable(true);
-            TextFields.bindAutoCompletion(secondField, namesList);
         }
+        TextFields.bindAutoCompletion(secondField, namesList);
+
         if (coms.length > 1) {
             secondField.setText(coms[1].getTitle());
             secondField.setDisable(true);
@@ -67,9 +64,7 @@ public class LinkEditDialogController {
         }
     }
 
-    public boolean isConfirmed() {
-        return confirmed;
-    }
+    public boolean isConfirmed() { return confirmed; }
 
     @FXML
     private void handleOK() {
@@ -88,10 +83,13 @@ public class LinkEditDialogController {
             Company one = project.getCompany(firstField.getText());
             Company another = project.getCompany(secondField.getText());
 
-            if (one == null || another == null || firstField.getText().equals(secondField.getText())) {
+            if (one == null || another == null)
+                errorMessage += MainApp.bundle.getString("error.wrongcomname") + "\n";
 
-                errorMessage += MainApp.bundle.getString("error.wrongnb") + "\n";
-            }
+
+            if ( firstField.getText().equals(secondField.getText()))
+                errorMessage += MainApp.bundle.getString("error.reflex") + "\n";
+
 
             if (errorMessage.length() > 0) {
                 throw new Exception(errorMessage);

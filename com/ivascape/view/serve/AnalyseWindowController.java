@@ -1,10 +1,10 @@
 package ivascape.view.serve;
 
 import ivascape.MainApp;
-import ivascape.models.Company;
-import ivascape.models.Link;
+import ivascape.model.Company;
+import ivascape.model.Link;
 import ivascape.logic.*;
-import ivascape.models.Project;
+import ivascape.model.Project;
 import ivascape.view.main.GraphViewController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,7 +30,7 @@ import java.util.List;
 public class AnalyseWindowController {
 
     private Stage analyseStage;
-    private Project project = Project.getInstance();
+    private Project project = Project.get();
 
     @FXML
     private HBox componentTables;

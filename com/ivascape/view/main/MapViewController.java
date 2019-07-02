@@ -1,7 +1,7 @@
 package ivascape.view.main;
 
 import ivascape.MainApp;
-import ivascape.models.Project;
+import ivascape.model.Project;
 import ivascape.view.serve.VisualEdge;
 import ivascape.view.serve.VisualVertex;
 import javafx.collections.ListChangeListener;
@@ -20,7 +20,7 @@ import static ivascape.view.serve.MyAlerts.*;
 public class MapViewController {
 
     private GraphViewController GVController;
-    private Project project = Project.getInstance();
+    private Project project = Project.get();
     
     @FXML
     private Button cropView;
@@ -73,8 +73,6 @@ public class MapViewController {
                     (obs, ol, val) -> {
                         if (val) GVController.getSurfaceChangedProperty().setValue(false);
                     });
-
-            VisualVertex.setCircleRadius(VisualVertex.defaultCircleRadius);
 
             showHidePrices.selectedProperty().addListener((observable, oldValue, newValue) -> GVController.setPricesVisible(newValue));
 

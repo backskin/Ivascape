@@ -1,8 +1,8 @@
 package ivascape.view.main;
 
 import ivascape.MainApp;
-import ivascape.models.Project;
-import ivascape.models.Link;
+import ivascape.model.Project;
+import ivascape.model.Link;
 import ivascape.view.serve.LinkEditDialogController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,7 +22,7 @@ public class LinksViewCellController {
 
     private MainWindowController MWController;
     private GraphViewController GVController;
-    private Project project = Project.getInstance();
+    private Project project = Project.get();
 
     void setGVController(GraphViewController GVController) {
         this.GVController = GVController;
@@ -43,7 +43,7 @@ public class LinksViewCellController {
 
     }
 
-    public void setLink(Link link){
+    void setLink(Link link){
 
         this.link = link;
         reloadView();

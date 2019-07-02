@@ -21,73 +21,73 @@
             <Menu mnemonicParsing="false" style="-fx-focus-color: crimson;" text="%menu.file">
                 <MenuItem mnemonicParsing="false" onAction="#handleFileNew" text="%start.new">
                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+                        <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
                 <MenuItem mnemonicParsing="false" onAction="#handleFileOpen" text="%start.open">
                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
-                <SeparatorMenuItem mnemonicParsing="false"/>
+                <SeparatorMenuItem mnemonicParsing="false" />
                 <MenuItem fx:id="Save" mnemonicParsing="false" onAction="#handleFileSave" text="%menubutton.save">
                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
                 <MenuItem fx:id="SaveAs" mnemonicParsing="false" onAction="#handleFileSaveAs" text="%menubutton.saveas">
                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP"/>
+                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
-                <MenuItem mnemonicParsing="false" onAction="#handleExport" text="%menubutton.export">
+                <MenuItem fx:id="export" mnemonicParsing="false" onAction="#handleExport" text="%menubutton.export">
                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="DOWN" shortcut="UP"/>
+                        <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
-                <SeparatorMenuItem mnemonicParsing="false"/>
+                <SeparatorMenuItem mnemonicParsing="false" />
                 <MenuItem mnemonicParsing="false" onAction="#handleClose" text="%menubutton.close">
                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+                        <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
             </Menu>
             <Menu mnemonicParsing="false" style="-fx-focus-color: crimson;" text="%menu.edit">
                 <MenuItem mnemonicParsing="false" onAction="#handleAddVertex" text="%menubutton.addvertex">
                     <accelerator>
-                        <KeyCodeCombination alt="DOWN" code="A" control="UP" meta="UP" shift="UP" shortcut="UP"/>
+                        <KeyCodeCombination alt="DOWN" code="A" control="UP" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
                 <MenuItem fx:id="addEdge" mnemonicParsing="false" onAction="#handleAddEdge" text="%menubutton.addedge">
                     <accelerator>
-                        <KeyCodeCombination alt="DOWN" code="D" control="UP" meta="UP" shift="UP" shortcut="UP"/>
+                        <KeyCodeCombination alt="DOWN" code="D" control="UP" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
-                <SeparatorMenuItem mnemonicParsing="false"/>
+                <SeparatorMenuItem mnemonicParsing="false" />
                 <MenuItem mnemonicParsing="false" onAction="#handleEditAnalyse" text="%menubutton.analyse">
                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+                        <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
                 <MenuItem mnemonicParsing="false" onAction="#handleEditRun" text="%menubutton.run">
                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+                        <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
             </Menu>
             <Menu mnemonicParsing="false" style="-fx-focus-color: crimson;" text="%menu.help">
                 <Menu mnemonicParsing="false" text="%menubutton.lang">
-                    <CheckMenuItem fx:id="eng" mnemonicParsing="false" text="%menubutton.eng"/>
-                    <CheckMenuItem fx:id="rus" mnemonicParsing="false" text="%menubutton.rus"/>
+                    <CheckMenuItem fx:id="eng" mnemonicParsing="false" text="%menubutton.eng" />
+                    <CheckMenuItem fx:id="rus" mnemonicParsing="false" text="%menubutton.rus" />
                 </Menu>
                 <MenuItem mnemonicParsing="false" onAction="#handleHelpTips" text="%menubutton.help">
                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="F1" control="UP" meta="ANY" shift="UP" shortcut="UP"/>
+                        <KeyCodeCombination alt="UP" code="F1" control="UP" meta="ANY" shift="UP" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
                 <MenuItem mnemonicParsing="false" onAction="#handleHelpAbout" text="%menubutton.about">
                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="F2" control="UP" meta="ANY" shift="UP" shortcut="UP"/>
+                        <KeyCodeCombination alt="UP" code="F2" control="UP" meta="ANY" shift="UP" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
             </Menu>
@@ -96,62 +96,56 @@
     <bottom>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
             <Separator />
-            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                  minHeight="-Infinity" minWidth="0.0" spacing="12.0">
+            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="0.0" spacing="12.0">
                 <VBox.margin>
-                    <Insets/>
+                    <Insets />
                 </VBox.margin>
                 <padding>
-                    <Insets bottom="4.0" left="10.0" right="10.0" top="4.0"/>
+                    <Insets bottom="4.0" left="10.0" right="10.0" top="4.0" />
                 </padding>
                 <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
-                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                           minHeight="-Infinity" minWidth="-Infinity" text="%bottombar.file"/>
-                    <Label fx:id="fileName" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                           text="FileName.ivp"/>
+                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="%bottombar.file" />
+                    <Label fx:id="fileName" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="FileName.ivp" />
                 </HBox>
-                <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" orientation="VERTICAL"
-                           prefHeight="11.0" prefWidth="6.0" HBox.hgrow="ALWAYS">
+                <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" orientation="VERTICAL" prefHeight="11.0" prefWidth="6.0" HBox.hgrow="ALWAYS">
                     <HBox.margin>
-                        <Insets/>
+                        <Insets />
                     </HBox.margin>
                 </Separator>
                 <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
-                    <Label minHeight="-Infinity" minWidth="-Infinity" text="%bottombar.cmpamt"/>
+                    <Label minHeight="-Infinity" minWidth="-Infinity" text="%bottombar.cmpamt" />
                     <Label fx:id="cAmount" minWidth="-Infinity" text="0">
                         <HBox.margin>
-                            <Insets left="4.0" right="20.0"/>
+                            <Insets left="4.0" right="20.0" />
                         </HBox.margin>
                     </Label>
-                    <Label minHeight="-Infinity" minWidth="-Infinity" text="%bottombar.lnkamt"/>
+                    <Label minHeight="-Infinity" minWidth="-Infinity" text="%bottombar.lnkamt" />
                     <Label fx:id="lAmount" minWidth="-Infinity" text="0">
                         <HBox.margin>
-                            <Insets left="4.0" right="8.0"/>
+                            <Insets left="4.0" right="8.0" />
                         </HBox.margin>
                     </Label>
                 </HBox>
-                <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" orientation="VERTICAL"
-                           prefHeight="11.0" prefWidth="6.0" HBox.hgrow="ALWAYS">
+                <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" orientation="VERTICAL" prefHeight="11.0" prefWidth="6.0" HBox.hgrow="ALWAYS">
                     <HBox.margin>
-                        <Insets/>
+                        <Insets />
                     </HBox.margin>
                     <opaqueInsets>
-                        <Insets/>
+                        <Insets />
                     </opaqueInsets>
                 </Separator>
                 <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-                    <Label fx:id="isSaved" alignment="CENTER" contentDisplay="CENTER" minWidth="-Infinity"
-                           text="..." textAlignment="CENTER" textFill="#878585">
+                    <Label fx:id="isSaved" alignment="CENTER" contentDisplay="CENTER" minWidth="-Infinity" text="..." textAlignment="CENTER" textFill="#878585">
                         <font>
-                            <Font name="System Italic" size="12.0"/>
+                            <Font name="System Italic" size="12.0" />
                         </font>
                         <HBox.margin>
-                            <Insets right="8.0"/>
+                            <Insets right="8.0" />
                         </HBox.margin>
                     </Label>
                     <Circle fx:id="saveIcon" fill="#52da70" radius="6.0" strokeType="INSIDE">
                         <HBox.margin>
-                            <Insets left="4.0" right="4.0"/>
+                            <Insets left="4.0" right="4.0" />
                         </HBox.margin>
                     </Circle>
                 </HBox>

@@ -1,9 +1,9 @@
-package ivascape.controller;
+package ivascape.handler;
 
 import ivascape.MainApp;
 import ivascape.logic.Triplet;
-import ivascape.models.CoorsMap;
-import ivascape.models.IvaGraph;
+import ivascape.model.CoorsMap;
+import ivascape.model.IvaGraph;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -116,8 +116,10 @@ public class FileHandler {
         try {
             fos = new FileOutputStream(file.getAbsolutePath());
             oos = new ObjectOutputStream(fos);
+
             oos.writeObject(graph);
             oos.writeObject(map);
+
             oos.flush();
             oos.close();
 

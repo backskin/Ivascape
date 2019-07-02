@@ -1,6 +1,6 @@
-package ivascape.models;
+package ivascape.model;
 
-import ivascape.controller.*;
+import ivascape.handler.*;
 import ivascape.logic.*;
 
 import javafx.beans.property.BooleanProperty;
@@ -14,8 +14,9 @@ import java.util.List;
 
 public class Project implements Serializable {
 
-    private static Project instance = null;
-    public static Project getInstance(){
+    private static Project instance;
+
+    public static Project get(){
 
         if (instance == null)
             instance = new Project();

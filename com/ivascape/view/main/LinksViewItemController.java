@@ -1,8 +1,8 @@
 package ivascape.view.main;
 
 import ivascape.MainApp;
-import ivascape.models.Company;
-import ivascape.models.Project;
+import ivascape.model.Company;
+import ivascape.model.Project;
 import ivascape.view.serve.LinkEditDialogController;
 import ivascape.view.serve.MyAlerts;
 import javafx.fxml.FXML;
@@ -28,7 +28,7 @@ public class LinksViewItemController {
     private MainWindowController MWController;
     private GraphViewController GVController;
 
-    private Project project = Project.getInstance();
+    private Project project = Project.get();
 
     void setGVController(GraphViewController GVController) {
         this.GVController = GVController;

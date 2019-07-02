@@ -1,12 +1,10 @@
-package ivascape.models;
+package ivascape.model;
 
 import ivascape.logic.GenericGraph;
 
 public class IvaGraph extends GenericGraph<Company, Link> {
 
-    IvaGraph(){
-        super();
-    }
+    IvaGraph(){ super(); }
 
     void addEdge(Company start, Company end, double value) {
 
