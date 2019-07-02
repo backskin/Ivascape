@@ -21,6 +21,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -346,11 +347,11 @@ public class RootLayoutController {
 
         if (permit) {
 
-            Pair<IvaGraph, CoorsMap> output = FileHandler.loadFile(mainStage);
+            Triplet<File, IvaGraph, CoorsMap> output = FileHandler.loadFile(project.getFile(), mainStage);
 
             if (output != null) {
 
-                project.loadProject(output.getKey(),output.getValue());
+                project.loadProject(output.getOne(), output.getTwo(),output.getThree());
                 reloadView();
             }
         }
@@ -359,17 +360,9 @@ public class RootLayoutController {
     @FXML
     private void handleFileNew(){
 
-        boolean permit = true;
-
-        if (!project.isSaved() && project.getGraph().size() > 0) {
-
-            if (getAlert(MyAlertType.CLOSE_UNSAVED,mainStage).getResult().getButtonData().isCancelButton()) {
-
-                permit = false;
-            }
-        }
-
-        if (permit) {
+        if (project.isSaved() ||
+                getAlert(MyAlertType.CLOSE_UNSAVED,mainStage)
+                        .getResult().getButtonData().isDefaultButton()) {
 
             project.newProject();
             reloadView();
@@ -383,6 +376,7 @@ public class RootLayoutController {
             handleFileSaveAs();
         else
             project.saveProject();
+
         reloadStatusBar();
     }
 
@@ -394,7 +388,7 @@ public class RootLayoutController {
             project.setCoorsMap(MWController.getMVController().getGVController().getCoorsMap());
 
             project.setSaved(
-                    FileHandler.saveProject(mainStage, project.getFile()) || project.isSaved());
+                    FileHandler.saveAs(mainStage, project.getFile(), project.getGraph(), project.getCoorsMap()) != null || project.isSaved());
         }
 
         reloadStatusBar();
@@ -409,12 +403,11 @@ public class RootLayoutController {
     @FXML
     private void handleClose() {
 
-        if (project.getGraph().size() > 0
-                && !project.isSaved()
-                && (getAlert(MyAlertType.ON_EXIT, mainStage, "NOTSAVED").getResult()
-                                .getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE)) {
+        if (project.getGraph().size() > 0 &&
+                !project.isSaved() &&
+                getAlert(MyAlertType.ON_EXIT, mainStage, "NOTSAVED")
+                        .getResult().getButtonData().isCancelButton() )
             return;
-        }
 
         Platform.exit();
         System.exit(0);

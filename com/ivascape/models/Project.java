@@ -49,10 +49,11 @@ public class Project implements Serializable {
 
     public boolean isEmpty() { return graph == null; }
 
-    public void loadProject(IvaGraph graph, CoorsMap map) {
+    public void loadProject(File file, IvaGraph graph, CoorsMap map) {
 
         if (!isSaved()) return;
         erase();
+        setFile(file);
         this.graph = graph;
         coorsMap = map;
     }

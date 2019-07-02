@@ -19,10 +19,7 @@ public class GenericGraph<K extends Comparable<K>, V extends Complex<V>> impleme
     @Override
     public int indexOf(K ver){
 
-        for (int i = 0; i < size(); i ++){
-            if (getVertex(i) == ver) return i;
-        }
-        return -1;
+        return vers.indexOf(ver);
     }
 
     @Override
@@ -34,32 +31,31 @@ public class GenericGraph<K extends Comparable<K>, V extends Complex<V>> impleme
     @Override
     public void addVertex(K vertex) {
 
-        edges.add(new ArrayList<>());
+
         vers.add(vertex);
+        edges.add(new ArrayList<>());
 
-        for (int i = 0; i < vers.size() - 1; i++) {
+        for (int i = 0; i < vers.size(); i++) {
 
-            edges.get(edges.size() - 1).add(null);
+            edges.get(edges.size()-1).add(null);
             edges.get(i).add(null);
         }
 
-        edges.get(edges.size() - 1).add(null);
+        edges.get(edges.size()-1).add(null);
     }
-
     @Override
-    public void addEdge(K verStart, K verEnd, V value) {
+    public void addEdge(K start, K end, V value) {
 
-        if (vers.indexOf(verStart) < 0 || vers.indexOf(verEnd) < 0)
-            return;
+        int i = indexOf(start);
+        int j = indexOf(end);
+
+        if (i < 0 || j < 0) return;
 
         V mateValue = value.createMating();
         mateValue.setMating(value);
 
-        edges.get(vers.indexOf(verStart)).set(
-                vers.indexOf(verEnd), value);
-
-        edges.get(vers.indexOf(verEnd)).set(
-                vers.indexOf(verStart), value.getMating());
+        edges.get(i).set(j, value);
+        edges.get(i).set(j, value.getMating());
     }
 
     @Override
@@ -119,22 +115,21 @@ public class GenericGraph<K extends Comparable<K>, V extends Complex<V>> impleme
 
             private int i = 0;
             private int j = 0;
-            private List<List<V>> list = edges;
 
             @Override
             public boolean hasNext() {
-                return (i < list.size()) && (j < list.get(i).size());
+                return (i < edges.size()) && (j <= i);
             }
 
             @Override
             public V next() {
 
                 V value;
-                if (i >= list.size()) throw new IndexOutOfBoundsException();
+
                 do {
-                    value = list.get(i).get(j);
-                    if (j < i) j++;
-                    else { j = 0; i++; }
+                    value = edges.get(i).get(j);
+                    i = j < i ? i : i+1;
+                    j = j < i ? j+1 : 0;
                 }
                 while (value == null);
                 return value;

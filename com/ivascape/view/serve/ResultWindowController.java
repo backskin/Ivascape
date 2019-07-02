@@ -2,9 +2,11 @@ package ivascape.view.serve;
 
 import ivascape.MainApp;
 import ivascape.controller.FileHandler;
+import ivascape.models.CoorsMap;
 import ivascape.models.IvaGraph;
 import ivascape.models.Project;
 import ivascape.view.main.GraphViewController;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -16,7 +18,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Map;
 
 import static ivascape.view.serve.MyAlerts.getAlert;
 
@@ -27,7 +28,7 @@ public class ResultWindowController {
     private GraphViewController GVController;
 
     private final IvaGraph graph;
-    private final Map map;
+    private final CoorsMap map;
 
     private Double totalPrice = 0.0;
 
@@ -110,6 +111,7 @@ public class ResultWindowController {
                     }
                 }
             }
+
             totalPrice = Math.round(totalPrice*100)/100.0;
 
             totalPriceLabel.setText(totalPrice.toString());
@@ -124,10 +126,10 @@ public class ResultWindowController {
     @FXML
     private void handleSaveAs(){
 
-        double tmpscale = zoomSlider.getValue();
+        double sliderValue = zoomSlider.getValue();
         zoomSlider.setValue(100);
-        FileHandler.saveProject(resultStage,null);
-        zoomSlider.setValue(tmpscale);
+        FileHandler.saveAs(resultStage,null, graph, map);
+        zoomSlider.setValue(sliderValue);
     }
 
     @FXML

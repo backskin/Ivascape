@@ -1,10 +1,9 @@
 package ivascape.controller;
 
 import ivascape.MainApp;
-import ivascape.logic.Pair;
+import ivascape.logic.Triplet;
 import ivascape.models.CoorsMap;
 import ivascape.models.IvaGraph;
-import ivascape.models.Project;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -15,82 +14,61 @@ import static ivascape.view.serve.MyAlerts.MyAlertType.*;
 
 public class FileHandler {
 
-    private static Project project = Project.getInstance();
-
-    public static Pair<IvaGraph, CoorsMap> loadFile(final Stage ownerStage){
+    public static Triplet<File, IvaGraph, CoorsMap> loadFile(File file, final Stage ownerStage){
 
         FileChooser fileChooser = new FileChooser();
 
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter(MainApp.bundle.getString("filewindow.type.ivp"), "*.ivp")
+                new FileChooser.ExtensionFilter(
+                        MainApp.bundle.getString("filewindow.type.ivp"), "*.ivp")
         );
 
         fileChooser.setTitle(MainApp.bundle.getString("filewindow.title.open"));
 
-        if (project.getFile() == null)
+        if (file == null) {
 
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "\\Desktop"));
-        else
-            fileChooser.setInitialDirectory(new File(project.getFile().getParent()));
-
-        File file = fileChooser.showOpenDialog(ownerStage);
-        if (file == null) return null;
-
-        if (!project.isSaved() && project.getGraph().size() > 0) {
-
-            if (getAlert(CLOSE_UNSAVED, ownerStage).getResult().getButtonData().isCancelButton()) {
-
-                return null;
-            }
+            file = fileChooser.showOpenDialog(ownerStage);
         }
+        else
+            fileChooser.setInitialDirectory(new File(file.getParent()));
 
         return openIt(file,ownerStage);
     }
 
-    private static Pair<IvaGraph, CoorsMap> openIt(File file, Stage ownerStage){
+    private static Triplet<File, IvaGraph, CoorsMap> openIt(File file, Stage ownerStage) {
 
+        if (file == null) return null;
+        FileInputStream fis;
+        ObjectInputStream oin;
         try {
-            FileInputStream fis = new FileInputStream(file.getAbsolutePath());
-            ObjectInputStream oin = new ObjectInputStream(fis);
+            fis = new FileInputStream(file.getAbsolutePath());
+            oin = new ObjectInputStream(fis);
 
             Object result;
             Object coors;
 
-            try {
-                result = oin.readObject();
-                coors = oin.readObject();
+            result = oin.readObject();
+            coors = oin.readObject();
 
-            } catch (InvalidClassException e){
+            fis.close();
+            oin.close();
 
-                fis.close();
-                oin.close();
+            if (result instanceof IvaGraph && coors instanceof CoorsMap) {
+                return new Triplet<>(file, (IvaGraph) result, (CoorsMap) coors);
 
-                getAlert(LOAD_FAILED, ownerStage);
-                e.printStackTrace();
-                return null;
-            }
-
-            boolean checked =  result instanceof IvaGraph && coors instanceof CoorsMap;
-
-            if (checked) {
-                Project.getInstance().setFile(file);
-                return new Pair<>((IvaGraph) result, (CoorsMap) coors);
-            }
-            else {
-                fis.close();
-                oin.close();
-                throw new IOException("!SAS!");
+            } else {
+                throw new ClassCastException();
             }
 
         } catch (ClassNotFoundException | IOException e){
 
-            getAlert(LOAD_FAILED, ownerStage, e.getMessage());
-            e.printStackTrace();
+            getAlert(LOAD_FAILED, ownerStage);
             return null;
         }
     }
 
-    public static boolean saveProject(final Stage ownerStage, File file){
+    public static File saveAs(final Stage ownerStage, File file, IvaGraph graph, CoorsMap map){
 
         FileChooser fileChooser = new FileChooser();
 
@@ -100,18 +78,17 @@ public class FileHandler {
                 new FileChooser.ExtensionFilter(
                         MainApp.bundle.getString("filewindow.type.ivp"), "*.ivp"));
 
-        if (file == null)
-            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+"\\Desktop"));
+        if (file == null) {
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "\\Desktop"));
+            file = fileChooser.showSaveDialog(ownerStage);
+        }
         else {
-            fileChooser.setInitialFileName(project.getFile().getName());
-            fileChooser.setInitialDirectory(new File(project.getFile().getParent()));
+            fileChooser.setInitialFileName(file.getName());
+            fileChooser.setInitialDirectory(new File(file.getParent()));
         }
 
-        return saveIt(
-                fileChooser.showSaveDialog(ownerStage),
-                project.getGraph(),
-                project.getCoorsMap()
-        );
+        saveIt(file, graph, map);
+        return file;
     }
 
     public static void exportToXLS(IvaGraph graph, final Stage ownerStage){
@@ -121,7 +98,8 @@ public class FileHandler {
         fileChooser.setTitle(MainApp.bundle.getString("filewindow.title.save"));
 
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter(MainApp.bundle.getString("filewindow.type.xls"),"*.xls")
+                new FileChooser.ExtensionFilter(
+                        MainApp.bundle.getString("filewindow.type.xls"),"*.xls")
         );
 
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+"\\Desktop"));
@@ -129,9 +107,9 @@ public class FileHandler {
         ExcelHandler.saveItAsXLS(graph, fileChooser.showSaveDialog(ownerStage));
     }
 
-    public static boolean saveIt(File file, IvaGraph graph, CoorsMap map){
+    public static void saveIt(File file, IvaGraph graph, CoorsMap map){
 
-        if (file == null) return false;
+        if (file == null) return;
 
         FileOutputStream fos;
         ObjectOutputStream oos;
@@ -148,11 +126,6 @@ public class FileHandler {
 
             getAlert(SAVE_FAILED, null);
             e.printStackTrace();
-            return false;
         }
-
-        project.setFile(file);
-
-        return true;
     }
 }

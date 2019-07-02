@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.Locale;
 
 public class StartWindowController {
@@ -20,10 +21,10 @@ public class StartWindowController {
     private static boolean restart = false;
     private boolean terminate = false;
 
-    private static double xOffset = 0;
-    private static double yOffset = 0;
-    private static double x = 0;
-    private static double y = 0;
+    private static double xOffset = .0;
+    private static double yOffset = .0;
+    private static double x = .0;
+    private static double y = .0;
 
     public StartWindowController() {
     }
@@ -52,13 +53,14 @@ public class StartWindowController {
     }
 
     public void setStartStage(Stage startStage){
+
         this.startStage = startStage;
         if (restart && (x + y > 0)) {
             startStage.setX(x);
             startStage.setY(y);
         }
-        restart = false;
 
+        restart = false;
     }
 
     public boolean isTerminate(){ return terminate;}
@@ -78,11 +80,11 @@ public class StartWindowController {
     @FXML
     private void handleOpen() {
 
-        Pair<IvaGraph, CoorsMap> output = FileHandler.loadFile(startStage);
+        Triplet<File, IvaGraph, CoorsMap> output = FileHandler.loadFile(null, startStage);
 
-        if (output == null || output.getKey() == null) return;
+        if (output == null) return;
 
-        Project.getInstance().loadProject(output.getKey(), output.getValue());
+        Project.getInstance().loadProject(output.getOne(), output.getTwo(), output.getThree());
         startStage.close();
     }
 
