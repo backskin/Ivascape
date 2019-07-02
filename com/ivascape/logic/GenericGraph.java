@@ -31,7 +31,6 @@ public class GenericGraph<K extends Comparable<K>, V extends Complex<V>> impleme
     @Override
     public void addVertex(K vertex) {
 
-
         vers.add(vertex);
         edges.add(new ArrayList<>());
 
@@ -67,33 +66,33 @@ public class GenericGraph<K extends Comparable<K>, V extends Complex<V>> impleme
     @Override
     public V getEdge(K start, K end) {
 
-        if (vers.indexOf(start) < 0 || vers.indexOf(end) < 0) return null;
-
-        return getEdge(vers.indexOf(start), vers.indexOf(end));
+        int i = indexOf(start);
+        int j = indexOf(end);
+        return i < 0 || j < 0 ? null : getEdge(i, j);
     }
 
     @Override
     public void removeVertex(K vertex) {
 
-        if (vers.indexOf(vertex) < 0) return;
+        int i = indexOf(vertex);
+        if (i < 0) return;
+        for (List<V> edge : edges)
+            edge.remove(i);
 
-        for (List<V> i : edges)
-            i.remove(vers.indexOf(vertex));
-
-        edges.remove(vers.indexOf(vertex));
+        edges.remove(i);
         vers.remove(vertex);
     }
 
     @Override
     public void removeEdge(K start, K end) {
 
-        if (vers.indexOf(start) < 0 || vers.indexOf(end) < 0)
+        int i = indexOf(start);
+        int j = indexOf(end);
 
-            return;
+        if (i < 0 || j < 0) return;
 
-        edges.get(vers.indexOf(start)).set(vers.indexOf(end), null);
-        edges.get(vers.indexOf(end)).set(vers.indexOf(start), null);
-
+        edges.get(i).set(j, null);
+        edges.get(j).set(i, null);
     }
 
     @Override
@@ -111,29 +110,15 @@ public class GenericGraph<K extends Comparable<K>, V extends Complex<V>> impleme
     @Override
     public Iterator<V> getEdgeIterator() {
 
-        return new Iterator<V>() {
+        return new ArrayList<V>(){{
+            for (int i = 0; i < size(); i++) {
+                for (int j = 0; j < size(); j++) {
 
-            private int i = 0;
-            private int j = 0;
-
-            @Override
-            public boolean hasNext() {
-                return (i < edges.size()) && (j <= i);
-            }
-
-            @Override
-            public V next() {
-
-                V value;
-
-                do {
-                    value = edges.get(i).get(j);
-                    i = j < i ? i : i+1;
-                    j = j < i ? j+1 : 0;
+                    V value = edges.get(i).get(j);
+                    if (value != null) add(value);
                 }
-                while (value == null);
-                return value;
             }
-        };
+            sort(V::compareTo);
+        }}.iterator();
     }
 }

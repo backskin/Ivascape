@@ -32,6 +32,14 @@ public class AnalyseWindowController {
     private Stage analyseStage;
     private Project project = Project.getInstance();
 
+    @FXML
+    private HBox componentTables;
+
+    @FXML
+    private Label cAmount;
+
+    public AnalyseWindowController(){}
+
     public void setAnalyseStage(Stage analyseStage) {
         this.analyseStage = analyseStage;
 
@@ -40,14 +48,6 @@ public class AnalyseWindowController {
             VisualEdge.setColor(VisualEdge.defaultColor);
         });
     }
-
-    @FXML
-    private HBox componentTables;
-
-    @FXML
-    private Label cAmount;
-
-    public AnalyseWindowController(){}
 
     @FXML
     private void initialize(){

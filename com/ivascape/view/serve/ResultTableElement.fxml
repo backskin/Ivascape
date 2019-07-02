@@ -11,40 +11,36 @@
       fx:controller="ivascape.view.serve.ResultTableElementController">
     <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" prefWidth="600.0"
           spacing="12.0">
-        <children>
-            <Label text="%editwindows.btwn"/>
-            <Label fx:id="companyOne" alignment="CENTER" contentDisplay="CENTER" minWidth="100.0" text="One">
-                <font>
-                    <Font name="System Bold" size="12.0"/>
-                </font>
-            </Label>
-            <Label text="%editwindows.and">
-                <padding>
-                    <Insets left="16.0" right="16.0"/>
-                </padding>
-            </Label>
-            <Label fx:id="companyTwo" alignment="CENTER" contentDisplay="CENTER" minWidth="100.0" text="Another">
-                <font>
-                    <Font name="System Bold" size="12.0"/>
-                </font>
-            </Label>
-            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
-                <children>
-                    <Label text="%edittabs.price"/>
-                    <Label fx:id="linkPrice" text="price">
-                        <font>
-                            <Font name="System Bold" size="12.0"/>
-                        </font>
-                    </Label>
-                </children>
-                <padding>
-                    <Insets right="16.0"/>
-                </padding>
-            </HBox>
-        </children>
         <padding>
             <Insets left="12.0"/>
         </padding>
+        <Label text="%editwindows.btwn"/>
+        <Label fx:id="companyOne" alignment="CENTER" contentDisplay="CENTER" minWidth="100.0" text="One">
+            <font>
+                <Font name="System Bold" size="12.0"/>
+            </font>
+        </Label>
+        <Label text="%editwindows.and">
+            <padding>
+                <Insets left="16.0" right="16.0"/>
+            </padding>
+        </Label>
+        <Label fx:id="companyTwo" alignment="CENTER" contentDisplay="CENTER" minWidth="100.0" text="Another">
+            <font>
+                <Font name="System Bold" size="12.0"/>
+            </font>
+        </Label>
+        <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+            <padding>
+                <Insets right="16.0"/>
+            </padding>
+            <Label text="%edittabs.price"/>
+            <Label fx:id="linkPrice" text="price">
+                <font>
+                    <Font name="System Bold" size="12.0"/>
+                </font>
+            </Label>
+        </HBox>
     </HBox>
     <Separator prefWidth="200.0"/>
 </VBox>

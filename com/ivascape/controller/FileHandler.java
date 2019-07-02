@@ -25,20 +25,19 @@ public class FileHandler {
 
         fileChooser.setTitle(MainApp.bundle.getString("filewindow.title.open"));
 
-        if (file == null) {
+        fileChooser.setInitialDirectory(
+                new File(file == null ?
+                        System.getProperty("user.home") + "\\Desktop"
+                        : file.getParent()));
 
-            fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "\\Desktop"));
-            file = fileChooser.showOpenDialog(ownerStage);
-        }
-        else
-            fileChooser.setInitialDirectory(new File(file.getParent()));
-
+        file = fileChooser.showOpenDialog(ownerStage);
         return openIt(file,ownerStage);
     }
 
     private static Triplet<File, IvaGraph, CoorsMap> openIt(File file, Stage ownerStage) {
 
         if (file == null) return null;
+
         FileInputStream fis;
         ObjectInputStream oin;
         try {

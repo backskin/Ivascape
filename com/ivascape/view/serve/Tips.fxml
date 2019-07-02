@@ -12,90 +12,74 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="450.0" xmlns="http://javafx.com/javafx"
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0"
+      prefWidth="450.0" xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml" fx:controller="ivascape.view.serve.TipsController">
-    <children>
-      <ImageView fx:id="splash" fitHeight="75.0" fitWidth="450.0" pickOnBounds="true" preserveRatio="true" />
-        <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" vbarPolicy="ALWAYS" VBox.vgrow="ALWAYS">
-            <content>
-                <VBox maxWidth="450.0" minWidth="450.0" prefWidth="450.0">
-                    <children>
-                  <TitledPane expanded="false" text="%prompt.changelog">
-                     <content>
-                        <ScrollPane hbarPolicy="NEVER" prefHeight="120.0" prefWidth="200.0">
-                           <content>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%tips.changelog" />
-                           </content>
-                           <padding>
-                              <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
-                           </padding>
-                        </ScrollPane>
-                     </content>
-                  </TitledPane>
-                        <Label alignment="CENTER" contentDisplay="CENTER" text="%tips.caption">
-                            <font>
-                                <Font size="18.0" />
-                            </font>
-                        </Label>
-                        <TextFlow maxWidth="450.0" prefWidth="450.0">
-                            <padding>
-                                <Insets left="12.0" right="20.0" top="12.0" />
-                            </padding>
-                            <children>
-                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%tips.begin" />
-                            </children>
-                        </TextFlow>
-                        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" text="%tips.basics">
-                            <font>
-                                <Font size="18.0" />
-                            </font>
-                            <VBox.margin>
-                                <Insets top="24.0" />
-                            </VBox.margin>
-                        </Label>
-                        <TextFlow maxWidth="450.0" prefWidth="450.0">
-                            <padding>
-                                <Insets left="12.0" right="20.0" top="12.0" />
-                            </padding>
-                            <children>
-                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%tips.basicsnotes" />
-                            </children>
-                        </TextFlow>
-                        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="73.0" text="%tips.tools">
-                            <font>
-                                <Font size="18.0" />
-                            </font>
-                            <VBox.margin>
-                                <Insets top="24.0" />
-                            </VBox.margin>
-                        </Label>
-                        <TextFlow layoutX="10.0" layoutY="100.0" maxWidth="450.0" prefWidth="450.0">
-                            <padding>
-                                <Insets left="12.0" right="20.0" top="12.0" />
-                            </padding>
-                            <children>
-                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%tips.toolsnotes" />
-                            </children>
-                        </TextFlow>
-                        <Label alignment="CENTER" contentDisplay="CENTER" text="%tips.fin">
-                            <font>
-                                <Font size="18.0" />
-                            </font>
-                            <padding>
-                                <Insets bottom="12.0" top="12.0" />
-                            </padding>
-                        </Label>
-                    </children>
+    <ImageView fx:id="splash" fitHeight="75.0" fitWidth="450.0" pickOnBounds="true" preserveRatio="true"/>
+    <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" vbarPolicy="ALWAYS" VBox.vgrow="ALWAYS">
+        <VBox maxWidth="450.0" minWidth="450.0" prefWidth="450.0">
+            <padding>
+                <Insets left="24.0" right="24.0" top="20.0"/>
+            </padding>
+            <TitledPane expanded="false" text="%prompt.changelog">
+                <ScrollPane hbarPolicy="NEVER" prefHeight="120.0" prefWidth="200.0">
                     <padding>
-                        <Insets left="24.0" right="24.0" top="20.0" />
+                        <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
                     </padding>
-                </VBox>
-            </content>
-        </ScrollPane>
-        <HBox alignment="CENTER" maxHeight="40.0" minHeight="40.0" prefHeight="40.0" prefWidth="200.0">
-            <children>
-                <Button mnemonicParsing="false" onAction="#handleGotIt" prefHeight="30.0" prefWidth="120.0" text="%button.gotit" />
-            </children>
-        </HBox>
-    </children>
+                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%tips.changelog"/>
+                </ScrollPane>
+            </TitledPane>
+            <Label alignment="CENTER" contentDisplay="CENTER" text="%tips.caption">
+                <font>
+                    <Font size="18.0"/>
+                </font>
+            </Label>
+            <TextFlow maxWidth="450.0" prefWidth="450.0">
+                <padding>
+                    <Insets left="12.0" right="20.0" top="12.0"/>
+                </padding>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%tips.begin"/>
+            </TextFlow>
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" text="%tips.basics">
+                <font>
+                    <Font size="18.0"/>
+                </font>
+                <VBox.margin>
+                    <Insets top="24.0"/>
+                </VBox.margin>
+            </Label>
+            <TextFlow maxWidth="450.0" prefWidth="450.0">
+                <padding>
+                    <Insets left="12.0" right="20.0" top="12.0"/>
+                </padding>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%tips.basicsnotes"/>
+            </TextFlow>
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="73.0" text="%tips.tools">
+                <font>
+                    <Font size="18.0"/>
+                </font>
+                <VBox.margin>
+                    <Insets top="24.0"/>
+                </VBox.margin>
+            </Label>
+            <TextFlow layoutX="10.0" layoutY="100.0" maxWidth="450.0" prefWidth="450.0">
+                <padding>
+                    <Insets left="12.0" right="20.0" top="12.0"/>
+                </padding>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%tips.toolsnotes"/>
+            </TextFlow>
+            <Label alignment="CENTER" contentDisplay="CENTER" text="%tips.fin">
+                <font>
+                    <Font size="18.0"/>
+                </font>
+                <padding>
+                    <Insets bottom="12.0" top="12.0"/>
+                </padding>
+            </Label>
+        </VBox>
+    </ScrollPane>
+    <HBox alignment="CENTER" maxHeight="40.0" minHeight="40.0" prefHeight="40.0" prefWidth="200.0">
+        <Button mnemonicParsing="false" onAction="#handleGotIt" prefHeight="30.0" prefWidth="120.0"
+                text="%button.gotit"/>
+    </HBox>
 </VBox>

@@ -20,7 +20,7 @@ public class MainWindowController {
 
     private CompaniesViewController CVController;
 
-    private LinksViewController TVController;
+    private LinksViewController LVController;
 
     private MapViewController MVController;
 
@@ -47,7 +47,7 @@ public class MainWindowController {
     private void initialize(){
 
         CVController = loadViewToTab("view/main/CompaniesView.fxml", CompaniesView);
-        TVController = loadViewToTab("view/main/LinksView.fxml", TableView);
+        LVController = loadViewToTab("view/main/LinksView.fxml", TableView);
         MVController = loadViewToTab("view/main/MapView.fxml", MapView);
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> MainApp.currentTab = tabPane.getSelectionModel().getSelectedIndex());
         tabPane.getSelectionModel().select(MainApp.currentTab);
@@ -57,9 +57,9 @@ public class MainWindowController {
 
         this.mainStage = mainStage;
         CVController.setMWController(this);
-        TVController.setMWController(this);
+        LVController.setMWController(this);
         CVController.setGVController(MVController.getGVController());
-        TVController.setGVController(MVController.getGVController());
+        LVController.setGVController(MVController.getGVController());
     }
 
     Stage getMainStage() {
@@ -102,14 +102,24 @@ public class MainWindowController {
         CVController.reloadView();
     }
 
-    void reloadTV(){
-        TVController.reloadView();
+    void reloadLV(){
+        LVController.reloadView();
+    }
+
+    void reloadMV(){
+
+        MVController.reloadView();
+    }
+
+    void reloadGV(){
+
+        MVController.getGVController().reloadView();
     }
 
     void reloadAll(){
 
         reloadCV();
-        reloadTV();
+        reloadLV();
         MVController.reloadView();
         rootController.reloadStatusBar();
     }

@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Project implements Serializable {
@@ -16,7 +17,9 @@ public class Project implements Serializable {
     private static Project instance = null;
     public static Project getInstance(){
 
-        if (instance == null) instance = new Project();
+        if (instance == null)
+            instance = new Project();
+
         return instance;
     }
 
@@ -36,7 +39,6 @@ public class Project implements Serializable {
     public void setFile(File file) {
 
         this.file = file;
-        saved.setValue(true);
     }
 
     public boolean isSaved() { return saved.get(); }
@@ -51,33 +53,32 @@ public class Project implements Serializable {
 
     public void loadProject(File file, IvaGraph graph, CoorsMap map) {
 
-        if (!isSaved()) return;
-        erase();
         setFile(file);
+        setSaved(true);
         this.graph = graph;
         coorsMap = map;
     }
 
     public void newProject() {
 
-        if (isSaved()) {
-            erase();
-            graph = new IvaGraph();
-        }
+        coorsMap = new CoorsMap();
+        saved.setValue(true);
+        file = null;
+        graph = new IvaGraph();
     }
 
     public void saveProject(){
 
         FileHandler.saveIt(file, graph, coorsMap);
+        setSaved(true);
     }
 
     public Company getCompany(String title){
 
-        for (int i = 0; i < graph.size(); i++){
+        for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext();){
 
-            if (graph.getVertex(i).getTitle().equals(title))
-
-                return graph.getVertex(i);
+            Company c = i.next();
+            if (c.getTitle().equals(title)) return c;
         }
         return null;
     }
@@ -91,9 +92,10 @@ public class Project implements Serializable {
 
         List<String> output = new ArrayList<>();
 
-        for (int i = 0; i < graph.size(); i++)
+        for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext();){
 
-            output.add(graph.getVertex(i).getTitle());
+            output.add(i.next().getTitle());
+        }
 
         return output;
     }
@@ -113,16 +115,16 @@ public class Project implements Serializable {
         return GraphHandler.factory(graph).getEdgeSize();
     }
 
-    public Link addLink(Company one, Company two, double price){
 
-        graph.addEdge(one,two,new Link(one,two,price));
+    public void addLink(Company one, Company two, double price){
+
+        graph.addEdge(one, two, price);
         setSaved(false);
-        return graph.getEdge(one, two);
     }
 
     public void removeLink(Link link){
 
-        graph.removeEdge(link.one(), link.another());
+        graph.removeEdge(link);
         setSaved(false);
     }
 
@@ -136,19 +138,5 @@ public class Project implements Serializable {
     public List<GenericGraph<Company,Link>> getComponents(){
 
        return GraphHandler.factory(graph).getConnectComponents();
-    }
-
-    public void modifyLink(Company one, Company another, Double price) {
-
-        graph.getEdge(one,another).setPrice(price);
-        setSaved(false);
-    }
-
-    private void erase(){
-
-        coorsMap = new CoorsMap();
-        saved.setValue(true);
-        graph = null;
-        file = null;
     }
 }

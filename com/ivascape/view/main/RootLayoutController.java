@@ -124,8 +124,8 @@ public class RootLayoutController {
     void reloadStatusBar(){
 
         fileName.setText(project.getFile() != null ? project.getFile().getName() : "Empty");
-        cAmount.setText(Integer.toString(project.getGraph().size()));
-        lAmount.setText(Integer.toString(project.linksAmount()));
+        cAmount.setText(project.getGraph().size() + "");
+        lAmount.setText(project.linksAmount() + "");
         SaveAs.setDisable(project.getGraph().size() == 0);
         Save.setDisable(project.getGraph().size() == 0 || project.isSaved());
     }
@@ -242,16 +242,13 @@ public class RootLayoutController {
             Scene scene = new Scene(editDialog);
             dialogStage.setScene(scene);
             LEDController.setDialogStage(dialogStage);
-            LEDController.setList(project.getCompaniesList());
+            LEDController.setFields();
             dialogStage.showAndWait();
 
-            if (LEDController.isOkClicked()) {
-                if (LEDController.isUpdatePrice())
-                    MWController.getMVController().getGVController().editEdge(LEDController.getEditLink());
-                else
-                    MWController.getMVController().getGVController().addEdge(LEDController.getEditLink());
+            if (LEDController.isConfirmed()) {
+
                 MWController.reloadCV();
-                MWController.reloadTV();
+                MWController.reloadLV();
                 MWController.getMVController().getGVController().reloadView();
             }
 
@@ -340,18 +337,15 @@ public class RootLayoutController {
     @FXML
     private void handleFileOpen(){
 
-        boolean permit = !project.isSaved()
-                && project.getGraph().size() > 0
-                && getAlert(
-                        MyAlertType.CLOSE_UNSAVED, mainStage).getResult().getButtonData().isCancelButton();
-
-        if (permit) {
+        if (project.isSaved() ||
+                getAlert(MyAlertType.CLOSE_UNSAVED, mainStage)
+                        .getResult().getButtonData().isDefaultButton()) {
 
             Triplet<File, IvaGraph, CoorsMap> output = FileHandler.loadFile(project.getFile(), mainStage);
 
             if (output != null) {
 
-                project.loadProject(output.getOne(), output.getTwo(),output.getThree());
+                project.loadProject(output.getOne(), output.getTwo(), output.getThree());
                 reloadView();
             }
         }
@@ -386,9 +380,14 @@ public class RootLayoutController {
         if (project.getGraph().size() > 0) {
 
             project.setCoorsMap(MWController.getMVController().getGVController().getCoorsMap());
+            File file = FileHandler.saveAs(mainStage,
+                    project.getFile(),
+                    project.getGraph(),
+                    project.getCoorsMap());
 
-            project.setSaved(
-                    FileHandler.saveAs(mainStage, project.getFile(), project.getGraph(), project.getCoorsMap()) != null || project.isSaved());
+            if (file == null) return;
+            project.setFile(file);
+            project.setSaved(true);
         }
 
         reloadStatusBar();

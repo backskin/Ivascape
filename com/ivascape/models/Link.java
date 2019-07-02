@@ -1,18 +1,14 @@
 package ivascape.models;
 
 import ivascape.logic.Complex;
-
 import java.io.Serializable;
 
 public class Link implements Complex<Link>, Serializable {
 
-    private Link mate = null;
-
     private final Company start;
-
     private final Company end;
-
     private Double price;
+    private Link mate = null;
 
     public Link(Company start, Company end, double price) {
 
@@ -24,7 +20,7 @@ public class Link implements Complex<Link>, Serializable {
     @Override
     public int compareTo(Link o) {
 
-        return Double.compare(this.price,o.price);
+        return Double.compare(this.price, o.price);
     }
 
     public void setPrice(double price) {
@@ -32,34 +28,20 @@ public class Link implements Complex<Link>, Serializable {
         this.price = Math.round(price*100)/100.0;
     }
 
-    public Double getPrice() {
-        return price;
-    }
-
-    public Company one() {
-        return start;
-    }
-
-    public Company another() {
-        return end;
-    }
+    public Double getPrice() { return price;}
+    public Company one() { return start; }
+    public Company another() { return end; }
 
     @Override
-    public Link getMating() {
+    public Link getMating() { return mate; }
 
-        return mate;
-    }
+    @Override
+    public void setMating(Link mate) { this.mate = mate; }
 
     @Override
     public Link createMating() {
 
         mate = new Link(end, start, price);
         return mate;
-    }
-
-    @Override
-    public void setMating(Link mate) {
-
-        this.mate = mate;
     }
 }

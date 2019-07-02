@@ -48,14 +48,8 @@ public class VisualEdge {
         }
     }
 
-    private final ChangeListener[] myOwnListener = new ChangeListener[2];
-
     private final ChangeListener<Number> scaleListener;
     private final ChangeListener<Boolean> priceListener;
-
-    public ChangeListener getListener(int index) {
-        return myOwnListener[index];
-    }
 
     public ChangeListener<Boolean> getPriceListener(){
 

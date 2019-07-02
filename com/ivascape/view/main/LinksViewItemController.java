@@ -100,18 +100,15 @@ public class LinksViewItemController {
             Scene scene = new Scene(editDialog);
             dialogStage.setScene(scene);
 
+            LEDController.setFields(company);
             LEDController.setDialogStage(dialogStage);
-            LEDController.setList(project.getCompaniesList(), company.getTitle());
 
-            LEDController.setCompanyOne(company);
 
             dialogStage.showAndWait();
 
-            if (LEDController.isOkClicked()) {
-
-                GVController.addEdge(LEDController.getEditLink());
+            if (LEDController.isConfirmed()) {
                 GVController.reloadView();
-                MWController.reloadTV();
+                MWController.reloadLV();
             }
 
         } catch (IOException e){

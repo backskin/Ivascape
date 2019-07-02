@@ -11,6 +11,7 @@ import javafx.beans.property.*;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -191,7 +192,7 @@ public class GraphViewController {
         }
     }
 
-    void addVertex(Company company){
+    private void addVertex(Company company){
 
         FXMLLoader loader = new FXMLLoader(VisualVertex.class.getResource("VisualVertex.fxml"));
 
@@ -221,39 +222,7 @@ public class GraphViewController {
         project.setCoorsMap(getCoorsMap());
     }
 
-    void delVertex(Company company){
-
-        scale.removeListener(visVerMap.get(company).getScaleListener());
-        delEdgesOfVertex(company);
-        surface.getChildren().remove(visVerMap.get(company).getItem());
-        dragMap.remove(visVerMap.get(company).getCircle());
-        visVerMap.remove(company);
-
-        project.setCoorsMap(getCoorsMap());
-    }
-
-    private void delEdgesOfVertex(Company company){
-
-        for (int i = 0; i < graph.size(); i++)
-
-            if (graph.getVertex(i) == company) {
-
-                for (int j = 0; j < graph.size(); j++)
-
-                    if (graph.getEdge(i, j) != null
-                            && visEdgeMap.get(graph.getEdge(i, j)) != null)
-
-                        delEdge(graph.getEdge(i, j));
-                return;
-            }
-    }
-
-    private VisualEdge getEdge(Link link) {
-
-        return visEdgeMap.get(visEdgeMap.get(link) != null ? link : link.getMating());
-    }
-
-    void addEdge(Link link){
+    private void addEdge(Link link){
 
         VisualVertex one = visVerMap.get(link.one());
         VisualVertex another = visVerMap.get(link.another());
@@ -264,19 +233,48 @@ public class GraphViewController {
         visEdgeMap.put(link, vE);
     }
 
-    void editEdge(Link link){
+    void removeVertex(Company company){
 
-        getEdge(link).setPrice(link.getPrice());
+        scale.removeListener(visVerMap.get(company).getScaleListener());
+        removeEdgesOf(company);
+        surface.getChildren().remove(visVerMap.get(company).getItem());
+        dragMap.remove(visVerMap.get(company).getCircle());
+        visVerMap.remove(company);
+
+        project.setCoorsMap(getCoorsMap());
     }
 
-    void delEdge(Link link) {
 
-        VisualEdge edge = getEdge(link);
+    void removeEdge(Company one, Company another) {
+
+        VisualEdge edge = getEdge(graph.getEdge(one, another));
         priceShownProperty.removeListener(edge.getPriceListener());
         scale.removeListener(edge.getScaleListener());
         surface.getChildren().remove(edge.getPrice());
         surface.getChildren().remove(edge.getLine());
-        visEdgeMap.remove(link);
+        visEdgeMap.remove(graph.getEdge(one, another));
+    }
+
+
+    private void removeEdgesOf(Company company){
+
+        for (int i = 0; i < graph.size(); i++)
+
+            if (graph.getVertex(i) == company) {
+
+                for (int j = 0; j < graph.size(); j++)
+
+                    if (graph.getEdge(i, j) != null
+                            && visEdgeMap.get(graph.getEdge(i, j)) != null)
+
+                        removeEdge(graph.getVertex(i),graph.getVertex(j));
+                return;
+            }
+    }
+
+    private VisualEdge getEdge(Link link) {
+
+        return visEdgeMap.get(visEdgeMap.get(link) != null ? link : link.getMating());
     }
 
     public void reloadView(){
@@ -292,17 +290,32 @@ public class GraphViewController {
             Link link = iterator.next();
             VisualEdge edge = getEdge(link);
 
+            if (edge == null) {
+
+                addEdge(link);
+                edge = getEdge(link);
+            }
+
+            edge.setPrice(link.getPrice());
             surface.getChildren().add(edge.getLine());
             surface.getChildren().add(edge.getPrice());
         }
 
         for (Iterator<Company> iterator = graph.getVertexIterator(); iterator.hasNext();) {
 
-            Company next = iterator.next();
+            Company com = iterator.next();
+            VisualVertex vertex = visVerMap.get(com);
 
+            if (vertex == null){
+
+                addVertex(com);
+                vertex = visVerMap.get(com);
+            }
+
+            vertex.setTitle(com.getTitle());
+            surface.getChildren().add(vertex.getItem());
             if (draggable)
-                makeNodeDraggable(visVerMap.get(next).getCircle());
-            surface.getChildren().add(visVerMap.get(next).getItem());
+                makeNodeDraggable(vertex.getCircle());
         }
 
         priceShownProperty.setValue(priceShownValue);
@@ -318,29 +331,31 @@ public class GraphViewController {
 
     private final EventHandler<MouseEvent> vertexPressedHandler = event -> {
 
-        Node node = dragMap.get((Node)event.getSource()).getItem();
+        Circle n = (Circle) event.getSource();
+        Bounds itemBounds = dragMap.get(n).getItem().getBoundsInParent();
 
         dragContext = new Pair<>(
-                node.getBoundsInParent().getMinX() - event.getScreenX(),
-                node.getBoundsInParent().getMinY() - event.getScreenY());
+                itemBounds.getMinX() - event.getScreenX(),
+                itemBounds.getMinY() - event.getScreenY());
     };
 
     private final EventHandler<MouseEvent> vertexDraggedHandler = event -> {
 
-        Node node = dragMap.get((Node)event.getSource()).getItem();
+        Circle n = (Circle) event.getSource();
+        Node item = dragMap.get(n).getItem();
 
-        node.relocate(
-                event.getScreenX() + dragContext.getKey() + node.getBoundsInParent().getWidth()/2.0
-                        - ((Circle)event.getSource()).getRadius() > 0.0
+        item.relocate(
+                event.getScreenX() + dragContext.getKey()
+                        + item.getBoundsInParent().getWidth()/2.0
+                        - n.getRadius() > 0.0
                         ?
-                        event.getScreenX() + dragContext.getKey()
-                        : node.getLayoutX(),
+                        event.getScreenX() + dragContext.getKey() : item.getLayoutX(),
 
-                event.getScreenY() + dragContext.getValue() + node.getBoundsInParent().getHeight()/2.0
-                        - dragMap.get((Node)event.getSource()).getCircle().getRadius() > 0.0
+                event.getScreenY() + dragContext.getValue()
+                        + item.getBoundsInParent().getHeight()/2.0
+                        - n.getRadius() > 0.0
                         ?
-                        event.getScreenY() + dragContext.getValue()
-                        : node.getLayoutY()
+                        event.getScreenY() + dragContext.getValue() : item.getLayoutY()
         );
     };
 

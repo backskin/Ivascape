@@ -19,8 +19,6 @@ public class CompanyEditDialogController {
     public boolean isOkClicked() {
         return okClicked;
     }
-
-
     private Company editCompany = null;
 
     public void setEditCompany(Company company){
@@ -84,7 +82,6 @@ public class CompanyEditDialogController {
         } catch (NumberFormatException e){
             errorMessage += MainApp.bundle.getString("error.wrongmoney") + "\n";
         }
-
         if (addressField.getText().isEmpty())
              errorMessage +=  MainApp.bundle.getString("error.emptyaddress") + "\n";
 
@@ -123,6 +120,8 @@ public class CompanyEditDialogController {
                         );
 
                 project.getGraph().addVertex(editCompany);
+                project.setSaved(false);
+
                 okClicked = true;
             } else {
 

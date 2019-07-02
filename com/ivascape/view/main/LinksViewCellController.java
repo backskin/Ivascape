@@ -46,7 +46,6 @@ public class LinksViewCellController {
     public void setLink(Link link){
 
         this.link = link;
-
         reloadView();
     }
 
@@ -69,32 +68,13 @@ public class LinksViewCellController {
 
         reloadView();
     }
+
     @FXML
     private void handleEdit(){
 
-        editLink(link);
-        reloadView();
-    }
-
-    @FXML
-    private void handleDelete(){
-
-        if (getAlert(MyAlertType.DELETE_CONFIRM, MWController.getMainStage())
-                .getResult().getButtonData() == ButtonBar.ButtonData.OK_DONE){
-
-            GVController.delEdge(link);
-            project.removeLink(link);
-            MWController.reloadTV();
-        }
-    }
-
-    private void editLink(Link editingLink){
-
         try {
             FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("view/serve/LinkEditDialog.fxml"), MainApp.bundle);
-
             VBox editDialog = loader.load();
-
             LinkEditDialogController LEDController = loader.getController();
             Stage dialogStage = new Stage();
             dialogStage.setTitle(MainApp.bundle.getString("edittabs.header.editlink"));
@@ -106,24 +86,32 @@ public class LinksViewCellController {
             dialogStage.setScene(scene);
 
             LEDController.setDialogStage(dialogStage);
-
-            LEDController.setLink(editingLink);
+            LEDController.setFields(link.one(),link.another());
 
             dialogStage.setResizable(false);
-
             dialogStage.showAndWait();
 
-            if (LEDController.isOkClicked())
-
-                GVController.editEdge(LEDController.getEditLink());
-
-            MWController.reloadTV();
+            MWController.reloadLV();
             GVController.reloadView();
 
         } catch (IOException e){
 
             getAlert(MyAlertType.UNKNOWN, MWController.getMainStage());
             e.printStackTrace();
+        }
+
+        reloadView();
+    }
+
+    @FXML
+    private void handleDelete(){
+
+        if (getAlert(MyAlertType.DELETE_CONFIRM, MWController.getMainStage())
+                .getResult().getButtonData() == ButtonBar.ButtonData.OK_DONE){
+
+            GVController.removeEdge(link.one(),link.another());
+            project.removeLink(link);
+            MWController.reloadLV();
         }
     }
 }

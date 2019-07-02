@@ -66,11 +66,8 @@ public class CompaniesViewController {
     private ObservableList<Company> getCompaniesViewItems(){
 
         ObservableList<Company> list = FXCollections.observableArrayList();
-
-        Iterator<Company> companyIterator = project.getGraph().getVertexIterator();
-
-        while (companyIterator.hasNext()) list.add(companyIterator.next());
-
+        for (Iterator<Company> i = project.getGraph().getVertexIterator(); i.hasNext();)
+            list.add(i.next());
         return list;
     }
 
@@ -164,7 +161,6 @@ public class CompaniesViewController {
 
             CompanyEditDialogController CEDController = loader.getController();
             CEDController.setDialogStage(dialogStage);
-
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(MWController.getMainStage());
             dialogStage.setResizable(false);
@@ -173,9 +169,8 @@ public class CompaniesViewController {
             if (CEDController.isOkClicked()){
 
                 reloadView();
-
-                GVController.addVertex(CEDController.getEditCompany());
-                MWController.reloadTV();
+                MWController.reloadGV();
+                MWController.reloadLV();
             }
         } catch (IOException e){
 
@@ -219,7 +214,7 @@ public class CompaniesViewController {
                     reloadView();
 
                     GVController.reloadView();
-                    MWController.reloadTV();
+                    MWController.reloadLV();
 
                     if (companiesTable.getItems().contains(tmpCompany))
 
@@ -233,21 +228,22 @@ public class CompaniesViewController {
             }
         }
     }
+
     @FXML
     private void handleDelete(){
 
-        if (companiesTable.getSelectionModel().getSelectedItem() != null) {
+        Company company = companiesTable.getSelectionModel().getSelectedItem();
+        if (company == null) return;
 
-            Alert alert = getAlert(MyAlertType.DELETE_CONFIRM, MWController.getMainStage());
+        if (getAlert(MyAlertType.DELETE_CONFIRM, MWController.getMainStage())
+                    .getResult().getButtonData().isDefaultButton()) {
 
-            if (alert.getResult().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+            GVController.removeVertex(company);
+            project.removeCompany(company);
 
-                GVController.delVertex(companiesTable.getSelectionModel().getSelectedItem());
-                project.removeCompany(companiesTable.getSelectionModel().getSelectedItem());
+            reloadView();
+            MWController.reloadLV();
 
-                reloadView();
-                MWController.reloadTV();
-            }
         }
     }
 }
