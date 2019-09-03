@@ -104,7 +104,7 @@ public class Project implements Serializable {
 
     public IvaGraph algorithmResult(){
 
-        return (IvaGraph) GraphHandler.factory(graph).getPrimResult();
+        return IvaGraph.cast(GraphHandler.factory(graph).getPrimResult());
     }
 
     public boolean isGraphStrong(){

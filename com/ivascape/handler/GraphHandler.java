@@ -170,7 +170,7 @@ public class GraphHandler<K extends Comparable<K>, V extends Complex<V>> {
 
             return null;
 
-        int v = (new Random()).nextInt(graph.size()-1);
+        int v = (new Random()).nextInt(graph.size());
 
         List<Pair<Pair<K,K>,V>> queue = new ArrayList<>();
 
