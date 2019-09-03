@@ -234,6 +234,9 @@ public class GraphViewController {
     void removeEdge(Company one, Company another) {
 
         VisualEdge edge = getEdge(graph.getEdge(one, another));
+        if (edge == null)
+            return;
+
         priceShownProperty.removeListener(edge.getPriceListener());
         scaleProperty.removeListener(edge.getScaleListener());
         surface.getChildren().remove(edge.getPrice());
@@ -258,8 +261,11 @@ public class GraphViewController {
     }
 
     private VisualEdge getEdge(Link link) {
-
-        return visEdgeMap.get(visEdgeMap.get(link) != null ? link : link.getMating());
+        VisualEdge out = visEdgeMap.get(link);
+        if (out == null)
+            return visEdgeMap.get(link.getMating());
+        else
+            return out;
     }
 
     public void reloadView(){

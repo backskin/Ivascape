@@ -54,7 +54,7 @@ public class GenericGraph<K extends Comparable<K>, V extends Complex<V>> impleme
         mateValue.setMating(value);
 
         edges.get(i).set(j, value);
-        edges.get(i).set(j, value.getMating());
+        edges.get(j).set(i, value.getMating());
     }
 
     @Override

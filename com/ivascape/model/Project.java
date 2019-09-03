@@ -79,7 +79,8 @@ public class Project implements Serializable {
         for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext();){
 
             Company c = i.next();
-            if (c.getTitle().equals(title)) return c;
+            if (c.getTitle().equals(title))
+                return c;
         }
         return null;
     }
