@@ -65,9 +65,6 @@ public class RootLayoutController {
     private MenuItem addEdge;
 
     @FXML
-    private MenuItem export;
-
-    @FXML
     private MenuItem SaveAs;
 
     @FXML
