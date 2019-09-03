@@ -111,11 +111,12 @@ public class GenericGraph<K extends Comparable<K>, V extends Complex<V>> impleme
     public Iterator<V> getEdgeIterator() {
 
         return new ArrayList<V>(){{
-            for (int i = 0; i < size(); i++) {
-                for (int j = 0; j < size(); j++) {
+            for (int i = 0; i < edges.size(); i++) {
+                for (int j = i; j < edges.size(); j++) {
 
                     V value = edges.get(i).get(j);
-                    if (value != null) add(value);
+                    if (value != null)
+                        add(value);
                 }
             }
             sort(V::compareTo);

@@ -120,7 +120,7 @@ public class MainWindowController {
 
         reloadCV();
         reloadLV();
-        MVController.reloadView();
+        reloadMV();
         rootController.reloadStatusBar();
     }
 }
