@@ -23,7 +23,7 @@ import java.util.ResourceBundle;
 
 import static ivascape.view.serve.MyAlerts.*;
 
-public class MainApp extends Application {
+public class    MainApp extends Application {
 
     private static Pair<Double,Double> XY = null;
     private static Pair<Double,Double> windowsize = null;
@@ -43,6 +43,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+
 
         greetings();
 
