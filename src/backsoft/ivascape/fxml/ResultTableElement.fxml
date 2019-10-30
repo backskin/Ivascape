@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="backsoft.ivascape.viewcontrol.ResultTableElementController">
+    <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" prefWidth="600.0"
+          spacing="12.0">
+        <padding>
+            <Insets left="12.0"/>
+        </padding>
+        <Label text="%editwindows.btwn"/>
+        <Label fx:id="companyOne" alignment="CENTER" contentDisplay="CENTER" minWidth="100.0" text="One">
+            <font>
+                <Font name="System Bold" size="12.0"/>
+            </font>
+        </Label>
+        <Label text="%editwindows.and">
+            <padding>
+                <Insets left="16.0" right="16.0"/>
+            </padding>
+        </Label>
+        <Label fx:id="companyTwo" alignment="CENTER" contentDisplay="CENTER" minWidth="100.0" text="Another">
+            <font>
+                <Font name="System Bold" size="12.0"/>
+            </font>
+        </Label>
+        <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+            <padding>
+                <Insets right="16.0"/>
+            </padding>
+            <Label text="%edittabs.price"/>
+            <Label fx:id="linkPrice" text="price">
+                <font>
+                    <Font name="System Bold" size="12.0"/>
+                </font>
+            </Label>
+        </HBox>
+    </HBox>
+    <Separator prefWidth="200.0"/>
+</VBox>
