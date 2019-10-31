@@ -27,34 +27,27 @@ public class LinksViewController {
 
         List<TitledPane> list = new ArrayList<>();
 
-        try {
+        for (Iterator<Company> itCom = project.getIteratorOfComs(); itCom.hasNext(); ) {
 
-            for (Iterator<Company> itCom = project.getIteratorOfComs(); itCom.hasNext(); ) {
+            Pair<Parent, LinksViewItemController> fxml = Loader.loadFXML("LinksViewItem");
+            LinksViewItemController LVIController = fxml.getTwo();
+            Company nextCom = itCom.next();
+            LVIController.setCompany(nextCom);
+            List<VBox> cells = new ArrayList<>();
 
-                Pair<Parent, LinksViewItemController> fxml = Loader.loadFXML("LinksViewItem");
-                LinksViewItemController LVIController = fxml.getTwo();
-                Company nextCom = itCom.next();
-                LVIController.setCompany(nextCom);
-                List<VBox> cells = new ArrayList<>();
+            for (Iterator<Link> itLink = project.getIteratorOfLinks(nextCom); itLink.hasNext(); ) {
 
-                for (Iterator<Link> itLink = project.getIteratorOfLinks(nextCom); itLink.hasNext(); ) {
+                Pair<Parent, LinksViewCellController> fxml2 = Loader.loadFXML("LinksViewCell");
+                LinksViewCellController TVCController = fxml2.getTwo();
+                Link nextLink = itLink.next();
+                TVCController.put(nextLink);
 
-                    Pair<Parent, LinksViewCellController> fxml2 = Loader.loadFXML("LinksViewCell");
-                    LinksViewCellController TVCController = fxml2.getTwo();
-                    Link nextLink = itLink.next();
-                    TVCController.put(nextLink);
-
-                    cells.add((VBox) fxml.getOne());
-                }
-
-                LVIController.setCells(cells);
-                list.add((TitledPane) fxml.getOne());
+                cells.add((VBox) fxml.getOne());
             }
 
-        } catch (IOException e) {
-
-            MyAlerts.getAlert(MyAlerts.AlertType.UNKNOWN, Loader.getMainStage(), e.getMessage());
-         }
+            LVIController.setCells(cells);
+            list.add((TitledPane) fxml.getOne());
+        }
 
         return list;
     }

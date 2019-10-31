@@ -8,10 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
 
-import java.io.IOException;
 import java.util.List;
-
-import static backsoft.ivascape.viewcontrol.MyAlerts.getAlert;
 
 public class LinksViewItemController {
 
@@ -33,11 +30,7 @@ public class LinksViewItemController {
     @FXML
     private void handleAdd(){
 
-        try {
-            Loader.loadDialogEditLink(company);
-        } catch (IOException e) {
-            MyAlerts.getAlert(MyAlerts.AlertType.UNKNOWN, Loader.getMainStage(), e.getMessage());
-        }
+        Loader.loadDialogEditLink(company.hashCode());
     }
 
     public void setCompany(Company company) {
@@ -45,7 +38,7 @@ public class LinksViewItemController {
         this.company = company;
         theItem.setText(company.getTitle());
 
-        if (project.getGraph().size() < 2)
+        if (project.getCompaniesList().size() < 2)
             addButton.setDisable(true);
     }
 

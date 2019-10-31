@@ -14,7 +14,6 @@ import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-
 public class Preferences {
 
     private static Preferences instance = null;
@@ -26,7 +25,7 @@ public class Preferences {
         instance = this;
     }
 
-    WinParams getWindowParams() {
+    WinParams getSavedWinParams() {
         return windowParams;
     }
 
@@ -49,29 +48,40 @@ public class Preferences {
         }
     }
 
-    void setWindowParams(double x, double y, double width, double height) {
-
-        this.windowParams = new WinParams(x, y, width, height);
-    }
-
     public void setWindowParams(Stage stage){
 
-        setWindowParams(stage.getX(), stage.getY(),
+        this.windowParams = new WinParams(stage.getX(), stage.getY(),
                 stage.getWidth(), stage.getHeight());
     }
 
-    void reloadBundle() throws IOException {
+    void applyWinParams(WinParams windowParams, Stage stage){
+
+        if (windowParams != null) {
+            stage.setWidth(windowParams.width);
+            stage.setHeight(windowParams.height);
+            stage.setX(windowParams.x);
+            stage.setY(windowParams.y);
+        } else if (!stage.isShowing()) {
+
+            stage.show();
+            stage.setMinWidth(stage.getWidth());
+            stage.setMinHeight(stage.getHeight());
+        }
+    }
+
+    ResourceBundle reloadBundle() throws IOException {
             bundle = new PropertyResourceBundle(new BufferedReader(new InputStreamReader(
                     getClass().getResourceAsStream(Locale.getDefault().equals(enLoc) ?
                             "../../../translate_en_US.properties" :
                             "../../../translate_ru_RU.properties"), StandardCharsets.UTF_8)));
+            return bundle;
     }
 
     private WinParams windowParams;
 
     private Project project = Project.get();
-    public static final Locale ruLoc = new Locale("ru","RU");
-    public static final Locale enLoc = new Locale("en", "US");
+    private static final Locale ruLoc = new Locale("ru","RU");
+    private static final Locale enLoc = new Locale("en", "US");
     private Locale currentLoc;
 
     public int getCurrentTab() {
@@ -91,7 +101,7 @@ public class Preferences {
         return (instance == null) ? new Preferences() : instance;
     }
 
-    public static void onExit(WindowEvent event){
+    static void onExit(WindowEvent event){
 
         if (!(instance.project.isEmpty() || instance.project.isSaved()) &&
                 MyAlerts.getAlert(MyAlerts.AlertType.ON_EXIT, "NOTSAVED").getResult().getButtonData()
@@ -99,10 +109,16 @@ public class Preferences {
             event.consume();
     }
 
-    public void changeLoc(){
+    public void changeLoc() {
 
         currentLoc = currentLoc.equals(ruLoc) ? enLoc: ruLoc;
         Locale.setDefault(currentLoc);
+
+        try {
+            reloadBundle();
+        } catch (IOException e) {
+            MyAlerts.getAlert(MyAlerts.AlertType.ISSUE, e.getMessage());
+        }
     }
 
     public static ResourceBundle getBundle() {

@@ -54,7 +54,7 @@ class ExcelHandler {
         }
         catch (NullPointerException | IOException npE){
 
-            MyAlerts.getAlert(MyAlerts.AlertType.UNKNOWN, (String[]) null);
+            MyAlerts.getAlert(MyAlerts.AlertType.ISSUE);
             npE.printStackTrace();
         }
 
@@ -117,7 +117,7 @@ class ExcelHandler {
 
         } catch (NullPointerException npE){
 
-            MyAlerts.getAlert(MyAlerts.AlertType.UNKNOWN);
+            MyAlerts.getAlert(MyAlerts.AlertType.ISSUE);
             npE.printStackTrace();
         }
     }
@@ -202,7 +202,7 @@ class ExcelHandler {
 
         } catch (NullPointerException npE){
 
-            MyAlerts.getAlert(MyAlerts.AlertType.UNKNOWN);
+            MyAlerts.getAlert(MyAlerts.AlertType.ISSUE);
             npE.printStackTrace();
         }
     }

@@ -26,9 +26,9 @@ public class CompanyEditDialogController {
 
     private Company editCompany = null;
 
-    public void setEditCompany(Company company){
+    public void setEditCompany(Integer comHash){
 
-        editCompany = company;
+        editCompany = project.getCompany(comHash);
         titleField.setText(editCompany.getTitle());
         capitalField.setText(Double.toString(editCompany.getMoneyCapital()));
         addressField.setText(editCompany.getAddress());

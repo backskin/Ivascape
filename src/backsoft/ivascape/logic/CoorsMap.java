@@ -1,8 +1,8 @@
-package backsoft.ivascape.model;
+package backsoft.ivascape.logic;
 
 import java.util.HashMap;
 
-import static backsoft.ivascape.model.CoorsMap.*;
+import static backsoft.ivascape.logic.CoorsMap.*;
 
 public class CoorsMap extends HashMap<Integer, Coors> {
 

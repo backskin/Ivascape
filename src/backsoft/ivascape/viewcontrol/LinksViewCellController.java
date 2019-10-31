@@ -6,10 +6,7 @@ import backsoft.ivascape.model.Project;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-import java.io.IOException;
-
 import static backsoft.ivascape.viewcontrol.MyAlerts.AlertType.DELETE_CONFIRM;
-import static backsoft.ivascape.viewcontrol.MyAlerts.AlertType.UNKNOWN;
 import static backsoft.ivascape.viewcontrol.MyAlerts.getAlert;
 import static javafx.scene.control.ButtonBar.ButtonData.OK_DONE;
 
@@ -32,11 +29,7 @@ public class LinksViewCellController {
     @FXML
     private void handleEdit(){
 
-        try {
-            Loader.loadDialogEditLink(link);
-        } catch (IOException e) {
-            getAlert(UNKNOWN, Loader.getMainStage(), e.getMessage());
-        }
+        Loader.loadDialogEditLink(link.one().hashCode(), link.two().hashCode());
     }
 
     @FXML

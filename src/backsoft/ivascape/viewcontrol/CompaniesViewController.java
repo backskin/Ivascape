@@ -13,12 +13,10 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.Iterator;
 
 import static backsoft.ivascape.viewcontrol.MyAlerts.AlertType.DELETE_CONFIRM;
-import static backsoft.ivascape.viewcontrol.MyAlerts.AlertType.UNKNOWN;
 import static backsoft.ivascape.viewcontrol.MyAlerts.getAlert;
 
 public class CompaniesViewController {
@@ -130,11 +128,8 @@ public class CompaniesViewController {
     @FXML
     public void handleNew(){
 
-        try {
-            companiesTable.getSelectionModel().select(Loader.loadDialogEditCompany(null));
-        } catch (IOException e) {
-            getAlert(UNKNOWN, Loader.getMainStage(), e.getMessage());
-        }
+        companiesTable.getSelectionModel().select(project.getCompany(
+                Loader.loadDialogEditCompany(0)));
     }
 
     @FXML
@@ -144,11 +139,8 @@ public class CompaniesViewController {
 
         if (selected != null) {
 
-            try {
-                companiesTable.getSelectionModel().select(Loader.loadDialogEditCompany(selected));
-            } catch (IOException e) {
-                getAlert(UNKNOWN, Loader.getMainStage(), e.getMessage());
-            }
+            companiesTable.getSelectionModel().select(project.getCompany(
+                    Loader.loadDialogEditCompany(selected.hashCode())));
         }
     }
 

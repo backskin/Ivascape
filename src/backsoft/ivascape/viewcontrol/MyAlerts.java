@@ -2,41 +2,40 @@ package backsoft.ivascape.viewcontrol;
 
 import backsoft.ivascape.handler.Loader;
 import backsoft.ivascape.handler.Preferences;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
-import static backsoft.ivascape.viewcontrol.MyAlerts.AlertType.*;
 import static javafx.scene.control.Alert.AlertType.*;
 
 public class MyAlerts {
 
     public enum AlertType {
-        ON_EXIT, CLOSE_UNSAVED, LOAD_FAILED,
+        ON_EXIT, CLOSE_REQUEST, LOAD_FAILED,
         SAVE_FAILED, DELETE_CONFIRM, INVALID_FIELDS, UPDATE_EDGE,
-        ALGORITHM_EXEC, UNKNOWN, ABOUT
+        ALGO_FAIL, ISSUE, ABOUT
     }
 
-    public static Alert getAlert(AlertType type, String... args){
+    public static Alert getAlert(AlertType type, String... args) {
         return getAlert(type, null, args);
     }
 
-    public static Alert getAlert(AlertType type, Stage owner, String... args){
+    public static Alert getAlert(AlertType type, Stage owner, String... args) {
 
         Alert alert;
         Preferences currentPreferences = Preferences.current();
         assert currentPreferences != null;
         ResourceBundle bundle = Preferences.getBundle();
 
-        switch (type){
+        switch (type) {
 
-            case ON_EXIT:{
+            case ON_EXIT: {
                 alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle(bundle.getString("alert.text.onexit"));
                 alert.setHeaderText(bundle.getString("alert.text.conf.onexit"));
@@ -47,7 +46,7 @@ public class MyAlerts {
                 break;
             }
 
-            case CLOSE_UNSAVED:{
+            case CLOSE_REQUEST: {
                 alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle(bundle.getString("alert.text.unsave"));
                 alert.setHeaderText(bundle.getString("alert.text.conf.unsave"));
@@ -58,7 +57,7 @@ public class MyAlerts {
                 break;
             }
 
-            case DELETE_CONFIRM:{
+            case DELETE_CONFIRM: {
                 alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle(bundle.getString("alert.text.delete"));
                 alert.setHeaderText(bundle.getString("alert.text.conf.delete"));
@@ -69,7 +68,7 @@ public class MyAlerts {
                 break;
             }
 
-            case SAVE_FAILED:{
+            case SAVE_FAILED: {
 
                 alert = new Alert(ERROR);
                 alert.setTitle(bundle.getString("alert.text.saveerr"));
@@ -80,7 +79,7 @@ public class MyAlerts {
                 break;
             }
 
-            case LOAD_FAILED:{
+            case LOAD_FAILED: {
 
                 alert = new Alert(ERROR);
                 alert.setTitle(bundle.getString("alert.text.loaderr"));
@@ -90,7 +89,7 @@ public class MyAlerts {
                         new ButtonType(bundle.getString("alert.OK"), ButtonBar.ButtonData.OK_DONE));
                 break;
             }
-            case INVALID_FIELDS:{
+            case INVALID_FIELDS: {
 
                 alert = new Alert(ERROR);
                 alert.setTitle(bundle.getString("alert.text.invalidfield"));
@@ -101,7 +100,7 @@ public class MyAlerts {
                 break;
             }
 
-            case UPDATE_EDGE:{
+            case UPDATE_EDGE: {
 
                 alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle(bundle.getString("alert.text.linkupd"));
@@ -113,7 +112,7 @@ public class MyAlerts {
                 break;
             }
 
-            case ALGORITHM_EXEC:{
+            case ALGO_FAIL: {
 
                 alert = new Alert(WARNING);
                 alert.setTitle(bundle.getString("alert.text.prim"));
@@ -122,24 +121,34 @@ public class MyAlerts {
                 break;
             }
 
-            case ABOUT:{
+            case ABOUT: {
 
                 alert = new Alert(INFORMATION);
-                try {
-                    ImageView imageView = new ImageView(Loader.getImageRsrc("ico"));
-                    imageView.setFitHeight(64);
-                    imageView.setFitWidth(64);
-                    alert.setGraphic(imageView);
-                } catch (FileNotFoundException e) {
-                    getAlert(UNKNOWN, e.getMessage());
-                }
+                ImageView imageView = new ImageView(Loader.getImageRsrc("ico"));
+                imageView.setFitHeight(64);
+                imageView.setFitWidth(64);
+                alert.setGraphic(imageView);
                 alert.setTitle(bundle.getString("alert.text.about"));
                 alert.setHeaderText(bundle.getString("alert.text.conf.about"));
                 alert.setContentText(bundle.getString("alert.text.warn.about"));
                 break;
             }
 
-            default:{
+            case ISSUE: {
+                alert = new Alert(ERROR);
+                alert.setTitle("Ivascape inner program error");
+                alert.setHeaderText("A program failure. Ivascape will be closed");
+                alert.setContentText(Arrays.toString(args));
+                if (owner != null) alert.initOwner(owner);
+                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+                stage.getIcons().add(Loader.getImageRsrc("ico"));
+                alert.showAndWait();
+
+                Platform.exit();
+                System.exit(0);
+            }
+
+            default: {
                 alert = new Alert(ERROR);
                 alert.setTitle("Unknown error");
                 alert.setHeaderText("Oops...");
@@ -148,12 +157,8 @@ public class MyAlerts {
             }
         }
         if (owner != null) alert.initOwner(owner);
-        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        try {
-            stage.getIcons().add(Loader.getImageRsrc("ico"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons()
+                .add(Loader.getImageRsrc("ico"));
         alert.showAndWait();
         return alert;
     }

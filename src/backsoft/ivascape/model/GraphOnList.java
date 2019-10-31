@@ -1,4 +1,6 @@
-package backsoft.ivascape.logic;
+package backsoft.ivascape.model;
+
+import backsoft.ivascape.logic.Complex;
 
 import java.io.Serializable;
 import java.util.ArrayList;

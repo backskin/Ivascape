@@ -4,10 +4,6 @@ import backsoft.ivascape.handler.FileHandler;
 import backsoft.ivascape.handler.Loader;
 import backsoft.ivascape.handler.Preferences;
 import backsoft.ivascape.logic.Pair;
-import backsoft.ivascape.logic.Triplet;
-import backsoft.ivascape.model.Company;
-import backsoft.ivascape.model.CoorsMap;
-import backsoft.ivascape.model.IvascapeGraph;
 import backsoft.ivascape.model.Project;
 import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
@@ -17,7 +13,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -25,9 +20,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.IOException;
 
-import static backsoft.ivascape.viewcontrol.MyAlerts.AlertType.UNKNOWN;
+import static backsoft.ivascape.viewcontrol.MyAlerts.AlertType.CLOSE_REQUEST;
 import static backsoft.ivascape.viewcontrol.MyAlerts.getAlert;
 
 public class RootLayoutController {
@@ -89,20 +83,16 @@ public class RootLayoutController {
         Preferences preferences = Preferences.current();
 
         saveIcon.setFill(Color.GREEN);
-        rus.setSelected(Preferences.current().getCurrentLoc().equals(Preferences.ruLoc));
+        rus.setSelected(Preferences.current().getCurrentLoc().getLanguage().equals("ru"));
         rus.setDisable(rus.isSelected());
         eng.setSelected(!rus.isSelected());
         eng.setDisable(eng.isSelected());
 
         eng.selectedProperty().addListener((observable, oldValue, newValue) -> {
 
-                Preferences.current().changeLoc();
-                Preferences.current().setWindowParams(mainStage);
-            try {
-                Loader.reloadApp();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Preferences.current().changeLoc();
+            Preferences.current().setWindowParams(mainStage);
+            Loader.reloadApp();
         });
 
         rus.selectedProperty().addListener((observable, oldValue, newValue) -> eng.setSelected(!newValue));
@@ -154,10 +144,8 @@ public class RootLayoutController {
 
         mainStage.setScene(new Scene(rootLayout));
 
-        if (!project.isEmpty() && project.getGraph().size() > 0) {
+        if (!project.isEmpty()) updateView();
 
-            updateView();
-        }
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue)
                 -> preferences.setCurrentTab(tabPane.getSelectionModel().getSelectedIndex()));
         tabPane.getSelectionModel().select(preferences.getCurrentTab());
@@ -165,24 +153,18 @@ public class RootLayoutController {
 
     private <T>T loadViewToTab(String path, AnchorPane tab) {
 
-        try {
-            Pair<Parent, T> fxmlData = Loader.loadFXML(path);
-            Node tmp = fxmlData.getOne();
+        Pair<Parent, T> fxmlData = Loader.loadFXML(path);
+        Node tmp = fxmlData.getOne();
 
-            AnchorPane.setTopAnchor(tmp, 0.0);
-            AnchorPane.setLeftAnchor(tmp, 0.0);
-            AnchorPane.setRightAnchor(tmp, 0.0);
-            AnchorPane.setBottomAnchor(tmp, 0.0);
+        AnchorPane.setTopAnchor(tmp, 0.0);
+        AnchorPane.setLeftAnchor(tmp, 0.0);
+        AnchorPane.setRightAnchor(tmp, 0.0);
+        AnchorPane.setBottomAnchor(tmp, 0.0);
 
-            tab.getChildren().add(tmp);
+        tab.getChildren().add(tmp);
 
-            return fxmlData.getTwo();
+        return fxmlData.getTwo();
 
-        } catch (IOException e) {
-
-            getAlert(UNKNOWN, mainStage, e.getMessage());
-            return null;
-        }
     }
 
     private void updateView(){
@@ -193,34 +175,25 @@ public class RootLayoutController {
     void updateStatusbar(){
 
         fileName.setText(project.getFile() != null ? project.getFile().getName() : "Empty");
-        cAmount.setText(project.getGraph().size() + "");
-        lAmount.setText(project.linksAmount() + "");
-        SaveAs.setDisable(project.getGraph().size() == 0);
-        Save.setDisable(project.getGraph().size() == 0 || project.isSaved());
+        cAmount.setText(project.amountOfComs() + "");
+        lAmount.setText(project.amountOfLinks() + "");
+        SaveAs.setDisable(project.isEmpty());
+        Save.setDisable(project.isEmpty() || project.isSaved());
     }
 
     @FXML
     private void handleHelpTips(){
 
-        try {
-            Pair<Parent, TipsController> fxmlData = Loader.loadFXML("Tips");
+        Pair<Parent, TipsController> fxmlData = Loader.loadFXML("Tips");
 
-            TipsController tipsController = fxmlData.getTwo();
-            Stage tipsStage = new Stage();
-            tipsController.setStage(tipsStage);
-            tipsStage.setScene(new Scene(fxmlData.getOne()));
-            tipsStage.setTitle(Preferences.getBundle().getString("tips.caption"));
-            tipsStage.initModality(Modality.WINDOW_MODAL);
-            tipsStage.initOwner(mainStage);
-            tipsStage.getIcons().add(new Image("resources/ico.png"));
-            tipsStage.setResizable(false);
-            tipsStage.showAndWait();
+        TipsController tipsController = fxmlData.getTwo();
+        Stage tipsStage = new Stage();
+        tipsController.setStage(tipsStage);
+        tipsStage.setTitle(Preferences.getBundle().getString("tips.caption"));
+        tipsStage.initModality(Modality.WINDOW_MODAL);
+        tipsStage.initOwner(mainStage);
 
-        } catch (IOException e){
-
-            getAlert(UNKNOWN,mainStage);
-            e.printStackTrace();
-        }
+        Loader.openInAWindow(tipsStage,fxmlData.getOne(),true);
     }
 
     @FXML
@@ -232,97 +205,62 @@ public class RootLayoutController {
     @FXML
     private void handleAddVertex(){
 
-        try {
-            Loader.loadDialogEditCompany(null);
-        } catch (IOException e) {
-            getAlert(UNKNOWN, mainStage, e.getMessage());
-        }
+        Loader.loadDialogEditCompany(0);
     }
 
     @FXML
     private void handleAddEdge(){
 
-        try {
-            Loader.loadDialogEditLink((Company) null);
-        } catch (IOException e) {
-            getAlert(UNKNOWN, mainStage, e.getMessage());
-        }
+        Loader.loadDialogEditLink();
     }
 
     @FXML
     private void handleEditRun(){
 
         if (!project.isGraphStrong()){
-            getAlert(MyAlerts.AlertType.ALGORITHM_EXEC, mainStage);
+            getAlert(MyAlerts.AlertType.ALGO_FAIL, mainStage);
 
-        } else try {
+        } else {
             Pair<Parent, ResultWindowController> fxmlData = Loader.loadFXML("ResultWindow");
 
             ResultWindowController RWController = fxmlData.getTwo();
             Stage resStage = new Stage();
             RWController.setStage(resStage);
-            Scene s = new Scene(fxmlData.getOne());
-            resStage.setScene(s);
             resStage.initModality(Modality.WINDOW_MODAL);
             resStage.initOwner(mainStage);
-            resStage.getIcons().add(new Image("resources/ico.png"));
             resStage.setTitle(Preferences.getBundle().getString("result_window"));
 
-            Platform.runLater(() -> {
-                resStage.setMinWidth(resStage.getWidth());
-                resStage.setMinHeight(resStage.getHeight());
-            });
-
-            resStage.showAndWait();
-
-        } catch (IOException e) {
-
-            getAlert(UNKNOWN, mainStage, e.getMessage());
+            Loader.openInAWindow(resStage, fxmlData.getOne(), true);
         }
     }
 
     @FXML
     private void handleEditAnalyse(){
 
-        try {
+        Pair<Parent, AnalyseWindowController> fxmlData = Loader.loadFXML("AnalyseWindow");
+        Stage stage = new Stage();
+        fxmlData.getTwo().setStage(stage);
 
-            Pair<Parent, AnalyseWindowController> fxmlData = Loader.loadFXML("AnalyseWindow");
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(mainStage);
 
-            Stage stage = new Stage();
-            fxmlData.getTwo().setStage(stage);
+        stage.setTitle(Preferences.getBundle().getString("editwindows.analysetitle"));
+//        stage.setWidth(460.0);
+//        stage.setHeight(400.0);
+//        stage.setMinWidth(400.0);
+//        stage.setMinHeight(400.0);
 
-            stage.setScene(new Scene(fxmlData.getOne()));
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(mainStage);
-            stage.getIcons().add(Loader.getImageRsrc("ico"));
-            stage.setTitle(Preferences.getBundle().getString("editwindows.analysetitle"));
-            stage.setWidth(460.0);
-            stage.setHeight(400.0);
-            stage.setMinWidth(400.0);
-            stage.setMinHeight(400.0);
-            stage.showAndWait();
-
-        } catch (IOException e){
-
-            getAlert(UNKNOWN, mainStage);
-            e.printStackTrace();
-        }
+        Loader.openInAWindow(stage, fxmlData.getOne(), true);
     }
 
     @FXML
     private void handleFileOpen(){
 
         if (project.isSaved() ||
-                getAlert(MyAlerts.AlertType.CLOSE_UNSAVED, mainStage)
+                getAlert(CLOSE_REQUEST, mainStage)
                         .getResult().getButtonData().isDefaultButton()) {
 
-            Triplet<File, IvascapeGraph, CoorsMap> output = FileHandler.loadFile(project.getFile());
-
-            if (output != null) {
-
-                project.load(output.getOne(), output.getTwo(), output.getThree());
-                updateView();
-            }
+            if (project.load(FileHandler.dialogLoad(project.getFile()))) updateView();
         }
     }
 
@@ -330,7 +268,7 @@ public class RootLayoutController {
     private void handleFileNew(){
 
         if (project.isSaved() ||
-                getAlert(MyAlerts.AlertType.CLOSE_UNSAVED, mainStage)
+                getAlert(CLOSE_REQUEST, mainStage)
                         .getResult().getButtonData().isDefaultButton()) {
 
             Project.newProject();
@@ -352,9 +290,9 @@ public class RootLayoutController {
     @FXML
     private void handleFileSaveAs(){
 
-        if (project.getGraph().size() > 0) {
+        if (!project.isEmpty()) {
 
-            File file = FileHandler.saveAs(
+            File file = FileHandler.dialogSaveAs(
                     project.getFile(),
                     project.getGraph(),
                     project.getCoorsMap());
@@ -370,16 +308,15 @@ public class RootLayoutController {
     @FXML
     private void handleExport(){
 
-        FileHandler.exportToXLS(project.getGraph(), mainStage);
+        FileHandler.dialogExport(project.getGraph(), mainStage);
     }
 
     @FXML
     private void handleClose() {
 
-        if (project.getGraph().size() > 0 &&
-                !project.isSaved() &&
+        if (!project.isSaved() &&
                 getAlert(MyAlerts.AlertType.ON_EXIT, mainStage, "NOTSAVED")
-                        .getResult().getButtonData().isCancelButton() )
+                        .getResult().getButtonData().isCancelButton())
             return;
 
         Platform.exit();

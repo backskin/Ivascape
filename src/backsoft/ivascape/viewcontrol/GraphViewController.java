@@ -1,11 +1,11 @@
 package backsoft.ivascape.viewcontrol;
 
 import backsoft.ivascape.handler.Loader;
-import backsoft.ivascape.logic.Graph;
-import backsoft.ivascape.logic.GraphOnList;
+import backsoft.ivascape.model.Graph;
+import backsoft.ivascape.model.GraphOnList;
 import backsoft.ivascape.logic.Pair;
 import backsoft.ivascape.model.Company;
-import backsoft.ivascape.model.CoorsMap;
+import backsoft.ivascape.logic.CoorsMap;
 import backsoft.ivascape.model.Link;
 import javafx.beans.property.*;
 import javafx.event.EventHandler;
@@ -18,10 +18,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-import java.io.IOException;
 import java.util.*;
-
-import static backsoft.ivascape.viewcontrol.MyAlerts.*;
 
 public class GraphViewController {
 
@@ -118,15 +115,8 @@ public class GraphViewController {
 
             Pair<Parent, VisualVertex> fxml;
 
-            try {
+            fxml = Loader.loadFXML("VisualVertex");
 
-                fxml = Loader.loadFXML("VisualVertex");
-
-            } catch (IOException e){
-
-                getAlert(AlertType.UNKNOWN, e.getMessage());
-                return;
-            }
             VisualVertex vertex = fxml.getTwo();
 
             vertex.setTitle(graph.getVertex(i).getTitle());
@@ -158,14 +148,7 @@ public class GraphViewController {
 
         Pair<Parent, VisualVertex> fxml;
 
-        try {
-            fxml = Loader.loadFXML("VisualVertex");
-        }
-        catch (IOException e){
-
-            getAlert(AlertType.UNKNOWN, e.getMessage());
-            return;
-        }
+        fxml = Loader.loadFXML("VisualVertex");
 
         VisualVertex vertex = fxml.getTwo();
         vertex.setTitle(company.getTitle());

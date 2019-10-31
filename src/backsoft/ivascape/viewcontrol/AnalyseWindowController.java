@@ -67,35 +67,29 @@ public class AnalyseWindowController {
             form.setFocusTraversable(false);
             form.setAlignment(Pos.CENTER);
 
-            try {
+            Pair<Parent, GraphViewController> fxml = Loader.loadFXML("GraphView");
 
-                Pair<Parent, GraphViewController> fxml = Loader.loadFXML("GraphView");
+            Pane surface = (Pane) fxml.getOne();
+            surface.setMouseTransparent(true);
+            GraphViewController controller = fxml.getTwo();
 
-                Pane surface = (Pane) fxml.getOne();
-                surface.setMouseTransparent(true);
-                GraphViewController controller = fxml.getTwo();
+            controller.setGraph(
+                    component,
+                    project.getCoorsMap(),
+                    Color.DARKCYAN,
+                    Color.DARKCYAN,
+                    false);
 
-                controller.setGraph(
-                        component,
-                        project.getCoorsMap(),
-                        Color.DARKCYAN,
-                        Color.DARKCYAN,
-                        false);
+            ScrollPane scrollPane = new ScrollPane();
+            form.getChildren().add(scrollPane);
+            scrollPane.setContent(surface);
+            VBox.setVgrow(scrollPane,Priority.ALWAYS);
+            scrollPane.setPrefHeight(125);
 
-                ScrollPane scrollPane = new ScrollPane();
-                form.getChildren().add(scrollPane);
-                scrollPane.setContent(surface);
-                VBox.setVgrow(scrollPane,Priority.ALWAYS);
-                scrollPane.setPrefHeight(125);
+            ViewUpdater.current().updateGraphView();
 
-                ViewUpdater.current().updateGraphView();
-
-                controller.cropIt();
-                controller.setScale(50);
-
-            } catch (IOException e){
-                e.printStackTrace();
-            }
+            controller.cropIt();
+            controller.setScale(50);
 
             TableView<Company> componentTable = new TableView<>();
             form.getChildren().add(componentTable);

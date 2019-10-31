@@ -12,10 +12,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 
-import java.io.IOException;
-
-import static backsoft.ivascape.viewcontrol.MyAlerts.*;
-
 public class MapViewController {
 
     private GraphViewController GVController;
@@ -58,48 +54,41 @@ public class MapViewController {
     @FXML
     private void initialize(){
 
-        try {
+        Pair<Parent, GraphViewController> fxml = Loader.loadFXML("GraphView");
 
-            Pair<Parent, GraphViewController> fxml = Loader.loadFXML("GraphView");
+        surface.setContent(fxml.getOne());
 
-            surface.setContent(fxml.getOne());
+        GVController = fxml.getTwo();
 
-            GVController = fxml.getTwo();
+        project.savedProperty().addListener(
+                (obs, ol, val) -> {
+                    if (val) GVController.getSurfaceChangedProperty().setValue(false);
+                });
 
-            project.savedProperty().addListener(
-                    (obs, ol, val) -> {
-                        if (val) GVController.getSurfaceChangedProperty().setValue(false);
-                    });
+        showHidePrices.selectedProperty().addListener((observable, oldValue, newValue) -> GVController.setPricesVisible(newValue));
 
-            showHidePrices.selectedProperty().addListener((observable, oldValue, newValue) -> GVController.setPricesVisible(newValue));
+        zoomSlider.valueProperty().addListener((observable, oldValue, newValue)
 
-            zoomSlider.valueProperty().addListener((observable, oldValue, newValue)
+                -> GVController.setScale(newValue.doubleValue()));
 
-                    -> GVController.setScale(newValue.doubleValue()));
+        GVController.getSurface().getChildren().addListener((ListChangeListener<Node>) c -> {
 
-            GVController.getSurface().getChildren().addListener((ListChangeListener<Node>) c -> {
+            if (GVController.getSurface().getChildren().size() < 1) {
 
-                if (GVController.getSurface().getChildren().size() < 1) {
+                zoomSlider.setValue(100);
+                zoomSlider.setDisable(true);
+                showHidePrices.setSelected(false);
+                showHidePrices.setDisable(true);
+                ResetZoom.setDisable(true);
+                cropView.setDisable(true);
 
-                    zoomSlider.setValue(100);
-                    zoomSlider.setDisable(true);
-                    showHidePrices.setSelected(false);
-                    showHidePrices.setDisable(true);
-                    ResetZoom.setDisable(true);
-                    cropView.setDisable(true);
-
-                } else {
-                    zoomSlider.setDisable(false);
-                    showHidePrices.setDisable(false);
-                    ResetZoom.setDisable(false);
-                    cropView.setDisable(false);
-                }
-            });
-
-        } catch (IOException e){
-
-            getAlert(AlertType.UNKNOWN, Loader.getMainStage(), e.getMessage());
-        }
+            } else {
+                zoomSlider.setDisable(false);
+                showHidePrices.setDisable(false);
+                ResetZoom.setDisable(false);
+                cropView.setDisable(false);
+            }
+        });
     }
 
     @FXML

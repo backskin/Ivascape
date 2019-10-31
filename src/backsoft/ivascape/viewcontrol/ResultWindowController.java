@@ -3,7 +3,7 @@ package backsoft.ivascape.viewcontrol;
 import backsoft.ivascape.handler.FileHandler;
 import backsoft.ivascape.handler.Loader;
 import backsoft.ivascape.logic.Pair;
-import backsoft.ivascape.model.CoorsMap;
+import backsoft.ivascape.logic.CoorsMap;
 import backsoft.ivascape.model.IvascapeGraph;
 import backsoft.ivascape.model.Project;
 import javafx.fxml.FXML;
@@ -15,8 +15,6 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class ResultWindowController {
 
@@ -60,55 +58,48 @@ public class ResultWindowController {
     @FXML
     private void initialize(){
 
-        try {
+        Pair<Parent, GraphViewController> resultFxml = Loader.loadFXML("GraphView");
 
-            Pair<Parent, GraphViewController> resultFxml = Loader.loadFXML("GraphView");
+        pane.setContent(resultFxml.getOne());
 
-            pane.setContent(resultFxml.getOne());
+        GraphViewController gvController = resultFxml.getTwo();
 
-            GraphViewController gvController = resultFxml.getTwo();
+        gvController.setGraph(
+                graph, map,
+                Color.CORNFLOWERBLUE,
+                Color.CORNFLOWERBLUE,true);
 
-            gvController.setGraph(
-                    graph, map,
-                    Color.CORNFLOWERBLUE,
-                    Color.CORNFLOWERBLUE,true);
+        zoomSlider.setValue(100.0);
 
-            zoomSlider.setValue(100.0);
+        zoomSlider.valueProperty().addListener((observable, oldValue, newValue) ->
 
-            zoomSlider.valueProperty().addListener((observable, oldValue, newValue) ->
+                gvController.setScale(newValue.doubleValue())
+        );
 
-                    gvController.setScale(newValue.doubleValue())
-            );
+        showHidePrices.selectedProperty().addListener((observable, oldValue, newValue) -> gvController.setPricesVisible(newValue));
 
-            showHidePrices.selectedProperty().addListener((observable, oldValue, newValue) -> gvController.setPricesVisible(newValue));
+        gvController.updateView();
 
-            gvController.updateView();
+        for (int i = 0; i < graph.size(); i ++){
 
-            for (int i = 0; i < graph.size(); i ++){
+            for (int j = i; j < graph.size(); j++){
 
-                for (int j = i; j < graph.size(); j++){
+                if (graph.getEdge(i,j) != null){
 
-                    if (graph.getEdge(i,j) != null){
+                    Pair<Parent, ResultTableElementController> fxml = Loader.loadFXML("ResultTableElement");
 
-                        Pair<Parent, ResultTableElementController> fxml = Loader.loadFXML("ResultTableElement");
+                    resTable.getChildren().add(fxml.getOne());
+                    ResultTableElementController controller = fxml.getTwo();
 
-                        resTable.getChildren().add(fxml.getOne());
-                        ResultTableElementController controller = fxml.getTwo();
+                    controller.setLink(graph.getEdge(i,j));
 
-                        controller.setLink(graph.getEdge(i,j));
-
-                        totalPrice += graph.getEdge(i,j).getPrice();
-                    }
+                    totalPrice += graph.getEdge(i,j).getPrice();
                 }
             }
-
-            totalPriceLabel.setText(String.format("%.2f", (Math.round(totalPrice*100)/100.0)));
-
-        } catch (IOException e){
-
-            MyAlerts.getAlert(MyAlerts.AlertType.UNKNOWN, stage);
-            e.printStackTrace();
         }
+
+        totalPriceLabel.setText(String.format("%.2f", (Math.round(totalPrice*100)/100.0)));
+
     }
 
     @FXML
@@ -116,14 +107,14 @@ public class ResultWindowController {
 
         double sliderValue = zoomSlider.getValue();
         zoomSlider.setValue(100);
-        FileHandler.saveAs(graph, map);
+        FileHandler.dialogSaveAs(null, graph, map);
         zoomSlider.setValue(sliderValue);
     }
 
     @FXML
     private void handleExport(){
 
-        FileHandler.exportToXLS(graph, stage);
+        FileHandler.dialogExport(graph, stage);
 
     }
 

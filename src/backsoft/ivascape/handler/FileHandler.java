@@ -1,7 +1,7 @@
 package backsoft.ivascape.handler;
 
 import backsoft.ivascape.logic.Triplet;
-import backsoft.ivascape.model.CoorsMap;
+import backsoft.ivascape.logic.CoorsMap;
 import backsoft.ivascape.model.IvascapeGraph;
 import backsoft.ivascape.viewcontrol.MyAlerts;
 import javafx.stage.FileChooser;
@@ -11,7 +11,7 @@ import java.io.*;
 
 public class FileHandler {
 
-    public static Triplet<File, IvascapeGraph, CoorsMap> loadFile(File file){
+    public static Triplet<File, IvascapeGraph, CoorsMap> dialogLoad(File file){
 
         FileChooser fileChooser = new FileChooser();
 
@@ -27,11 +27,11 @@ public class FileHandler {
                         System.getProperty("user.home") + "\\Desktop"
                         : file.getParent()));
 
-        file = fileChooser.showOpenDialog(Loader.getMainStage());
-        return openIt(file);
+        File newfile = fileChooser.showOpenDialog(Loader.getMainStage());
+        return openFile(newfile);
     }
 
-    private static Triplet<File, IvascapeGraph, CoorsMap> openIt(File file) {
+    private static Triplet<File, IvascapeGraph, CoorsMap> openFile(File file) {
 
         if (file == null) return null;
 
@@ -64,11 +64,7 @@ public class FileHandler {
         }
     }
 
-    public static File saveAs(IvascapeGraph graph, CoorsMap map){
-        return saveAs(null, graph, map);
-    }
-
-    public static File saveAs(File file, IvascapeGraph graph, CoorsMap map){
+    public static File dialogSaveAs(File file, IvascapeGraph graph, CoorsMap map){
 
         FileChooser fileChooser = new FileChooser();
 
@@ -87,11 +83,11 @@ public class FileHandler {
             fileChooser.setInitialDirectory(new File(file.getParent()));
         }
 
-        saveIt(file, graph, map);
+        saveToFile(file, graph, map);
         return file;
     }
 
-    public static void exportToXLS(IvascapeGraph graph, final Stage ownerStage){
+    public static void dialogExport(IvascapeGraph graph, final Stage ownerStage){
 
         FileChooser fileChooser = new FileChooser();
 
@@ -107,7 +103,7 @@ public class FileHandler {
         ExcelHandler.saveItAsXLS(graph, fileChooser.showSaveDialog(ownerStage));
     }
 
-    public static void saveIt(File file, IvascapeGraph graph, CoorsMap map){
+    public static void saveToFile(File file, IvascapeGraph graph, CoorsMap map){
 
         if (file == null) return;
 

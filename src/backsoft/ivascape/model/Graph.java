@@ -1,4 +1,4 @@
-package backsoft.ivascape.logic;
+package backsoft.ivascape.model;
 import java.util.Iterator;
 
 public interface Graph<K, V> {

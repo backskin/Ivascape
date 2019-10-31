@@ -4,6 +4,8 @@ import backsoft.ivascape.handler.FileHandler;
 import backsoft.ivascape.handler.GraphHandler;
 import backsoft.ivascape.handler.IvaGraphHandler;
 
+import backsoft.ivascape.logic.CoorsMap;
+import backsoft.ivascape.logic.Triplet;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
@@ -44,12 +46,9 @@ public class Project implements Serializable {
 
     public File getFile() { return file; }
 
-    public void setFile(File file) {
+    public void setFile(File file) { this.file = file; }
 
-        this.file = file;
-    }
-
-    public boolean isSaved() { return saved.get(); }
+    public boolean isSaved() { return isEmpty() || saved.get(); }
 
     public BooleanProperty savedProperty() { return saved; }
 
@@ -57,14 +56,18 @@ public class Project implements Serializable {
 
     public IvascapeGraph getGraph() { return graph; }
 
-    public boolean isEmpty() { return graph == null; }
 
-    public void load(File file, IvascapeGraph graph, CoorsMap map) {
+    public boolean isEmpty() { return graph == null || graph.size() < 1; }
 
-        setFile(file);
+    public boolean load(Triplet<File, IvascapeGraph, CoorsMap> triplet) {
+
+        if (triplet == null) return false;
+
         setSaved(true);
-        this.graph = graph;
-        coorsMap = map;
+        setFile(triplet.getOne());
+        this.graph = triplet.getTwo();
+        coorsMap = triplet.getThree();
+        return true;
     }
 
     public static void newProject() {
@@ -73,8 +76,16 @@ public class Project implements Serializable {
 
     public void saveProject(){
 
-        FileHandler.saveIt(file, graph, coorsMap);
+        FileHandler.saveToFile(file, graph, coorsMap);
         setSaved(true);
+    }
+
+    public Company getCompany(Integer hashCode) {
+        for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext(); ) {
+            Company c = i.next();
+            if (hashCode.equals(c.hashCode())) return c;
+        }
+        return null;
     }
 
     public Company getCompany(String title){
@@ -115,7 +126,11 @@ public class Project implements Serializable {
         return graphHandler.isStrong();
     }
 
-    public int linksAmount(){
+    public int amountOfComs(){
+        return graph.size();
+    }
+
+    public int amountOfLinks(){
 
         return graphHandler.getEdgeSize();
     }

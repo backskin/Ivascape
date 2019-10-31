@@ -3,34 +3,24 @@ package backsoft.ivascape.viewcontrol;
 import backsoft.ivascape.handler.FileHandler;
 import backsoft.ivascape.handler.Loader;
 import backsoft.ivascape.handler.Preferences;
-import backsoft.ivascape.logic.Triplet;
-import backsoft.ivascape.model.CoorsMap;
-import backsoft.ivascape.model.IvascapeGraph;
 import backsoft.ivascape.model.Project;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import static backsoft.ivascape.viewcontrol.MyAlerts.AlertType.UNKNOWN;
-
 public class StartWindowController {
+
+    public static final boolean TERMINATED = true;
 
     public ImageView bckgImage;
     private Stage startStage;
+    private boolean restart = false;
+    private boolean status = false;
 
-    private static boolean restart = false;
-    private boolean terminate = false;
-
-    private double xOffset = .0;
-    private double yOffset = .0;
-    private double x = .0;
-    private double y = .0;
-
-
+    private static double xOffset = .0;
+    private static double yOffset = .0;
+    private static double x = .0;
+    private static double y = .0;
 
     @FXML
     private ImageView splash;
@@ -38,14 +28,9 @@ public class StartWindowController {
     @FXML
     private void initialize() {
 
-        try {
-            splash.setImage(Loader.getImageRsrc(Preferences.current()
-                    .getCurrentLoc().getLanguage() + "splash"));
-            bckgImage.setImage(Loader.getImageRsrc("startbg"));
-
-        } catch (FileNotFoundException e) {
-            MyAlerts.getAlert(UNKNOWN, e.getMessage());
-        }
+        splash.setImage(Loader.getImageRsrc(Preferences.current()
+                .getCurrentLoc().getLanguage() + "splash"));
+        bckgImage.setImage(Loader.getImageRsrc("startbg"));
 
         splash.setOnMousePressed(event -> {
             xOffset = startStage.getX() - event.getScreenX();
@@ -63,18 +48,17 @@ public class StartWindowController {
     public void setStartStage(Stage startStage){
 
         this.startStage = startStage;
-        if (restart && (x + y > 0)) {
-            startStage.setX(x);
-            startStage.setY(y);
+        if (restart) {
+            startStage.setX(x > 0 ? x : 0);
+            startStage.setY(y > 0 ? y : 0);
         }
-
         restart = false;
     }
 
-    public boolean isTerminate(){ return terminate;}
+    public boolean getStatus(){ return status;}
 
     @FXML
-    private void handleExit(){ startStage.close(); terminate = true;}
+    private void handleExit(){ startStage.close(); status = TERMINATED;}
 
     @FXML
     private void handleNew(){
@@ -86,20 +70,20 @@ public class StartWindowController {
     @FXML
     private void handleOpen() {
 
-        Triplet<File, IvascapeGraph, CoorsMap> output = FileHandler.loadFile(null);
-
-        if (output == null) return;
-
-        Project.get().load(output.getOne(), output.getTwo(), output.getThree());
+        if (!Project.get().load(FileHandler.dialogLoad(null))) return;
         startStage.close();
     }
 
     @FXML
-    private void handleLang() throws IOException {
+    private void handleLang() {
 
-        Preferences.current().changeLoc();
         restart = true;
+        Preferences.current().changeLoc();
         startStage.close();
-        Loader.loadStartWindow();
+    }
+
+    public boolean isLocaleChanged() {
+
+        return restart;
     }
 }

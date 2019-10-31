@@ -1,7 +1,5 @@
 package backsoft.ivascape.model;
 
-import backsoft.ivascape.logic.GraphOnList;
-
 public class IvascapeGraph extends GraphOnList<Company, Link> {
 
     public IvascapeGraph(){ super(); }

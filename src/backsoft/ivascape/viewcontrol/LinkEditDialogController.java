@@ -43,23 +43,28 @@ public class LinkEditDialogController {
         this.dialogStage = dialogStage;
     }
 
-    public void setFields(Company... coms) {
+    public void setFields(Integer... hashes) {
 
-        if (coms == null || coms.length < 2){
+        Company com1, com2;
+
+        if (hashes == null || hashes.length < 2){
 
             List<String> namesList = project.getCompaniesList();
-            if (coms != null && coms.length > 0){
-                namesList.remove(coms[0].getTitle());
-                firstField.setText(coms[0].getTitle());
+            if (hashes != null && hashes.length > 0){
+                com1 = project.getCompany(hashes[0]);
+                namesList.remove(com1.getTitle());
+                firstField.setText(com1.getTitle());
                 firstField.setDisable(true);
             } else {
                 TextFields.bindAutoCompletion(firstField, namesList);
             }
             TextFields.bindAutoCompletion(secondField, namesList);
         } else {
-            secondField.setText(coms[1].getTitle());
+            com1 = project.getCompany(hashes[0]);
+            com2 = project.getCompany(hashes[1]);
+            secondField.setText(com2.getTitle());
             secondField.setDisable(true);
-            priceField.setText(project.getLink(coms[0],coms[1]).getPrice().toString());
+            priceField.setText(project.getLink(com1, com2).getPrice().toString());
         }
     }
 

@@ -1,7 +1,7 @@
 package backsoft.ivascape.handler;
 
 import backsoft.ivascape.logic.Complex;
-import backsoft.ivascape.logic.Graph;
+import backsoft.ivascape.model.Graph;
 import backsoft.ivascape.logic.Pair;
 
 import java.util.List;
