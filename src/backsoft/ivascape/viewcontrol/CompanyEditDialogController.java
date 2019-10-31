@@ -3,6 +3,7 @@ package backsoft.ivascape.viewcontrol;
 import backsoft.ivascape.handler.Preferences;
 import backsoft.ivascape.model.Company;
 import backsoft.ivascape.model.Project;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
@@ -115,11 +116,7 @@ public class CompanyEditDialogController {
                     Double.parseDouble(capitalField.getText()),
                     datePicker.getValue());
 
-            if (editCompany == null)
-                project.add(tempCom);
-            else
-                editCompany.asCopyOf(tempCom);
-
+            project.add(tempCom);
             okClicked = true;
         }
 

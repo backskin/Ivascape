@@ -10,8 +10,6 @@ import org.controlsfx.control.textfield.TextFields;
 
 import java.util.List;
 
-import static backsoft.ivascape.viewcontrol.MyAlerts.getAlert;
-
 public class LinkEditDialogController {
 
     private double price = .0;
@@ -83,6 +81,7 @@ public class LinkEditDialogController {
             } catch (NumberFormatException e) {
                 errorMessage += Preferences.getCurrent().getBundle().getString("error.wrongmoney") + "\n";
             }
+
 
             Company one = project.getCompany(firstField.getText());
             Company another = project.getCompany(secondField.getText());

@@ -136,14 +136,16 @@ public class Project implements Serializable {
     }
 
     public void add(Company company){
-
-        graph.addVertex(company);
+        if (getCompany(company.getTitle()) == null)
+            graph.addVertex(company);
+        else getCompany(company.getTitle()).asCopyOf(company);
         setSaved(false);
     }
 
     public void add(Company one, Company two, double price){
-
-        graph.addEdge(one, two, price);
+        if (graph.getEdge(one,two) == null)
+            graph.addEdge(one, two, price);
+        else graph.getEdge(one,two).setPrice(price);
         setSaved(false);
     }
 

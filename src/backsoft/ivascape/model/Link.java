@@ -26,7 +26,7 @@ public class Link implements Serializable, Complex<Company, Link> {
 
     public void setPrice(double price) {
 
-        this.price = Math.round(price*100)/100.0;
+        this.price = price;
     }
 
     public Double getPrice() { return price;}
