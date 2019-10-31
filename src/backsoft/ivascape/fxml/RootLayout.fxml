@@ -18,7 +18,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="rootLayout" focusTraversable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+<BorderPane fx:id="rootPane" focusTraversable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
             xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="backsoft.ivascape.viewcontrol.RootLayoutController">
     <top>
@@ -35,12 +35,12 @@
                     </accelerator>
                 </MenuItem>
                 <SeparatorMenuItem mnemonicParsing="false" />
-                <MenuItem fx:id="Save" mnemonicParsing="false" onAction="#handleFileSave" text="%menubutton.save">
+                <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#handleFileSave" text="%menubutton.save">
                     <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
-                <MenuItem fx:id="SaveAs" mnemonicParsing="false" onAction="#handleFileSaveAs" text="%menubutton.saveas">
+                <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#handleFileSaveAs" text="%menubutton.saveas">
                     <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                     </accelerator>
@@ -63,7 +63,7 @@
                         <KeyCodeCombination alt="DOWN" code="A" control="UP" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
-                <MenuItem fx:id="addEdge" mnemonicParsing="false" onAction="#handleAddEdge" text="%menubutton.addedge">
+                <MenuItem fx:id="addEdgeMenuItem" mnemonicParsing="false" onAction="#handleAddEdge" text="%menubutton.addedge">
                     <accelerator>
                         <KeyCodeCombination alt="DOWN" code="D" control="UP" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>
@@ -110,7 +110,7 @@
                 </padding>
                 <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
                     <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="%bottombar.file" />
-                    <Label fx:id="fileName" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="FileName.ivp" />
+                    <Label fx:id="filenameLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="FileName.ivp" />
                 </HBox>
                 <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" orientation="VERTICAL" prefHeight="11.0" prefWidth="6.0" HBox.hgrow="ALWAYS">
                     <HBox.margin>
@@ -119,13 +119,13 @@
                 </Separator>
                 <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
                     <Label minHeight="-Infinity" minWidth="-Infinity" text="%bottombar.cmpamt" />
-                    <Label fx:id="cAmount" minWidth="-Infinity" text="0">
+                    <Label fx:id="comsAmountLabel" minWidth="-Infinity" text="0">
                         <HBox.margin>
                             <Insets left="4.0" right="20.0" />
                         </HBox.margin>
                     </Label>
                     <Label minHeight="-Infinity" minWidth="-Infinity" text="%bottombar.lnkamt" />
-                    <Label fx:id="lAmount" minWidth="-Infinity" text="0">
+                    <Label fx:id="linksAmountLabel" minWidth="-Infinity" text="0">
                         <HBox.margin>
                             <Insets left="4.0" right="8.0" />
                         </HBox.margin>
@@ -162,13 +162,13 @@
                 minWidth="-Infinity" pickOnBounds="false" side="LEFT" style="-fx-text-fill: #ffffff;"
                 tabClosingPolicy="UNAVAILABLE" tabMinHeight="30.0" tabMinWidth="100.0">
            <Tab closable="false" style="-fx-focus-color: crimson; -fx-text-fill: #ffffff;" text="%tabstitle.cmps">
-               <AnchorPane fx:id="CompaniesView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"/>
+               <AnchorPane fx:id="CompaniesPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"/>
            </Tab>
            <Tab closable="false" style="-fx-focus-color: crimson;" text="%tabstitle.tblv">
-               <AnchorPane fx:id="TableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"/>
+               <AnchorPane fx:id="TablePane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"/>
            </Tab>
            <Tab closable="false" style="-fx-focus-color: crimson;" text="%tabstitle.map">
-               <AnchorPane fx:id="MapView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"/>
+               <AnchorPane fx:id="MapPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"/>
            </Tab>
        </TabPane>
    </center>

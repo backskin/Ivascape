@@ -34,40 +34,40 @@ public class RootLayoutController {
     private TabPane tabPane;
 
     @FXML
-    private AnchorPane CompaniesView;
+    private AnchorPane CompaniesPane;
 
     @FXML
-    private AnchorPane TableView;
+    private AnchorPane TablePane;
 
     @FXML
-    private AnchorPane MapView;
+    private AnchorPane MapPane;
 
     @FXML
-    private BorderPane rootLayout;
+    private BorderPane rootPane;
 
     @FXML
     private Circle saveIcon;
 
     @FXML
-    private Label fileName;
+    private Label filenameLabel;
 
     @FXML
-    private Label cAmount;
+    private Label comsAmountLabel;
 
     @FXML
-    private Label lAmount;
+    private Label linksAmountLabel;
 
     @FXML
     private Label isSaved;
 
     @FXML
-    private MenuItem addEdge;
+    private MenuItem addEdgeMenuItem;
 
     @FXML
-    private MenuItem SaveAs;
+    private MenuItem saveAsMenuItem;
 
     @FXML
-    private MenuItem Save;
+    private MenuItem saveMenuItem;
 
     @FXML
     private CheckMenuItem rus;
@@ -75,74 +75,72 @@ public class RootLayoutController {
     @FXML
     private CheckMenuItem eng;
 
-    private GraphViewController gvController;
+
+    private Preferences preferences = Preferences.getCurrent();
 
     @FXML
     private void initialize(){
 
-        Preferences preferences = Preferences.current();
-
         saveIcon.setFill(Color.GREEN);
-        rus.setSelected(Preferences.current().getCurrentLoc().getLanguage().equals("ru"));
+        rus.setSelected(preferences.getCurrentLoc().getLanguage().equals("ru"));
         rus.setDisable(rus.isSelected());
         eng.setSelected(!rus.isSelected());
         eng.setDisable(eng.isSelected());
 
         eng.selectedProperty().addListener((observable, oldValue, newValue) -> {
 
-            Preferences.current().changeLoc();
-            Preferences.current().setWindowParams(mainStage);
+            preferences.saveWinParams(mainStage);
+            preferences.changeLoc();
             Loader.reloadApp();
         });
 
         rus.selectedProperty().addListener((observable, oldValue, newValue) -> eng.setSelected(!newValue));
 
-        isSaved.setText(Preferences.getBundle()
+        isSaved.setText(preferences.getBundle()
                 .getString(project.isSaved() ? "bottombar.saved" : "bottombar.unsaved"));
 
         saveIcon.setFill(project.isSaved() ? Color.GREEN : Color.DARKRED);
 
-        addEdge.setDisable(true);
-        Save.setDisable(true);
-        SaveAs.setDisable(true);
+        addEdgeMenuItem.setDisable(true);
+        saveMenuItem.setDisable(true);
+        saveAsMenuItem.setDisable(true);
 
         project.savedProperty().addListener((observable, oldValue, newValue) -> {
 
-            Save.setDisable(newValue);
-            SaveAs.setDisable(false);
+            saveMenuItem.setDisable(newValue);
+            saveAsMenuItem.setDisable(false);
 
-            isSaved.setText(Preferences.getBundle()
+            isSaved.setText(preferences.getBundle()
                     .getString(newValue ? "bottombar.saved" : "bottombar.unsaved"));
 
             saveIcon.setFill(newValue ? Color.GREEN : Color.DARKRED);
         });
 
-        MapViewController mvController = loadViewToTab("MapView", MapView);
-        CompaniesViewController cvController = loadViewToTab("CompaniesView", CompaniesView);
-        LinksViewController lvController = loadViewToTab("LinksView", TableView);
+        MapViewController mvController = loadViewToTab("MapView", MapPane);
+        CompaniesViewController cvController = loadViewToTab("CompaniesView", CompaniesPane);
+        LinksViewController lvController = loadViewToTab("LinksView", TablePane);
         ViewUpdater.current().put(mvController).put(cvController).put(lvController);
 
         assert mvController != null;
-        gvController = mvController.getGVController();
 
-        gvController.getSurfaceChangedProperty().addListener(
+        mvController.getGVController().getSurfaceChangedProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     if (newValue) {
                         project.setSaved(false);
                     }
                 });
 
-        gvController.getSurface().getChildren()
+        mvController.getGVController().getSurface().getChildren()
                 .addListener(
                         (ListChangeListener<Node>) c
                                 ->
-                                addEdge.setDisable(gvController
+                                addEdgeMenuItem.setDisable(mvController.getGVController()
                                         .getSurface()
                                         .getChildren()
                                         .size()
                                         < 2));
 
-        mainStage.setScene(new Scene(rootLayout));
+        mainStage.setScene(new Scene(rootPane));
 
         if (!project.isEmpty()) updateView();
 
@@ -174,11 +172,11 @@ public class RootLayoutController {
 
     void updateStatusbar(){
 
-        fileName.setText(project.getFile() != null ? project.getFile().getName() : "Empty");
-        cAmount.setText(project.amountOfComs() + "");
-        lAmount.setText(project.amountOfLinks() + "");
-        SaveAs.setDisable(project.isEmpty());
-        Save.setDisable(project.isEmpty() || project.isSaved());
+        filenameLabel.setText(project.getFile() != null ? project.getFile().getName() : "Empty");
+        comsAmountLabel.setText(project.amountOfComs() + "");
+        linksAmountLabel.setText(project.amountOfLinks() + "");
+        saveAsMenuItem.setDisable(project.isEmpty());
+        saveMenuItem.setDisable(project.isEmpty() || project.isSaved());
     }
 
     @FXML
@@ -189,7 +187,7 @@ public class RootLayoutController {
         TipsController tipsController = fxmlData.getTwo();
         Stage tipsStage = new Stage();
         tipsController.setStage(tipsStage);
-        tipsStage.setTitle(Preferences.getBundle().getString("tips.caption"));
+        tipsStage.setTitle(preferences.getBundle().getString("tips.caption"));
         tipsStage.initModality(Modality.WINDOW_MODAL);
         tipsStage.initOwner(mainStage);
 
@@ -228,7 +226,7 @@ public class RootLayoutController {
             RWController.setStage(resStage);
             resStage.initModality(Modality.WINDOW_MODAL);
             resStage.initOwner(mainStage);
-            resStage.setTitle(Preferences.getBundle().getString("result_window"));
+            resStage.setTitle(preferences.getBundle().getString("result_window"));
 
             Loader.openInAWindow(resStage, fxmlData.getOne(), true);
         }
@@ -244,7 +242,7 @@ public class RootLayoutController {
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner(mainStage);
 
-        stage.setTitle(Preferences.getBundle().getString("editwindows.analysetitle"));
+        stage.setTitle(preferences.getBundle().getString("editwindows.analysetitle"));
 //        stage.setWidth(460.0);
 //        stage.setHeight(400.0);
 //        stage.setMinWidth(400.0);

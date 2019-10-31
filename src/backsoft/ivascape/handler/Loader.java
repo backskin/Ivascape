@@ -30,7 +30,7 @@ public class Loader {
 
         FXMLLoader loader = new FXMLLoader(
                 FXApp.class.getResource("fxml/" + fxmlDocName + ".fxml"),
-                Preferences.getBundle());
+                Preferences.getCurrent().getBundle());
 
         try {
             return new Pair<>(loader.load(), loader.getController());
@@ -81,7 +81,7 @@ public class Loader {
 
     private static boolean welcomeScreen(Stage stage) {
 
-        stage.setTitle(Preferences.getBundle().getString("welcome"));
+        stage.setTitle(Preferences.getCurrent().getBundle().getString("welcome"));
         Pair<Parent, StartWindowController> fxmlData = loadFXML("StartWindow");
         StartWindowController controller = fxmlData.getTwo();
         controller.setStartStage(stage);
@@ -104,7 +104,7 @@ public class Loader {
 
         try {
             stage.setTitle(
-                    Preferences.current().reloadBundle().getString("program_name"));
+                    Preferences.getCurrent().reloadBundle().getString("program_name"));
             stage.getIcons().add(Loader.getImageRsrc("ico"));
 
             ViewUpdater.current().put((RootLayoutController) loadFXML("RootLayout").getTwo());
@@ -113,8 +113,7 @@ public class Loader {
             MyAlerts.getAlert(MyAlerts.AlertType.ISSUE, e.getMessage());
         }
 
-        Preferences prefs = Preferences.current();
-        prefs.applyWinParams(prefs.getSavedWinParams(), stage);
+        Preferences.getCurrent().applyWinParams(stage);
     }
 
     public static void loadDialogEditLink(Integer... hashes) {
@@ -123,11 +122,10 @@ public class Loader {
         LinkEditDialogController controller = fxmlData.getTwo();
 
         Stage dialogStage = new Stage();
-        dialogStage.setTitle(Preferences.getBundle().getString((hashes != null) ?
+        dialogStage.setTitle(Preferences.getCurrent().getBundle().getString((hashes != null) ?
                 "edittabs.header.editlink" : "edittabs.header.newlink"));
         dialogStage.initModality(Modality.WINDOW_MODAL);
         dialogStage.initOwner(stage);
-
         controller.setDialogStage(dialogStage);
         controller.setFields(hashes);
 
@@ -145,17 +143,14 @@ public class Loader {
 
         Stage dialogStage = new Stage();
 
-        dialogStage.setTitle(Preferences.getBundle().getString((comHash != 0) ?
+        dialogStage.setTitle(Preferences.getCurrent().getBundle().getString((comHash != 0) ?
                 "edittabs.header.editcmp" : "edittabs.header.newcmp"));
 
         dialogStage.initModality(Modality.WINDOW_MODAL);
-        dialogStage.initOwner(Loader.getMainStage());
+        dialogStage.initOwner(stage);
         CEDController.setDialogStage(dialogStage);
 
-        if (comHash != 0)
-            CEDController.setEditCompany(comHash);
-
-        dialogStage.setResizable(false);
+        CEDController.setEditCompany(comHash);
 
         openInAWindow(dialogStage, fxmlData.getOne(), false);
 

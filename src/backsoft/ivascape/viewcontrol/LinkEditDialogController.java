@@ -81,18 +81,18 @@ public class LinkEditDialogController {
                 if (price <= 0.0) throw new NumberFormatException();
 
             } catch (NumberFormatException e) {
-                errorMessage += Preferences.getBundle().getString("error.wrongmoney") + "\n";
+                errorMessage += Preferences.getCurrent().getBundle().getString("error.wrongmoney") + "\n";
             }
 
             Company one = project.getCompany(firstField.getText());
             Company another = project.getCompany(secondField.getText());
 
             if (one == null || another == null)
-                errorMessage += Preferences.getBundle().getString("error.wrongcomname") + "\n";
+                errorMessage += Preferences.getCurrent().getBundle().getString("error.wrongcomname") + "\n";
 
 
             if ( firstField.getText().equals(secondField.getText()))
-                errorMessage += Preferences.getBundle().getString("error.reflex") + "\n";
+                errorMessage += Preferences.getCurrent().getBundle().getString("error.reflex") + "\n";
 
 
             if (errorMessage.length() > 0) {

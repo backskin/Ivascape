@@ -23,7 +23,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -55,7 +54,7 @@ public class AnalyseWindowController {
         List<IvascapeGraph> components =  project.getComponents();
 
         if (components.size() == 0) {
-            Label label = new Label(Preferences.getBundle().getString("editwindows.emptygraph"));
+            Label label = new Label(Preferences.getCurrent().getBundle().getString("editwindows.emptygraph"));
 
             label.setFont(new Font("System",15));
             componentTables.getChildren().add(label);
@@ -111,7 +110,7 @@ public class AnalyseWindowController {
             TableColumn<Company,String> column = new TableColumn<>();
             column.setSortable(false);
             column.setText((components.indexOf(component)+1)
-                    + Preferences.getBundle().getString("editwindows.component"));
+                    + Preferences.getCurrent().getBundle().getString("editwindows.component"));
 
             componentTable.getColumns().add(column);
             componentTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

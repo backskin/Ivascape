@@ -17,10 +17,10 @@ public class FileHandler {
 
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter(
-                        Preferences.getBundle().getString("filewindow.type.ivp"), "*.ivp")
+                        Preferences.getCurrent().getBundle().getString("filewindow.type.ivp"), "*.ivp")
         );
 
-        fileChooser.setTitle(Preferences.getBundle().getString("filewindow.title.open"));
+        fileChooser.setTitle(Preferences.getCurrent().getBundle().getString("filewindow.title.open"));
 
         fileChooser.setInitialDirectory(
                 new File(file == null ?
@@ -68,11 +68,11 @@ public class FileHandler {
 
         FileChooser fileChooser = new FileChooser();
 
-        fileChooser.setTitle(Preferences.getBundle().getString("filewindow.title.save"));
+        fileChooser.setTitle(Preferences.getCurrent().getBundle().getString("filewindow.title.save"));
 
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter(
-                        Preferences.getBundle().getString("filewindow.type.ivp"), "*.ivp"));
+                        Preferences.getCurrent().getBundle().getString("filewindow.type.ivp"), "*.ivp"));
 
         if (file == null) {
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "\\Desktop"));
@@ -91,11 +91,11 @@ public class FileHandler {
 
         FileChooser fileChooser = new FileChooser();
 
-        fileChooser.setTitle(Preferences.getBundle().getString("filewindow.title.save"));
+        fileChooser.setTitle(Preferences.getCurrent().getBundle().getString("filewindow.title.save"));
 
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter(
-                        Preferences.getBundle().getString("filewindow.type.xls"),"*.xls")
+                        Preferences.getCurrent().getBundle().getString("filewindow.type.xls"),"*.xls")
         );
 
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+"\\Desktop"));

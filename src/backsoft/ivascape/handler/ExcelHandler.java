@@ -64,7 +64,7 @@ class ExcelHandler {
 
         try {
             
-            HSSFSheet sheet = workbook.createSheet(Preferences.getBundle().getString("excelsheet.cmps"));
+            HSSFSheet sheet = workbook.createSheet(Preferences.getCurrent().getBundle().getString("excelsheet.cmps"));
             Cell cell;
             Row row = sheet.createRow(0);
 
@@ -72,19 +72,19 @@ class ExcelHandler {
             HSSFCellStyle styleRegular = createRegularStyle(workbook);
 
             cell = row.createCell(0);
-            cell.setCellValue(Preferences.getBundle().getString("tabletext.title"));
+            cell.setCellValue(Preferences.getCurrent().getBundle().getString("tabletext.title"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell(1);
-            cell.setCellValue(Preferences.getBundle().getString("tabletext.money"));
+            cell.setCellValue(Preferences.getCurrent().getBundle().getString("tabletext.money"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell( 2);
-            cell.setCellValue(Preferences.getBundle().getString("tabletext.address"));
+            cell.setCellValue(Preferences.getCurrent().getBundle().getString("tabletext.address"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell(3);
-            cell.setCellValue(Preferences.getBundle().getString("tabletext.date"));
+            cell.setCellValue(Preferences.getCurrent().getBundle().getString("tabletext.date"));
             cell.setCellStyle(styleForTitle);
 
             Iterator<Company> iterator = graph.getVertexIterator();
@@ -126,25 +126,25 @@ class ExcelHandler {
     private static void createSecondSheet(HSSFWorkbook workbook, IvascapeGraph graph){
 
         try {
-            HSSFSheet sheet = workbook.createSheet(Preferences.getBundle().getString("excelsheet.links"));
+            HSSFSheet sheet = workbook.createSheet(Preferences.getCurrent().getBundle().getString("excelsheet.links"));
             Cell cell;
             Row row = sheet.createRow(0);
             HSSFCellStyle styleForTitle = createStyleForTitle(workbook);
             HSSFCellStyle styleRegular = createRegularStyle(workbook);
             cell = row.createCell(0);
-            cell.setCellValue(Preferences.getBundle().getString("edittabs.neighbour"));
+            cell.setCellValue(Preferences.getCurrent().getBundle().getString("edittabs.neighbour"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell(1);
-            cell.setCellValue(Preferences.getBundle().getString("edittabs.neighbour"));
+            cell.setCellValue(Preferences.getCurrent().getBundle().getString("edittabs.neighbour"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell(2);
-            cell.setCellValue(Preferences.getBundle().getString("edittabs.price"));
+            cell.setCellValue(Preferences.getCurrent().getBundle().getString("edittabs.price"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell(4);
-            cell.setCellValue(Preferences.getBundle().getString("excelsheet.summ"));
+            cell.setCellValue(Preferences.getCurrent().getBundle().getString("excelsheet.summ"));
             cell.setCellStyle(styleForTitle);
 
             int count = 1;

@@ -28,7 +28,7 @@ public class StartWindowController {
     @FXML
     private void initialize() {
 
-        splash.setImage(Loader.getImageRsrc(Preferences.current()
+        splash.setImage(Loader.getImageRsrc(Preferences.getCurrent()
                 .getCurrentLoc().getLanguage() + "splash"));
         bckgImage.setImage(Loader.getImageRsrc("startbg"));
 
@@ -78,7 +78,7 @@ public class StartWindowController {
     private void handleLang() {
 
         restart = true;
-        Preferences.current().changeLoc();
+        Preferences.getCurrent().changeLoc();
         startStage.close();
     }
 

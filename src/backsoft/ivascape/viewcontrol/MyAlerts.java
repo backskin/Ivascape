@@ -29,9 +29,9 @@ public class MyAlerts {
     public static Alert getAlert(AlertType type, Stage owner, String... args) {
 
         Alert alert;
-        Preferences currentPreferences = Preferences.current();
+        Preferences currentPreferences = Preferences.getCurrent();
         assert currentPreferences != null;
-        ResourceBundle bundle = Preferences.getBundle();
+        ResourceBundle bundle = Preferences.getCurrent().getBundle();
 
         switch (type) {
 

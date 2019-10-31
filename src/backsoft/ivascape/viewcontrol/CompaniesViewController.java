@@ -93,7 +93,7 @@ public class CompaniesViewController {
     @FXML
     private void initialize(){
 
-        TextFlow nocontent = new TextFlow(new Text(Preferences.getBundle().getString("tabletext.nocontent")));
+        TextFlow nocontent = new TextFlow(new Text(Preferences.getCurrent().getBundle().getString("tabletext.nocontent")));
 
         nocontent.setTextAlignment(TextAlignment.CENTER);
         nocontent.setPadding(new Insets(8,8,0,8));

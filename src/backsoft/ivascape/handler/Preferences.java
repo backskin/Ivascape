@@ -25,10 +25,6 @@ public class Preferences {
         instance = this;
     }
 
-    WinParams getSavedWinParams() {
-        return windowParams;
-    }
-
     public Locale getCurrentLoc() {
         return currentLoc;
     }
@@ -48,24 +44,23 @@ public class Preferences {
         }
     }
 
-    public void setWindowParams(Stage stage){
+    private WinParams windowParams;
+    private int currentTab = 0;
+    private ResourceBundle bundle;
 
-        this.windowParams = new WinParams(stage.getX(), stage.getY(),
+    public void saveWinParams(Stage stage){
+
+        windowParams = new WinParams(stage.getX(), stage.getY(),
                 stage.getWidth(), stage.getHeight());
     }
 
-    void applyWinParams(WinParams windowParams, Stage stage){
+    public void applyWinParams(Stage stage) {
 
         if (windowParams != null) {
             stage.setWidth(windowParams.width);
             stage.setHeight(windowParams.height);
             stage.setX(windowParams.x);
             stage.setY(windowParams.y);
-        } else if (!stage.isShowing()) {
-
-            stage.show();
-            stage.setMinWidth(stage.getWidth());
-            stage.setMinHeight(stage.getHeight());
         }
     }
 
@@ -77,9 +72,6 @@ public class Preferences {
             return bundle;
     }
 
-    private WinParams windowParams;
-
-    private Project project = Project.get();
     private static final Locale ruLoc = new Locale("ru","RU");
     private static final Locale enLoc = new Locale("en", "US");
     private Locale currentLoc;
@@ -92,18 +84,15 @@ public class Preferences {
         this.currentTab = currentTab;
     }
 
-    private int currentTab = 0;
 
-    private ResourceBundle bundle;
-
-    public static Preferences current() {
+    public static Preferences getCurrent() {
 
         return (instance == null) ? new Preferences() : instance;
     }
 
     static void onExit(WindowEvent event){
 
-        if (!(instance.project.isEmpty() || instance.project.isSaved()) &&
+        if (!(Project.get().isEmpty() || Project.get().isSaved()) &&
                 MyAlerts.getAlert(MyAlerts.AlertType.ON_EXIT, "NOTSAVED").getResult().getButtonData()
                         == ButtonBar.ButtonData.CANCEL_CLOSE)
             event.consume();
@@ -117,18 +106,18 @@ public class Preferences {
         try {
             reloadBundle();
         } catch (IOException e) {
-            MyAlerts.getAlert(MyAlerts.AlertType.ISSUE, e.getMessage());
+            MyAlerts.getAlert(MyAlerts.AlertType.ISSUE, e.getLocalizedMessage());
         }
     }
 
-    public static ResourceBundle getBundle() {
-        if (current().bundle == null) {
+    public ResourceBundle getBundle() {
+        if (bundle == null) {
             try {
-                instance.reloadBundle();
+                reloadBundle();
             } catch (IOException e) {
-                e.printStackTrace();
+                MyAlerts.getAlert(MyAlerts.AlertType.ISSUE, e.getLocalizedMessage());
             }
         }
-        return instance.bundle;
+        return bundle;
     }
 }

@@ -28,6 +28,8 @@ public class CompanyEditDialogController {
 
     public void setEditCompany(Integer comHash){
 
+        if (comHash == 0) return;
+
         editCompany = project.getCompany(comHash);
         titleField.setText(editCompany.getTitle());
         capitalField.setText(Double.toString(editCompany.getMoneyCapital()));
@@ -74,20 +76,20 @@ public class CompanyEditDialogController {
             double editCapital = Double.parseDouble(capitalField.getText());
 
             if (editCapital < 0.0)
-                errorMessage += Preferences.getBundle().getString("error.negmoney") + "\n";
+                errorMessage += Preferences.getCurrent().getBundle().getString("error.negmoney") + "\n";
 
         } catch (NumberFormatException e){
-            errorMessage += Preferences.getBundle().getString("error.wrongmoney") + "\n";
+            errorMessage += Preferences.getCurrent().getBundle().getString("error.wrongmoney") + "\n";
         }
         if (addressField.getText().isEmpty())
-             errorMessage +=  Preferences.getBundle().getString("error.emptyaddress") + "\n";
+             errorMessage +=  Preferences.getCurrent().getBundle().getString("error.emptyaddress") + "\n";
 
         if (titleField.getText().isEmpty())
-            errorMessage += Preferences.getBundle().getString("error.emptyname") + "\n";
+            errorMessage += Preferences.getCurrent().getBundle().getString("error.emptyname") + "\n";
 
         if (editCompany == null && !titleField.getText().isEmpty()
                 && project.getCompany(titleField.getText()) != null)
-                errorMessage +=  Preferences.getBundle().getString("error.dubc")+ "\n";
+                errorMessage +=  Preferences.getCurrent().getBundle().getString("error.dubc")+ "\n";
 
         if (errorMessage.length() == 0) {
             return true;
