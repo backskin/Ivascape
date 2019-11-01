@@ -3,6 +3,7 @@ package backsoft.ivascape.viewcontrol;
 import backsoft.ivascape.handler.Loader;
 import backsoft.ivascape.logic.Pair;
 import backsoft.ivascape.model.Project;
+import javafx.beans.property.BooleanProperty;
 import javafx.scene.Parent;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
@@ -39,6 +40,7 @@ public class MapViewController {
     void updateView(){
 
         zoomSlider.setValue(100);
+
         GVController.setGraph(
                 project.getGraph(),
                 project.getCoorsMap(),
@@ -49,7 +51,9 @@ public class MapViewController {
         GVController.updateView();
     }
 
-    public MapViewController(){}
+    void bindSurfaceChangedBidirectional(BooleanProperty property){
+        GVController.bindToSurfaceChanged(property);
+    }
 
     @FXML
     private void initialize(){
@@ -59,11 +63,6 @@ public class MapViewController {
         surface.setContent(fxml.getOne());
 
         GVController = fxml.getTwo();
-
-        project.savedProperty().addListener(
-                (obs, ol, val) -> {
-                    if (val) GVController.getSurfaceChangedProperty().setValue(false);
-                });
 
         showHidePrices.selectedProperty().addListener((observable, oldValue, newValue) -> GVController.setPricesVisible(newValue));
 

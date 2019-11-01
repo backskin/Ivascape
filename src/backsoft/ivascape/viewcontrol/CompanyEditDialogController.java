@@ -1,5 +1,6 @@
 package backsoft.ivascape.viewcontrol;
 
+import backsoft.ivascape.handler.AlertHandler;
 import backsoft.ivascape.handler.Preferences;
 import backsoft.ivascape.model.Company;
 import backsoft.ivascape.model.Project;
@@ -11,7 +12,7 @@ import javafx.stage.Stage;
 
 import java.time.LocalDate;
 
-import static backsoft.ivascape.viewcontrol.MyAlertDialog.setType;
+import static backsoft.ivascape.handler.AlertHandler.AlertType.FIELDS_ISSUE;
 
 public class CompanyEditDialogController {
 
@@ -96,8 +97,7 @@ public class CompanyEditDialogController {
             return true;
 
         } else {
-
-            setType(MyAlertDialog.AlertType.INVALID_FIELDS, dialogStage, errorMessage);
+            AlertHandler.makeAlert(FIELDS_ISSUE).setOwner(dialogStage).customContent(errorMessage).show();
             return false;
         }
     }

@@ -2,7 +2,6 @@ package backsoft.ivascape.viewcontrol;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -10,75 +9,37 @@ import javafx.scene.text.Font;
 
 public class VisualEdge {
 
-    private static class ScaleListener implements ChangeListener<Number>{
-
-        final Label price;
-
-        final Line line;
-
-        ScaleListener(Label price, Line line) {
-
-            this.line = line;
-            this.price = price;
-        }
-
-        @Override
-        public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-
-            line.setStrokeWidth(5.0*(newValue.doubleValue())/100.0);
-
-            price.setFont(Font.font("System",
-                    12 + 12 * (newValue.doubleValue() - 100.0) / 200.0));
-        }
-    }
-
-    static class PriceListener implements ChangeListener<Boolean>{
-
-        final Label price;
-
-        PriceListener(Label price){
-
-            this.price = price;
-        }
-
-        @Override
-        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-            price.setVisible(newValue);
-        }
-    }
-
-    private final ChangeListener<Number> scaleListener;
-    private final ChangeListener<Boolean> priceListener;
-
     ChangeListener<Boolean> getPriceListener(){
-
-        return priceListener;
+        return (observableValue, aBoolean, t1) -> priceLabel.setVisible(t1);
     }
 
     ChangeListener<Number> getScaleListener(){
 
-        return scaleListener;
+        return (observableValue, number, t1) -> {
+            line.setStrokeWidth(5.0*(t1.doubleValue())/100.0);
+            priceLabel.setFont(Font.font("System",
+                    12 + 12 * (t1.doubleValue() - 100.0) / 200.0));
+        };
     }
 
-    private final Label price = new Label("0.0");
+    private final Label priceLabel = new Label("0.0");
 
-    public void setPrice(double price){
+    public void setPriceLabel(double priceLabel){
 
-        this.price.setText("$" + price);
+        this.priceLabel.setText("$" + priceLabel);
     }
 
-    public Label getPrice() {
-        return price;
+    public Label getPriceLabel() {
+        return priceLabel;
     }
 
     private final Line line = new Line();
 
-    public Line getLine() {
+    Line getLine() {
         return line;
     }
 
-    public static final Color defaultColor = Color.CRIMSON;
+    static final Color defaultColor = Color.CRIMSON;
 
     private static Color edgeColor = defaultColor;
 
@@ -87,13 +48,15 @@ public class VisualEdge {
         edgeColor = color;
     }
 
-    private VisualEdge(DoubleProperty xStart, DoubleProperty yStart, DoubleProperty xEnd, DoubleProperty yEnd) {
+    public VisualEdge(DoubleProperty xStart, DoubleProperty yStart,
+                      DoubleProperty xEnd, DoubleProperty yEnd, double price) {
 
-        price.setVisible(false);
-        price.setFont(Font.font("System",12));
-        price.setMouseTransparent(true);
-        price.setStyle("-fx-background-color : white");
-        price.setTextFill(edgeColor);
+        priceLabel.setVisible(false);
+        priceLabel.setFont(Font.font("System",12));
+        priceLabel.setMouseTransparent(true);
+        priceLabel.setStyle("-fx-background-color : white");
+        priceLabel.setTextFill(edgeColor);
+        priceLabel.setText("$" + price);
 
         line.setMouseTransparent(true);
         line.setStrokeWidth(5.0);
@@ -101,22 +64,22 @@ public class VisualEdge {
 
         xStart.addListener((ov, oldval, newval)-> {
             line.setStartX(newval.doubleValue());
-            price.setLayoutX((newval.doubleValue()+line.getEndX() - price.getWidth())/2.0);
+            priceLabel.setLayoutX((newval.doubleValue()+line.getEndX() - priceLabel.getWidth())/2.0);
         });
 
         yStart.addListener((ov, oldval, newval)-> {
             line.setStartY(newval.doubleValue());
-            price.setLayoutY((newval.doubleValue()+line.getEndY() - price.getHeight())/2.0);
+            priceLabel.setLayoutY((newval.doubleValue()+line.getEndY() - priceLabel.getHeight())/2.0);
         });
 
         xEnd.addListener((ov, oldval, newval)-> {
             line.setEndX(newval.doubleValue());
-            price.setLayoutX((line.getStartX()+newval.doubleValue() - price.getWidth())/2.0);
+            priceLabel.setLayoutX((line.getStartX()+newval.doubleValue() - priceLabel.getWidth())/2.0);
         });
 
         yEnd.addListener((ov, oldval, newval)-> {
             line.setEndY(newval.doubleValue());
-            price.setLayoutY((line.getStartY()+newval.doubleValue() - price.getHeight())/2.0);
+            priceLabel.setLayoutY((line.getStartY()+newval.doubleValue() - priceLabel.getHeight())/2.0);
         });
 
         line.setStartX(xStart.doubleValue());
@@ -124,16 +87,7 @@ public class VisualEdge {
         line.setEndX(xEnd.doubleValue());
         line.setEndY(yEnd.doubleValue());
 
-        price.setLayoutX((line.getStartX()+line.getEndX() - price.getWidth())/2.0);
-        price.setLayoutY((line.getStartY()+line.getEndY() - price.getHeight())/2.0);
-
-        scaleListener = new ScaleListener(price, line);
-        priceListener = new PriceListener(price);
-    }
-
-    public VisualEdge(VisualVertex start, VisualVertex end, double price){
-
-        this(start.xCenterProperty(),start.yCenterProperty(),end.xCenterProperty(),end.yCenterProperty());
-        this.price.setText("$" + price);
+        priceLabel.setLayoutX((line.getStartX()+line.getEndX() - priceLabel.getWidth())/2.0);
+        priceLabel.setLayoutY((line.getStartY()+line.getEndY() - priceLabel.getHeight())/2.0);
     }
 }

@@ -1,5 +1,6 @@
 package backsoft.ivascape.viewcontrol;
 
+import backsoft.ivascape.handler.AlertHandler;
 import backsoft.ivascape.handler.Loader;
 import backsoft.ivascape.handler.Preferences;
 import backsoft.ivascape.model.Company;
@@ -16,10 +17,9 @@ import javafx.scene.text.TextFlow;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import static backsoft.ivascape.viewcontrol.MyAlertDialog.AlertType.DELETE_CONFIRM;
-import static backsoft.ivascape.viewcontrol.MyAlertDialog.setType;
+import static backsoft.ivascape.handler.AlertHandler.AlertType.DELETE_CONFIRM;
 
-public class CompaniesViewController {
+public class CompaniesViewController implements ViewController {
 
     private int lastSelected = 0;
 
@@ -53,7 +53,7 @@ public class CompaniesViewController {
         return list;
     }
 
-    void updateView(){
+    public void updateView(){
 
         ObservableList<Company> companies = getCompaniesViewItems();
 
@@ -151,12 +151,11 @@ public class CompaniesViewController {
 
         if (company == null) return;
 
-        if (setType(DELETE_CONFIRM, Loader.getMainStage())
-                    .getResult().getButtonData().isDefaultButton()) {
+        if (AlertHandler.makeAlert(DELETE_CONFIRM).setOwner(Loader.getMainStage()).showAndGetResult()) {
 
             project.remove(company);
-
-            ViewUpdater.current().updateAll();
+            updateView();
+            ViewUpdater.current().updateLinksView().updateGraphView();
         }
     }
 }

@@ -1,5 +1,6 @@
 package backsoft.ivascape.viewcontrol;
 
+import backsoft.ivascape.handler.AlertHandler;
 import backsoft.ivascape.handler.Preferences;
 import backsoft.ivascape.model.Company;
 import backsoft.ivascape.model.Project;
@@ -9,6 +10,8 @@ import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.util.List;
+
+import static backsoft.ivascape.handler.AlertHandler.AlertType.FIELDS_ISSUE;
 
 public class LinkEditDialogController {
 
@@ -103,7 +106,7 @@ public class LinkEditDialogController {
             dialogStage.close();
 
         } catch (Exception e) {
-            MyAlertDialog.get(MyAlertDialog.AlertType.INVALID_FIELDS, dialogStage, e.getMessage());
+            AlertHandler.makeAlert(FIELDS_ISSUE).show();
         }
     }
 

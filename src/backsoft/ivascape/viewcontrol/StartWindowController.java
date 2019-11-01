@@ -28,9 +28,9 @@ public class StartWindowController {
     @FXML
     private void initialize() {
 
-        splash.setImage(Loader.getImageRsrc(Preferences.getCurrent()
+        splash.setImage(Loader.loadImageResource(Preferences.getCurrent()
                 .getCurrentLoc().getLanguage() + "splash"));
-        bckgImage.setImage(Loader.getImageRsrc("startbg"));
+        bckgImage.setImage(Loader.loadImageResource("startbg"));
 
         splash.setOnMousePressed(event -> {
             xOffset = startStage.getX() - event.getScreenX();

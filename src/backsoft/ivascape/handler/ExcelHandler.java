@@ -3,7 +3,6 @@ package backsoft.ivascape.handler;
 import backsoft.ivascape.model.Company;
 import backsoft.ivascape.model.IvascapeGraph;
 import backsoft.ivascape.model.Link;
-import backsoft.ivascape.viewcontrol.MyAlertDialog;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -16,6 +15,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
+
+import static backsoft.ivascape.handler.AlertHandler.AlertType.ISSUE;
 
 class ExcelHandler {
 
@@ -36,7 +37,6 @@ class ExcelHandler {
         return style;
     }
 
-
     static void saveItAsXLS(IvascapeGraph graph, File file){
 
         if (file == null) return;
@@ -47,23 +47,19 @@ class ExcelHandler {
             createFirstSheet(workbook, graph);
             createSecondSheet(workbook, graph);
 
-            FileOutputStream outFile = new FileOutputStream(file);
+            FileOutputStream stream = new FileOutputStream(file);
             workbook.unwriteProtectWorkbook();
-            workbook.write(outFile);
-            outFile.close();
+            workbook.write(stream);
+            stream.close();
         }
-        catch (NullPointerException | IOException npE){
-
-            MyAlertDialog.setType(MyAlertDialog.AlertType.ISSUE);
-            npE.printStackTrace();
+        catch (IOException e){
+            AlertHandler.makeAlert(ISSUE).customContent(e.getLocalizedMessage()).show();
+            throw new RuntimeException();
         }
-
     }
 
     private static void createFirstSheet(HSSFWorkbook workbook, IvascapeGraph graph){
 
-        try {
-            
             HSSFSheet sheet = workbook.createSheet(Preferences.getCurrent().getBundle().getString("excelsheet.cmps"));
             Cell cell;
             Row row = sheet.createRow(0);
@@ -114,18 +110,11 @@ class ExcelHandler {
             sheet.autoSizeColumn(1);
             sheet.autoSizeColumn(2);
             sheet.autoSizeColumn(3);
-
-        } catch (NullPointerException npE){
-
-            MyAlertDialog.setType(MyAlertDialog.AlertType.ISSUE);
-            npE.printStackTrace();
-        }
     }
 
 
     private static void createSecondSheet(HSSFWorkbook workbook, IvascapeGraph graph){
 
-        try {
             HSSFSheet sheet = workbook.createSheet(Preferences.getCurrent().getBundle().getString("excelsheet.links"));
             Cell cell;
             Row row = sheet.createRow(0);
@@ -199,11 +188,5 @@ class ExcelHandler {
             sheet.autoSizeColumn(1);
             sheet.autoSizeColumn(2);
             sheet.autoSizeColumn(4);
-
-        } catch (NullPointerException npE){
-
-            MyAlertDialog.setType(MyAlertDialog.AlertType.ISSUE);
-            npE.printStackTrace();
-        }
     }
 }

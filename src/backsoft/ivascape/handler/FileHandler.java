@@ -3,13 +3,31 @@ package backsoft.ivascape.handler;
 import backsoft.ivascape.logic.Triplet;
 import backsoft.ivascape.logic.CoorsMap;
 import backsoft.ivascape.model.IvascapeGraph;
-import backsoft.ivascape.viewcontrol.MyAlertDialog;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
 
+import static backsoft.ivascape.handler.AlertHandler.AlertType.LOAD_ISSUE;
+import static backsoft.ivascape.handler.AlertHandler.AlertType.SAVE_ISSUE;
+
 public class FileHandler {
+
+    public static void dialogExport(IvascapeGraph graph, final Stage ownerStage){
+
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.setTitle(Preferences.getCurrent().getBundle().getString("filewindow.title.save"));
+
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter(
+                        Preferences.getCurrent().getBundle().getString("filewindow.type.xls"),"*.xls")
+        );
+
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+"\\Desktop"));
+
+        ExcelHandler.saveItAsXLS(graph, fileChooser.showSaveDialog(ownerStage));
+    }
 
     public static Triplet<File, IvascapeGraph, CoorsMap> dialogLoad(File file){
 
@@ -27,40 +45,29 @@ public class FileHandler {
                         System.getProperty("user.home") + "\\Desktop"
                         : file.getParent()));
 
-        File newfile = fileChooser.showOpenDialog(Loader.getMainStage());
-        return openFile(newfile);
+        return openFile(fileChooser.showOpenDialog(Loader.getMainStage()));
     }
 
     private static Triplet<File, IvascapeGraph, CoorsMap> openFile(File file) {
 
         if (file == null) return null;
 
-        FileInputStream fis;
-        ObjectInputStream oin;
         try {
-            fis = new FileInputStream(file.getAbsolutePath());
-            oin = new ObjectInputStream(fis);
-
-            Object result;
-            Object coors;
-
-            result = oin.readObject();
-            coors = oin.readObject();
-
-            fis.close();
+            FileInputStream fis = new FileInputStream(file.getAbsolutePath());
+            ObjectInputStream oin = new ObjectInputStream(fis);
+            Object result = oin.readObject();
+            Object coors = oin.readObject();
             oin.close();
+            fis.close();
 
-            if (result instanceof IvascapeGraph && coors instanceof CoorsMap) {
+            if (result instanceof IvascapeGraph && coors instanceof CoorsMap)
                 return new Triplet<>(file, (IvascapeGraph) result, (CoorsMap) coors);
-
-            } else {
-                throw new ClassCastException();
-            }
+            else throw new ClassCastException();
 
         } catch (ClassCastException | ClassNotFoundException | IOException e){
 
-            MyAlertDialog.setType(MyAlertDialog.AlertType.LOAD_FAILED);
-            return null;
+            AlertHandler.makeAlert(LOAD_ISSUE).customContent("\n"+e.getLocalizedMessage()).show();
+            throw new RuntimeException();
         }
     }
 
@@ -87,42 +94,22 @@ public class FileHandler {
         return file;
     }
 
-    public static void dialogExport(IvascapeGraph graph, final Stage ownerStage){
-
-        FileChooser fileChooser = new FileChooser();
-
-        fileChooser.setTitle(Preferences.getCurrent().getBundle().getString("filewindow.title.save"));
-
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter(
-                        Preferences.getCurrent().getBundle().getString("filewindow.type.xls"),"*.xls")
-        );
-
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+"\\Desktop"));
-
-        ExcelHandler.saveItAsXLS(graph, fileChooser.showSaveDialog(ownerStage));
-    }
-
     public static void saveToFile(File file, IvascapeGraph graph, CoorsMap map){
 
         if (file == null) return;
 
-        FileOutputStream fos;
-        ObjectOutputStream oos;
-
         try {
-            fos = new FileOutputStream(file.getAbsolutePath());
-            oos = new ObjectOutputStream(fos);
-
+            FileOutputStream fos = new FileOutputStream(file.getAbsolutePath());
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(graph);
             oos.writeObject(map);
-
             oos.flush();
             oos.close();
+            fos.close();
 
         } catch (IOException e){
-
-            MyAlertDialog.setType(MyAlertDialog.AlertType.SAVE_FAILED);
+            AlertHandler.makeAlert(SAVE_ISSUE).customContent("\n"+e.getLocalizedMessage()).show();
+            throw new RuntimeException();
         }
     }
 }

@@ -14,6 +14,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ResultWindowController {
@@ -40,10 +41,13 @@ public class ResultWindowController {
     @FXML
     private VBox resTable;
 
-    void setStage(Stage stage) {
+    void setStage(Stage resStage) {
 
-        this.stage = stage;
-        stage.setOnCloseRequest(event -> {
+        stage = resStage;
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(Loader.getMainStage());
+
+        resStage.setOnCloseRequest(event -> {
             VisualVertex.setColor(VisualVertex.defaultColor);
             VisualEdge.setColor(VisualEdge.defaultColor);
         });

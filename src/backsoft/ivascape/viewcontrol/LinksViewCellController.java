@@ -1,15 +1,13 @@
 package backsoft.ivascape.viewcontrol;
 
+import backsoft.ivascape.handler.AlertHandler;
 import backsoft.ivascape.handler.Loader;
 import backsoft.ivascape.model.Link;
 import backsoft.ivascape.model.Project;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-import static backsoft.ivascape.viewcontrol.MyAlertDialog.AlertType.DELETE_CONFIRM;
-import static backsoft.ivascape.viewcontrol.MyAlertDialog.setType;
-import static javafx.scene.control.ButtonBar.ButtonData.OK_DONE;
-
+import static backsoft.ivascape.handler.AlertHandler.AlertType.DELETE_CONFIRM;
 public class LinksViewCellController {
 
     @FXML
@@ -19,7 +17,7 @@ public class LinksViewCellController {
 
     private Link link;
 
-    void put(Link link) {
+    void setFieldsFor(Link link) {
 
         this.link = link;
         name.setText(link.two().getTitle());
@@ -35,9 +33,7 @@ public class LinksViewCellController {
     @FXML
     private void handleDelete(){
 
-        if (setType(DELETE_CONFIRM, Loader.getMainStage())
-                .getResult().getButtonData() == OK_DONE){
-
+        if (AlertHandler.makeAlert(DELETE_CONFIRM).setOwner(Loader.getMainStage()).showAndGetResult()){
             Project.get().remove(link);
             ViewUpdater.current().updateLinksView().updateMapView();
         }

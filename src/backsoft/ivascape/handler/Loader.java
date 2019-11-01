@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import static backsoft.ivascape.handler.AlertHandler.AlertType.ISSUE;
 import static backsoft.ivascape.viewcontrol.StartWindowController.TERMINATED;
 
 public class Loader {
@@ -31,17 +32,16 @@ public class Loader {
         FXMLLoader loader = new FXMLLoader(
                 FXApp.class.getResource("fxml/" + fxmlDocName + ".fxml"),
                 Preferences.getCurrent().getBundle());
-
         try {
             return new Pair<>(loader.load(), loader.getController());
         } catch (IOException e) {
-            MyAlertDialog.get(MyAlertDialog.AlertType.ISSUE, e.getMessage());
+            AlertHandler.makeAlert(ISSUE).customContent("\n"+e.getMessage()).show();
             throw new RuntimeException();
         }
     }
 
     public static void openInAWindow(Stage stage, Parent parent, boolean resizable){
-        stage.getIcons().add(Loader.getImageRsrc("ico"));
+        stage.getIcons().add(Loader.loadImageResource("ico"));
         stage.setResizable(resizable);
         stage.setScene(new Scene(parent));
 
@@ -51,18 +51,17 @@ public class Loader {
         });
 
         stage.showAndWait();
-
     }
 
-    public static Image getImageRsrc(String img) {
+    public static Image loadImageResource(String img) {
 
         try {
             return new Image(new FileInputStream(new File("resources/"
                     + img + ".png")));
         } catch (FileNotFoundException e) {
-            MyAlertDialog.get(MyAlertDialog.AlertType.ISSUE, e.getMessage());
+            AlertHandler.makeAlert(ISSUE).customContent("\n"+e.getMessage()).show();
+            throw new RuntimeException();
         }
-        return null;
     }
 
     public static void start(Stage mainStage) {
@@ -75,7 +74,6 @@ public class Loader {
             Platform.exit();
             System.exit(0);
         }
-
         reloadApp();
     }
 
@@ -103,7 +101,7 @@ public class Loader {
         stage.setOnCloseRequest(Preferences::onExit);
         stage.setTitle(Preferences.getCurrent().getBundle().getString("program_name"));
         Pair<Parent, RootLayoutController> fxml = loadFXML("RootLayout");
-        ViewUpdater.current().put(fxml.getTwo());
+        ViewUpdater.putRootController(fxml.getTwo());
         openInAWindow(stage,fxml.getOne(),false);
         Preferences.getCurrent().applyWinParams(stage);
     }
@@ -148,7 +146,7 @@ public class Loader {
 
         if (CEDController.isOkClicked()) {
 
-            ViewUpdater.current().updateCompaniesView().updateLinksView().updateGraphView();
+            ViewUpdater.current().updateAll();
             return CEDController.getEditCompany().hashCode();
         }
         return 0;

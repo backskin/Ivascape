@@ -7,33 +7,24 @@ public class ViewUpdater {
         return viewUpdater == null ? new ViewUpdater() : viewUpdater;
     }
 
-    public ViewUpdater put(RootLayoutController c0) {
-        RLController = c0;
-        return this;
-    }
-
-    public ViewUpdater put(CompaniesViewController c0) {
-        CVController = c0;
-        return this;
-    }
-
-    public ViewUpdater put(LinksViewController c0) {
-        LVController = c0;
-        return this;
-    }
-
-    public ViewUpdater put(MapViewController c0) {
-        MVController = c0;
-        return this;
-    }
-
     private RootLayoutController RLController;
-
     private CompaniesViewController CVController;
-
     private LinksViewController LVController;
-
     private MapViewController MVController;
+
+    public static void putRootController(RootLayoutController controller) {
+        viewUpdater.RLController = controller;
+    }
+
+    static void putTabControllers(
+            CompaniesViewController companiesViewController,
+            LinksViewController linksViewController,
+            MapViewController mapViewController) {
+
+        viewUpdater.CVController = companiesViewController;
+        viewUpdater.LVController = linksViewController;
+        viewUpdater.MVController = mapViewController;
+    }
 
     public ViewUpdater updateCompaniesView() {
         CVController.updateView();

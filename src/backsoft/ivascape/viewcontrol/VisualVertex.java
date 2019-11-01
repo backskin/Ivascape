@@ -3,7 +3,6 @@ package backsoft.ivascape.viewcontrol;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
@@ -14,79 +13,31 @@ import javafx.scene.text.Font;
 
 public class VisualVertex {
 
-    private static class vertexScaleListener implements ChangeListener<Number> {
-
-        final VisualVertex vertex;
-
-        vertexScaleListener(VisualVertex visualVertex){
-
-            this.vertex = visualVertex;
-        }
-
-        @Override
-        public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-
-            vertex.getCircle().setRadius(
-                    VisualVertex.defaultCircleRadius
-                            + VisualVertex.defaultCircleRadius *
-                            (newValue.doubleValue() - 100.0) / 120.0);
-
-            vertex.setAllCoors(
-                    vertex.getItem().getLayoutX()*(newValue.doubleValue()/oldValue.doubleValue()),
-                    vertex.getItem().getLayoutY()*(newValue.doubleValue()/oldValue.doubleValue())
-            );
-        }
-    }
-
-    private static final Double defaultCircleRadius = 20.0;
-
-    private vertexScaleListener myOwnListener = new vertexScaleListener(this);
-
-    public vertexScaleListener getScaleListener() {
-        return myOwnListener;
-    }
-
-    public static final Color defaultColor = Color.CRIMSON;
-
-    private static Color circleColor;
-
-    public static void setColor(Color color) {
-        VisualVertex.circleColor = color;
-    }
-
     @FXML
     private Circle circle;
-
     @FXML
     private VBox item;
-
     @FXML
     private Label name;
-
     @FXML
     private Circle shadow;
-
     @FXML
     private StackPane stackPane;
 
+    private static final Double defaultCircleRadius = 20.0;
+    private static Color currentColor;
+    static final Color defaultColor = Color.CRIMSON;
+
+    public static void setColor(Color color) {
+        VisualVertex.currentColor = color;
+    }
+
     private final DoubleProperty xCenter = new SimpleDoubleProperty();
-
     private final DoubleProperty yCenter = new SimpleDoubleProperty();
-
-    public VisualVertex(){
-    }
-
-    DoubleProperty xCenterProperty() {
-        return xCenter;
-    }
-
-    public double x() { return item.getLayoutX(); }
-
-    public double y() { return item.getLayoutY(); }
-
-    DoubleProperty yCenterProperty() {
-        return yCenter;
-    }
+    DoubleProperty xCenterProperty() { return xCenter; }
+    DoubleProperty yCenterProperty() { return yCenter; }
+    double x() { return item.getLayoutX(); }
+    double y() { return item.getLayoutY(); }
 
     @FXML
     private void initialize(){
@@ -101,34 +52,42 @@ public class VisualVertex {
                     name.fontProperty().getValue().getSize()*(newValue.doubleValue() / oldValue.doubleValue())));
         });
         circle.setRadius(defaultCircleRadius);
-        circle.setFill(circleColor);
-        item.layoutXProperty().addListener((ov, oldval, newval) -> xCenter.setValue(xCenter.get()
+        circle.setFill(currentColor);
+        item.layoutXProperty().addListener(
+                (ov, oldval, newval) -> xCenter.setValue(xCenter.get()
                 + (newval.doubleValue() - oldval.doubleValue())));
-        item.layoutYProperty().addListener((ov,oldval,newval)->yCenter.setValue(yCenter.get()
+        item.layoutYProperty().addListener(
+                (ov, oldval,newval) -> yCenter.setValue(yCenter.get()
                 + (newval.doubleValue() - oldval.doubleValue())));
-        item.widthProperty().addListener((ov,oldval,newval)->xCenter.setValue(xCenter.get()
+        item.widthProperty().addListener(
+                (ov, oldval, newval) -> xCenter.setValue(xCenter.get()
                 + 0.5*(newval.doubleValue() - oldval.doubleValue())));
-        item.heightProperty().addListener((ov,oldval,newval)->yCenter.setValue(yCenter.get()
+        item.heightProperty().addListener(
+                (ov, oldval, newval) -> yCenter.setValue(yCenter.get()
                 + 0.5*(newval.doubleValue() - oldval.doubleValue())));
     }
 
-    public void setTitle(String title) {
+    void setTitle(String title) { name.setText(title); }
 
-        name.setText(title);
-    }
+    VBox getItem() { return item; }
 
-    public VBox getItem() {
+    Circle getCircle() { return circle; }
 
-        return item;
-    }
-
-    public Circle getCircle() {
-        return circle;
-    }
-
-    public void setAllCoors(double xCoors, double yCoors){
-
+    void setAllCoors(double xCoors, double yCoors){
         item.setLayoutX(xCoors);
         item.setLayoutY(yCoors);
+    }
+
+    ChangeListener<Number> getScaleListener() {
+        return (observableValue, number, t1) -> {
+            getCircle().setRadius(
+                    VisualVertex.defaultCircleRadius
+                            + VisualVertex.defaultCircleRadius *
+                            (t1.doubleValue() - 100.0) / 120.0);
+            setAllCoors(
+                    getItem().getLayoutX()*(t1.doubleValue()/number.doubleValue()),
+                    getItem().getLayoutY()*(t1.doubleValue()/number.doubleValue())
+            );
+        };
     }
 }

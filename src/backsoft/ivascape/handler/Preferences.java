@@ -1,9 +1,7 @@
 package backsoft.ivascape.handler;
 
 import backsoft.ivascape.model.Project;
-import backsoft.ivascape.viewcontrol.MyAlertDialog;
 import javafx.stage.Stage;
-import javafx.scene.control.ButtonBar;
 import javafx.stage.WindowEvent;
 
 import java.io.BufferedReader;
@@ -14,7 +12,7 @@ import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-import static backsoft.ivascape.viewcontrol.MyAlertDialog.AlertType.*;
+import static backsoft.ivascape.handler.AlertHandler.AlertType.*;
 
 public class Preferences {
 
@@ -95,8 +93,7 @@ public class Preferences {
     static void onExit(WindowEvent event){
 
         if (!(Project.get().isEmpty() || Project.get().isSaved()) &&
-                MyAlertDialog.get(EXIT_WITHOUT_SAVE_REQUEST, "NOTSAVED").getResult().getButtonData()
-                        == ButtonBar.ButtonData.CANCEL_CLOSE)
+                AlertHandler.makeAlert(EXIT_CONFIRM).showAndGetResult())
             event.consume();
     }
 
@@ -108,16 +105,17 @@ public class Preferences {
         try {
             reloadBundle();
         } catch (IOException e) {
-            MyAlertDialog.get(ISSUE, e.getLocalizedMessage());
+            AlertHandler.makeAlert(ISSUE).customContent("\n"+e.getLocalizedMessage()).show();
+            throw new RuntimeException();
         }
     }
 
     public ResourceBundle getBundle() {
         if (bundle == null) {
-            try {
-                reloadBundle();
-            } catch (IOException e) {
-                MyAlertDialog.get(ISSUE, e.getLocalizedMessage());
+            try { reloadBundle(); }
+            catch (IOException e) {
+                AlertHandler.makeAlert(ISSUE).customContent("\n"+e.getLocalizedMessage()).show();
+                throw new RuntimeException();
             }
         }
         return bundle;
