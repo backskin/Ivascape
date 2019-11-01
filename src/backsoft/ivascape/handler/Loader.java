@@ -35,7 +35,7 @@ public class Loader {
         try {
             return new Pair<>(loader.load(), loader.getController());
         } catch (IOException e) {
-            MyAlerts.getAlert(MyAlerts.AlertType.ISSUE, e.getMessage());
+            MyAlertDialog.get(MyAlertDialog.AlertType.ISSUE, e.getMessage());
             throw new RuntimeException();
         }
     }
@@ -60,7 +60,7 @@ public class Loader {
             return new Image(new FileInputStream(new File("resources/"
                     + img + ".png")));
         } catch (FileNotFoundException e) {
-            MyAlerts.getAlert(MyAlerts.AlertType.ISSUE, e.getMessage());
+            MyAlertDialog.get(MyAlertDialog.AlertType.ISSUE, e.getMessage());
         }
         return null;
     }
@@ -71,12 +71,12 @@ public class Loader {
         Stage startScreenStage = new Stage();
         startScreenStage.initStyle(StageStyle.UNDECORATED);
 
-        if (welcomeScreen(startScreenStage) == TERMINATED){
+        if (welcomeScreen(startScreenStage) == TERMINATED) {
             Platform.exit();
             System.exit(0);
         }
 
-        Platform.runLater(Loader::reloadApp);
+        reloadApp();
     }
 
     private static boolean welcomeScreen(Stage stage) {
@@ -101,18 +101,10 @@ public class Loader {
 
         if (stage.isShowing()) stage.close();
         stage.setOnCloseRequest(Preferences::onExit);
-
-        try {
-            stage.setTitle(
-                    Preferences.getCurrent().reloadBundle().getString("program_name"));
-            stage.getIcons().add(Loader.getImageRsrc("ico"));
-
-            ViewUpdater.current().put((RootLayoutController) loadFXML("RootLayout").getTwo());
-
-        } catch (IOException e) {
-            MyAlerts.getAlert(MyAlerts.AlertType.ISSUE, e.getMessage());
-        }
-
+        stage.setTitle(Preferences.getCurrent().getBundle().getString("program_name"));
+        Pair<Parent, RootLayoutController> fxml = loadFXML("RootLayout");
+        ViewUpdater.current().put(fxml.getTwo());
+        openInAWindow(stage,fxml.getOne(),false);
         Preferences.getCurrent().applyWinParams(stage);
     }
 

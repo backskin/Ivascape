@@ -16,8 +16,8 @@ import javafx.scene.text.TextFlow;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import static backsoft.ivascape.viewcontrol.MyAlerts.AlertType.DELETE_CONFIRM;
-import static backsoft.ivascape.viewcontrol.MyAlerts.getAlert;
+import static backsoft.ivascape.viewcontrol.MyAlertDialog.AlertType.DELETE_CONFIRM;
+import static backsoft.ivascape.viewcontrol.MyAlertDialog.setType;
 
 public class CompaniesViewController {
 
@@ -151,7 +151,7 @@ public class CompaniesViewController {
 
         if (company == null) return;
 
-        if (getAlert(DELETE_CONFIRM, Loader.getMainStage())
+        if (setType(DELETE_CONFIRM, Loader.getMainStage())
                     .getResult().getButtonData().isDefaultButton()) {
 
             project.remove(company);

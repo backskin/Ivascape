@@ -58,7 +58,7 @@ public class Company implements Serializable, Comparable<Company> {
         this.date = date;
     }
 
-    public void asCopyOf(Company other){
+    void asCopyOf(Company other){
         setTitle(other.title);
         setAddress(other.address);
         setDate(other.date);

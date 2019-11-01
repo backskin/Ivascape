@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 
 import java.time.LocalDate;
 
-import static backsoft.ivascape.viewcontrol.MyAlerts.getAlert;
+import static backsoft.ivascape.viewcontrol.MyAlertDialog.setType;
 
 public class CompanyEditDialogController {
 
@@ -97,7 +97,7 @@ public class CompanyEditDialogController {
 
         } else {
 
-            getAlert(MyAlerts.AlertType.INVALID_FIELDS, dialogStage, errorMessage);
+            setType(MyAlertDialog.AlertType.INVALID_FIELDS, dialogStage, errorMessage);
             return false;
         }
     }

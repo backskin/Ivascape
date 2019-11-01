@@ -3,7 +3,7 @@ package backsoft.ivascape.handler;
 import backsoft.ivascape.logic.Triplet;
 import backsoft.ivascape.logic.CoorsMap;
 import backsoft.ivascape.model.IvascapeGraph;
-import backsoft.ivascape.viewcontrol.MyAlerts;
+import backsoft.ivascape.viewcontrol.MyAlertDialog;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -59,7 +59,7 @@ public class FileHandler {
 
         } catch (ClassCastException | ClassNotFoundException | IOException e){
 
-            MyAlerts.getAlert(MyAlerts.AlertType.LOAD_FAILED);
+            MyAlertDialog.setType(MyAlertDialog.AlertType.LOAD_FAILED);
             return null;
         }
     }
@@ -122,7 +122,7 @@ public class FileHandler {
 
         } catch (IOException e){
 
-            MyAlerts.getAlert(MyAlerts.AlertType.SAVE_FAILED);
+            MyAlertDialog.setType(MyAlertDialog.AlertType.SAVE_FAILED);
         }
     }
 }

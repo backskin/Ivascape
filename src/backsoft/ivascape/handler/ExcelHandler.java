@@ -3,7 +3,7 @@ package backsoft.ivascape.handler;
 import backsoft.ivascape.model.Company;
 import backsoft.ivascape.model.IvascapeGraph;
 import backsoft.ivascape.model.Link;
-import backsoft.ivascape.viewcontrol.MyAlerts;
+import backsoft.ivascape.viewcontrol.MyAlertDialog;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -54,7 +54,7 @@ class ExcelHandler {
         }
         catch (NullPointerException | IOException npE){
 
-            MyAlerts.getAlert(MyAlerts.AlertType.ISSUE);
+            MyAlertDialog.setType(MyAlertDialog.AlertType.ISSUE);
             npE.printStackTrace();
         }
 
@@ -117,7 +117,7 @@ class ExcelHandler {
 
         } catch (NullPointerException npE){
 
-            MyAlerts.getAlert(MyAlerts.AlertType.ISSUE);
+            MyAlertDialog.setType(MyAlertDialog.AlertType.ISSUE);
             npE.printStackTrace();
         }
     }
@@ -202,7 +202,7 @@ class ExcelHandler {
 
         } catch (NullPointerException npE){
 
-            MyAlerts.getAlert(MyAlerts.AlertType.ISSUE);
+            MyAlertDialog.setType(MyAlertDialog.AlertType.ISSUE);
             npE.printStackTrace();
         }
     }

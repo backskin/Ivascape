@@ -103,7 +103,7 @@ public class LinkEditDialogController {
             dialogStage.close();
 
         } catch (Exception e) {
-            MyAlerts.getAlert(MyAlerts.AlertType.INVALID_FIELDS, dialogStage, e.getMessage());
+            MyAlertDialog.get(MyAlertDialog.AlertType.INVALID_FIELDS, dialogStage, e.getMessage());
         }
     }
 

@@ -12,7 +12,7 @@ public abstract class GraphOnList<K extends Comparable<K>, V extends Complex<K, 
     private final List<K> vers;
     private final List<List<V>> edges;
 
-    public GraphOnList() {
+    GraphOnList() {
 
         vers = new ArrayList<>();
         edges = new ArrayList<>();

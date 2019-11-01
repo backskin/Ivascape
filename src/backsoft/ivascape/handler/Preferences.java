@@ -1,7 +1,7 @@
 package backsoft.ivascape.handler;
 
 import backsoft.ivascape.model.Project;
-import backsoft.ivascape.viewcontrol.MyAlerts;
+import backsoft.ivascape.viewcontrol.MyAlertDialog;
 import javafx.stage.Stage;
 import javafx.scene.control.ButtonBar;
 import javafx.stage.WindowEvent;
@@ -13,6 +13,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+
+import static backsoft.ivascape.viewcontrol.MyAlertDialog.AlertType.*;
 
 public class Preferences {
 
@@ -54,22 +56,22 @@ public class Preferences {
                 stage.getWidth(), stage.getHeight());
     }
 
-    public void applyWinParams(Stage stage) {
+    void applyWinParams(Stage stage) {
 
         if (windowParams != null) {
             stage.setWidth(windowParams.width);
             stage.setHeight(windowParams.height);
             stage.setX(windowParams.x);
             stage.setY(windowParams.y);
+            windowParams = null;
         }
     }
 
-    ResourceBundle reloadBundle() throws IOException {
+    private void reloadBundle() throws IOException {
             bundle = new PropertyResourceBundle(new BufferedReader(new InputStreamReader(
                     getClass().getResourceAsStream(Locale.getDefault().equals(enLoc) ?
                             "../../../translate_en_US.properties" :
                             "../../../translate_ru_RU.properties"), StandardCharsets.UTF_8)));
-            return bundle;
     }
 
     private static final Locale ruLoc = new Locale("ru","RU");
@@ -93,7 +95,7 @@ public class Preferences {
     static void onExit(WindowEvent event){
 
         if (!(Project.get().isEmpty() || Project.get().isSaved()) &&
-                MyAlerts.getAlert(MyAlerts.AlertType.ON_EXIT, "NOTSAVED").getResult().getButtonData()
+                MyAlertDialog.get(EXIT_WITHOUT_SAVE_REQUEST, "NOTSAVED").getResult().getButtonData()
                         == ButtonBar.ButtonData.CANCEL_CLOSE)
             event.consume();
     }
@@ -106,7 +108,7 @@ public class Preferences {
         try {
             reloadBundle();
         } catch (IOException e) {
-            MyAlerts.getAlert(MyAlerts.AlertType.ISSUE, e.getLocalizedMessage());
+            MyAlertDialog.get(ISSUE, e.getLocalizedMessage());
         }
     }
 
@@ -115,7 +117,7 @@ public class Preferences {
             try {
                 reloadBundle();
             } catch (IOException e) {
-                MyAlerts.getAlert(MyAlerts.AlertType.ISSUE, e.getLocalizedMessage());
+                MyAlertDialog.get(ISSUE, e.getLocalizedMessage());
             }
         }
         return bundle;

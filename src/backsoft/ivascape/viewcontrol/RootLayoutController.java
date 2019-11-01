@@ -21,8 +21,8 @@ import javafx.stage.Stage;
 
 import java.io.File;
 
-import static backsoft.ivascape.viewcontrol.MyAlerts.AlertType.CLOSE_REQUEST;
-import static backsoft.ivascape.viewcontrol.MyAlerts.getAlert;
+import static backsoft.ivascape.viewcontrol.MyAlertDialog.AlertType.CLOSE_REQUEST;
+import static backsoft.ivascape.viewcontrol.MyAlertDialog.setType;
 
 public class RootLayoutController {
 
@@ -197,7 +197,7 @@ public class RootLayoutController {
     @FXML
     private void handleHelpAbout(){
 
-        getAlert(MyAlerts.AlertType.ABOUT, mainStage);
+        setType(MyAlertDialog.AlertType.ABOUT, mainStage);
     }
 
     @FXML
@@ -216,7 +216,7 @@ public class RootLayoutController {
     private void handleEditRun(){
 
         if (!project.isGraphStrong()){
-            getAlert(MyAlerts.AlertType.ALGO_FAIL, mainStage);
+            setType(MyAlertDialog.AlertType.ALGO_FAIL, mainStage);
 
         } else {
             Pair<Parent, ResultWindowController> fxmlData = Loader.loadFXML("ResultWindow");
@@ -255,7 +255,7 @@ public class RootLayoutController {
     private void handleFileOpen(){
 
         if (project.isSaved() ||
-                getAlert(CLOSE_REQUEST, mainStage)
+                setType(CLOSE_REQUEST, mainStage)
                         .getResult().getButtonData().isDefaultButton()) {
 
             if (project.load(FileHandler.dialogLoad(project.getFile()))) updateView();
@@ -266,7 +266,7 @@ public class RootLayoutController {
     private void handleFileNew(){
 
         if (project.isSaved() ||
-                getAlert(CLOSE_REQUEST, mainStage)
+                setType(CLOSE_REQUEST, mainStage)
                         .getResult().getButtonData().isDefaultButton()) {
 
             Project.newProject();
@@ -313,7 +313,7 @@ public class RootLayoutController {
     private void handleClose() {
 
         if (!project.isSaved() &&
-                getAlert(MyAlerts.AlertType.ON_EXIT, mainStage, "NOTSAVED")
+                setType(MyAlertDialog.AlertType.EXIT_WITHOUT_SAVE_REQUEST, mainStage, "NOTSAVED")
                         .getResult().getButtonData().isCancelButton())
             return;
 
