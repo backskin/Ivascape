@@ -30,7 +30,7 @@ public class CompanyEditDialogController {
     private Company editCompany = null;
     private final Project project = Project.get();
     private boolean okClicked = false;
-    private final Preferences prefs = Preferences.getCurrent();
+    private final Preferences prefs = Preferences.get();
     
     public boolean isOkClicked() {
         return okClicked;

@@ -74,27 +74,28 @@ public abstract class GraphOnList<K extends Comparable<K>, V extends Complex<K, 
     }
 
     @Override
-    public void removeVertex(K vertex) {
+    public boolean removeVertex(K vertex) {
 
         int i = indexOf(vertex);
-        if (i < 0) return;
+        if (i < 0) return false;
         for (List<V> edge : edges)
             edge.remove(i);
-
         edges.remove(i);
         vers.remove(vertex);
+        return true;
     }
 
     @Override
-    public void removeEdge(K start, K end) {
+    public boolean removeEdge(K start, K end) {
 
         int i = indexOf(start);
         int j = indexOf(end);
 
-        if (i < 0 || j < 0) return;
+        if (i < 0 || j < 0 || edges.get(i).get(j) == null || edges.get(j).get(i) == null) return false;
 
         edges.get(i).set(j, null);
         edges.get(j).set(i, null);
+        return true;
     }
 
     @Override

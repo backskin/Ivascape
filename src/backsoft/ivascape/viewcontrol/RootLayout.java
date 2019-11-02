@@ -10,7 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -20,8 +19,9 @@ import javafx.stage.Stage;
 import java.io.File;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.*;
+import static backsoft.ivascape.handler.Loader.loadViewToTab;
 
-public class MainController implements ViewController {
+public class RootLayout {
 
     @FXML
     private TabPane tabPane;
@@ -54,45 +54,45 @@ public class MainController implements ViewController {
 
     private final Stage mainStage = Loader.getMainStage();
     private final Project project = Project.get();
-    private final Preferences preferences = Preferences.getCurrent();
+    private final Preferences preferences = Preferences.get();
 
     @FXML
     private void initialize(){
+
+        addEdgeMenuItem.setDisable(true);
+        saveMenuItem.setDisable(true);
+        saveAsMenuItem.setDisable(true);
 
         saveIcon.setFill(Color.GREEN);
         rus.setSelected(preferences.getCurrentLoc().getLanguage().equals("ru"));
         rus.setDisable(rus.isSelected());
         eng.setSelected(!rus.isSelected());
         eng.setDisable(eng.isSelected());
-
-        eng.selectedProperty().addListener((observable, oldValue, newValue) -> {
-
+        rus.selectedProperty().addListener((val, on, bn) -> eng.setSelected(!bn));
+        eng.selectedProperty().addListener((val) -> {
             preferences.saveWinParams(mainStage);
             preferences.changeLoc();
             Loader.reloadApp();
         });
 
-        rus.selectedProperty().addListener((observable, oldValue, newValue) -> eng.setSelected(!newValue));
-
-        isSaved.setText(preferences.getBundle()
-                .getString(project.isSaved() ? "bottombar.saved" : "bottombar.unsaved"));
-
-        saveIcon.setFill(project.isSaved() ? Color.GREEN : Color.DARKRED);
-
-        addEdgeMenuItem.setDisable(true);
-        saveMenuItem.setDisable(true);
-        saveAsMenuItem.setDisable(true);
-
         project.savedProperty().addListener((observable, oldValue, newValue) -> {
-
-            saveMenuItem.setDisable(newValue);
-            saveAsMenuItem.setDisable(false);
-
-            isSaved.setText(preferences.getBundle()
-                    .getString(newValue ? "bottombar.saved" : "bottombar.unsaved"));
-
+            isSaved.setText(preferences.getValueFromBundle(newValue ? "bottombar.saved" : "bottombar.unsaved"));
             saveIcon.setFill(newValue ? Color.GREEN : Color.DARKRED);
+            saveIcon.setFill(newValue ? Color.GREEN : Color.DARKRED);
+            if (newValue) {
+                filenameLabel.setText(project.getFile() != null ? project.getFile().getName() : "Empty");
+                saveMenuItem.setDisable(true);
+            }
+            saveAsMenuItem.setDisable(project.isEmpty());
+            saveMenuItem.setDisable(project.isEmpty() || project.isSaved());
         });
+
+        project.companiesAmountProperty().addListener(observable -> {
+            saveAsMenuItem.setDisable(project.isEmpty());
+            comsAmountLabel.setText(project.amountOfCompanies() + "");
+        });
+        project.linksAmountProperty().addListener(observable ->
+                linksAmountLabel.setText(project.amountOfLinks() + ""));
 
         MapViewController mvController = loadViewToTab("MapView", MapPane);
         CompaniesViewController cvController = loadViewToTab("CompaniesView", CompaniesPane);
@@ -100,41 +100,16 @@ public class MainController implements ViewController {
 
         ViewUpdater.current().putTabControllers(cvController, lvController, mvController);
         mvController.bindToSurfaceChanged(project.savedProperty());
-        project.sizeProperty().addListener((val, number, t1) ->
+        project.companiesAmountProperty().addListener((val, number, t1) ->
                 addEdgeMenuItem.setDisable(t1.intValue() < 2));
 
-        if (!project.isEmpty()) ViewUpdater.current().updateAll();
+        ViewUpdater.current().updateAll();
 
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable)
                 -> preferences.setCurrentTab(tabPane.getSelectionModel().getSelectedIndex()));
-
         tabPane.getSelectionModel().select(preferences.getCurrentTab());
-    }
 
-    private <T>T loadViewToTab(String path, AnchorPane tab) {
-
-        Pair<Parent, T> fxmlData = Loader.loadFXML(path);
-        Node tmp = fxmlData.getOne();
-
-        AnchorPane.setTopAnchor(tmp, 0.0);
-        AnchorPane.setLeftAnchor(tmp, 0.0);
-        AnchorPane.setRightAnchor(tmp, 0.0);
-        AnchorPane.setBottomAnchor(tmp, 0.0);
-
-        tab.getChildren().add(tmp);
-
-        return fxmlData.getTwo();
-
-    }
-
-    @Override
-    public void updateView(){
-
-        filenameLabel.setText(project.getFile() != null ? project.getFile().getName() : "Empty");
-        comsAmountLabel.setText(project.amountOfComs() + "");
-        linksAmountLabel.setText(project.amountOfLinks() + "");
-        saveAsMenuItem.setDisable(project.isEmpty());
-        saveMenuItem.setDisable(project.isEmpty() || project.isSaved());
+        ViewUpdater.current().updateAll();
     }
 
     @FXML
@@ -185,7 +160,7 @@ public class MainController implements ViewController {
     @FXML
     private void handleEditAnalyse(){
 
-        Pair<Parent, AnalyseWindowController> fxmlData = Loader.loadFXML("AnalyseWindow");
+        Pair<Parent, AnalyseWindow> fxmlData = Loader.loadFXML("AnalyseWindow");
         Stage stage = new Stage();
         fxmlData.getTwo().setStage(stage);
 
@@ -226,7 +201,6 @@ public class MainController implements ViewController {
         } else {
             handleFileSaveAs();
         }
-        updateView();
     }
 
     @FXML
@@ -243,8 +217,6 @@ public class MainController implements ViewController {
             project.setFile(file);
             project.setSaved(true);
         }
-
-        updateView();
     }
 
     @FXML

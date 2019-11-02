@@ -4,9 +4,11 @@ import backsoft.ivascape.FXApp;
 import backsoft.ivascape.viewcontrol.*;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -22,7 +24,7 @@ import static backsoft.ivascape.viewcontrol.StartWindowController.TERMINATED;
 
 public class Loader {
 
-    private static final Preferences prefs = Preferences.getCurrent();
+    private static final Preferences prefs = Preferences.get();
     private static Stage primaryStage;
 
     public static Stage getMainStage() {
@@ -84,7 +86,6 @@ public class Loader {
         Pair<Parent, StartWindowController> fxmlData = loadFXML("StartWindow");
         StartWindowController controller = fxmlData.getTwo();
         controller.setStartStage(stage);
-
         openInAWindow(stage, fxmlData.getOne(), false);
 
         stage.close();
@@ -99,10 +100,23 @@ public class Loader {
         if (primaryStage.isShowing()) primaryStage.close();
 
         primaryStage.setTitle(prefs.getValueFromBundle("maintitle"));
-        Pair<Parent, MainController> fxml = loadFXML("MainWindow");
-        ViewUpdater.current().putRootController(fxml.getTwo());
-        openInAWindow(primaryStage, fxml.getOne(),false);
+        openInAWindow(primaryStage, loadFXML("RootLayout").getOne(),false);
         prefs.applyWinParams(primaryStage);
+    }
+
+    public static <T>T loadViewToTab(String path, AnchorPane tab) {
+
+        Pair<Parent, T> fxmlData = Loader.loadFXML(path);
+        Node tmp = fxmlData.getOne();
+
+        AnchorPane.setTopAnchor(tmp, 0.0);
+        AnchorPane.setLeftAnchor(tmp, 0.0);
+        AnchorPane.setRightAnchor(tmp, 0.0);
+        AnchorPane.setBottomAnchor(tmp, 0.0);
+
+        tab.getChildren().add(tmp);
+
+        return fxmlData.getTwo();
     }
 
     public static void loadDialogEditLink(Integer... hashes) {

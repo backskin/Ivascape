@@ -13,7 +13,7 @@ import static backsoft.ivascape.handler.AlertHandler.AlertType.SAVE_ISSUE;
 
 public class FileHandler {
 
-    private static final Preferences prefs = Preferences.getCurrent();
+    private static final Preferences prefs = Preferences.get();
 
     public static void dialogExport(IvascapeGraph graph, final Stage ownerStage){
 

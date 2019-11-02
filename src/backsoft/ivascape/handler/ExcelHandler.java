@@ -20,7 +20,7 @@ import static backsoft.ivascape.handler.AlertHandler.AlertType.ISSUE;
 
 class ExcelHandler {
 
-    private static final Preferences prefs = Preferences.getCurrent();
+    private static final Preferences prefs = Preferences.get();
     
     private static HSSFCellStyle createStyleForTitle(HSSFWorkbook workbook) {
         HSSFFont font = workbook.createFont();

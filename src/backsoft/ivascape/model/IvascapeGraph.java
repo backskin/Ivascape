@@ -9,8 +9,8 @@ public class IvascapeGraph extends GraphOnList<Company, Link> {
         super.addEdge(start, end, new Link(start,end,value));
     }
 
-    void removeEdge(Link edge){
+    boolean removeEdge(Link edge){
 
-        super.removeEdge(edge.one(),edge.two());
+        return super.removeEdge(edge.one(),edge.two());
     }
 }

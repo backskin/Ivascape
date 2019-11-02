@@ -17,7 +17,7 @@ public class AlertHandler {
     private AlertType type;
     private String rsrcString;
 
-    private final Preferences prefs = Preferences.getCurrent();
+    private final Preferences prefs = Preferences.get();
     private AlertHandler(){
         alert = new Alert(NONE);
     }

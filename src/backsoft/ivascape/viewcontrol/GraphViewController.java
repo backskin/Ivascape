@@ -46,13 +46,10 @@ public class GraphViewController {
     }
 
     void setScale(double scaleProperty){
-
         this.scaleProperty.setValue(scaleProperty);
     }
 
-
     void setPricesVisible(boolean answer){
-
         priceShownProperty.setValue(answer);
     }
 
@@ -100,7 +97,7 @@ public class GraphViewController {
         draggable = isDraggable;
     }
 
-    void addVertex(Company company){
+    private void addVertex(Company company){
 
         Pair<Parent, VisualVertex> fxml;
 
@@ -121,7 +118,7 @@ public class GraphViewController {
         coorsMap.put(company.hashCode(), getCoors(company));
     }
 
-    void addEdge(Link link){
+    private void addEdge(Link link){
 
         VisualVertex one = visVerMap.get(link.one());
         VisualVertex two = visVerMap.get(link.two());
@@ -135,27 +132,6 @@ public class GraphViewController {
         scaleProperty.addListener((val, no, nn) -> { edge.getLine().setStrokeWidth(.05 * nn.doubleValue());
             edge.getPriceLabel().setFont(Font.font("System", 10 + .05 * nn.doubleValue())); });
         visEdgeMap.put(link, edge);
-    }
-
-    void removeVertex(Company company){
-
-        for (Iterator<Link> it = graph.getEdgeIteratorForVertex(company); it.hasNext();)
-            removeEdge(it.next());
-        scaleProperty.removeListener(visVerMap.get(company).getScaleListener());
-        surface.getChildren().remove(visVerMap.get(company).getItem());
-        dragMap.remove(visVerMap.get(company).getCircle());
-        visVerMap.remove(company);
-        coorsMap.remove(company.hashCode());
-    }
-
-    void removeEdge(Link link) {
-
-        VisualEdge edge = getEdge(link);
-
-        if (edge == null) return;
-        surface.getChildren().remove(edge.getPriceLabel());
-        surface.getChildren().remove(edge.getLine());
-        visEdgeMap.remove(link);
     }
 
     private VisualEdge getEdge(Link link) {

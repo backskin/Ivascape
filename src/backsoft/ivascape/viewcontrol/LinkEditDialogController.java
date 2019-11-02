@@ -82,15 +82,15 @@ public class LinkEditDialogController {
                     throw new NumberFormatException();
 
             } catch (NumberFormatException e) {
-                errorMessage += Preferences.getCurrent().getValueFromBundle("error.wrongmoney") + "\n";
+                errorMessage += Preferences.get().getValueFromBundle("error.wrongmoney") + "\n";
             }
             Company one = project.getCompany(firstField.getText());
             Company another = project.getCompany(secondField.getText());
 
             if (one == null || another == null)
-                errorMessage += Preferences.getCurrent().getValueFromBundle("error.wrongcomname") + "\n";
+                errorMessage += Preferences.get().getValueFromBundle("error.wrongcomname") + "\n";
             if (firstField.getText().equals(secondField.getText()))
-                errorMessage += Preferences.getCurrent().getValueFromBundle("error.reflex") + "\n";
+                errorMessage += Preferences.get().getValueFromBundle("error.reflex") + "\n";
 
             if (errorMessage.length() > 0) {
                 throw new Exception(errorMessage);

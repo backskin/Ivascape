@@ -69,7 +69,7 @@ public class MapViewController implements ViewController {
         zoomSlider.valueProperty().addListener(
                 (o, b0, value) -> GVController.setScale(value.doubleValue()));
 
-        project.sizeProperty().addListener(c -> {
+        project.companiesAmountProperty().addListener(c -> {
             zoomSlider.setDisable(project.isEmpty());
             togglePricesVisible.setDisable(project.isEmpty());
             resetZoomButton.setDisable(project.isEmpty());

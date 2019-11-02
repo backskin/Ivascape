@@ -11,7 +11,7 @@
 <?import javafx.scene.text.TextFlow?>
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="backsoft.ivascape.viewcontrol.AnalyseWindowController">
+      fx:controller="backsoft.ivascape.viewcontrol.AnalyseWindow">
     <HBox alignment="CENTER_LEFT" maxHeight="40.0" prefHeight="40.0" spacing="8.0">
         <padding>
             <Insets left="48.0"/>

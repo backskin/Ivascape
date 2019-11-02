@@ -27,17 +27,17 @@ import javafx.stage.Stage;
 import java.util.Iterator;
 import java.util.List;
 
-public class AnalyseWindowController {
+public class AnalyseWindow {
 
     private Stage analyseStage;
     private final Project project = Project.get();
-    private final Preferences prefs = Preferences.getCurrent();
+    private final Preferences prefs = Preferences.get();
     @FXML
     private HBox componentTables;
     @FXML
     private Label cAmount;
 
-    public AnalyseWindowController(){}
+    public AnalyseWindow(){}
 
     void setStage(Stage analyseStage) {
         this.analyseStage = analyseStage;

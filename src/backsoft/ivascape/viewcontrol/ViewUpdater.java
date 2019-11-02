@@ -8,16 +8,11 @@ public class ViewUpdater {
         return viewUpdater;
     }
 
-    private ViewController RLController;
     private ViewController CVController;
     private ViewController LVController;
     private ViewController MVController;
 
-    public void putRootController(ViewController controller) {
-        RLController = controller;
-    }
-
-    public void putTabControllers(
+    void putTabControllers(
             ViewController companiesViewController,
             ViewController linksViewController,
             ViewController mapViewController) {
@@ -46,6 +41,5 @@ public class ViewUpdater {
         CVController.updateView();
         LVController.updateView();
         MVController.updateView();
-        RLController.updateView();
     }
 }

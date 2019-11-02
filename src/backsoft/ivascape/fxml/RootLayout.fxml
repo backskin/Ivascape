@@ -18,7 +18,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.MainController">
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.RootLayout">
     <top>
         <MenuBar style="-fx-background-color: #eaeaea;">
             <Menu mnemonicParsing="false" style="-fx-focus-color: crimson;" text="%menu.file">

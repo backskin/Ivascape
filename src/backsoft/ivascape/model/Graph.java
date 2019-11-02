@@ -14,8 +14,8 @@ public interface Graph<K, V> {
     K getVertex(int index);
     int indexOf(K vertex);
 
-    void removeVertex(K vertex);
-    void removeEdge(K start, K end);
+    boolean removeVertex(K vertex);
+    boolean removeEdge(K start, K end);
 
     int size();
 

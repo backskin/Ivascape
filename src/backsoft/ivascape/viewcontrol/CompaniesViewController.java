@@ -23,7 +23,7 @@ public class CompaniesViewController implements ViewController {
 
     private int lastSelected = 0;
     private final Project project = Project.get();
-    private final Preferences prefs = Preferences.getCurrent();
+    private final Preferences prefs = Preferences.get();
 
     @FXML
     private TableView<Company> companiesTable;

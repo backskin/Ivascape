@@ -1,6 +1,7 @@
 package backsoft.ivascape.handler;
 
 import backsoft.ivascape.model.Project;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -36,7 +37,9 @@ public class Preferences {
     private static final Locale ruLoc = new Locale("ru","RU");
     private static final Locale enLoc = new Locale("en", "US");
     private Locale currentLoc;
-
+    private WinParams windowParams;
+    private ResourceBundle bundle;
+    private int currentTab = 0;
 
     private Preferences() {
 
@@ -48,10 +51,6 @@ public class Preferences {
     public Locale getCurrentLoc() {
         return currentLoc;
     }
-
-    private WinParams windowParams;
-    private int currentTab = 0;
-    private ResourceBundle bundle;
 
     public void saveWinParams(Stage stage){
 
@@ -70,24 +69,27 @@ public class Preferences {
         }
     }
 
-    private void reloadBundle() throws IOException {
+    private void reloadBundle() {
+        try {
             bundle = new PropertyResourceBundle(new BufferedReader(new InputStreamReader(
-                    getClass().getResourceAsStream(Locale.getDefault().equals(enLoc) ?
-                            "../../../translate_en_US.properties" :
-                            "../../../translate_ru_RU.properties"), StandardCharsets.UTF_8)));
+                    getClass().getResourceAsStream(
+                            "../../../translate_"
+                                    + Locale.getDefault().toString()
+                                    + ".properties"), StandardCharsets.UTF_8)));
+        } catch (IOException e) {
+            AlertHandler.makeAlert(ISSUE).customContent(e.toString()).show();
+            throw new RuntimeException();
+        }
     }
 
     public int getCurrentTab() {
         return currentTab;
     }
-
     public void setCurrentTab(int currentTab) {
         this.currentTab = currentTab;
     }
 
-
-    public static Preferences getCurrent() {
-
+    public static Preferences get() {
         return (instance == null) ? new Preferences() : instance;
     }
 
@@ -102,31 +104,24 @@ public class Preferences {
 
         currentLoc = currentLoc.equals(ruLoc) ? enLoc: ruLoc;
         Locale.setDefault(currentLoc);
-
-        try {
-            reloadBundle();
-        } catch (IOException e) {
-            AlertHandler.makeAlert(ISSUE).customContent("\n"+e.getLocalizedMessage()).show();
-            throw new RuntimeException();
-        }
+        reloadBundle();
     }
 
     public String getValueFromBundle(String resourceKey){
         try {
             return getBundle().getString(resourceKey);
         } catch (MissingResourceException e){
-            AlertHandler.makeAlert(ISSUE).customContent("\n"+e.getLocalizedMessage()).show();
+            AlertHandler.makeAlert(ISSUE).customContent(e.toString()).show();
+            e.printStackTrace();
+            Platform.exit();
+            System.exit(-1);
             throw new RuntimeException();
         }
     }
 
-    public ResourceBundle getBundle() {
+    ResourceBundle getBundle() {
         if (bundle == null) {
-            try { reloadBundle(); }
-            catch (IOException e) {
-                AlertHandler.makeAlert(ISSUE).customContent("\n"+e.getLocalizedMessage()).show();
-                throw new RuntimeException();
-            }
+            reloadBundle();
         }
         return bundle;
     }
