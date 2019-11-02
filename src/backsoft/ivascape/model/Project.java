@@ -6,6 +6,7 @@ import backsoft.ivascape.handler.IvascapeGraphHandler;
 
 import backsoft.ivascape.logic.CoorsMap;
 import backsoft.ivascape.logic.Triplet;
+import backsoft.ivascape.viewcontrol.ViewUpdater;
 import javafx.beans.property.*;
 
 import java.io.File;
@@ -28,19 +29,24 @@ public class Project implements Serializable {
 
     private Project(){
 
-        coorsMap = new CoorsMap();
-        saved = new SimpleBooleanProperty(true);
+        saved = new SimpleBooleanProperty(false);
         companiesAmount = new SimpleIntegerProperty(0);
         linksAmount = new SimpleIntegerProperty(0);
-        file = null;
-        graph = new IvascapeGraph();
-        graphHandler = new IvascapeGraphHandler(graph);
+        erase();
     }
 
     public static Project get(){
-
         if (instance == null) instance = new Project();
         return instance;
+    }
+    public void erase(){
+        graph = new IvascapeGraph();
+        graphHandler = new IvascapeGraphHandler(graph);
+        file = null;
+        coorsMap = new CoorsMap();
+        saved.setValue(true);
+        companiesAmount.setValue(0);
+        linksAmount.setValue(0);
     }
 
     public CoorsMap getCoorsMap() { return coorsMap; }
@@ -72,10 +78,6 @@ public class Project implements Serializable {
         linksAmount.setValue(graphHandler.getEdgeSize());
 
         return true;
-    }
-
-    public static void newProject() {
-        instance = new Project();
     }
 
     public void saveProject(){
@@ -116,45 +118,49 @@ public class Project implements Serializable {
         return graphHandler.isStrong();
     }
 
-    public int amountOfCompanies() {
-        return companiesAmount.get();
-    }
-
-    public int amountOfLinks(){
-        return linksAmount.get();
-    }
-
     public void add(Company company){
-        if (getCompany(company.getTitle()) == null)
+        if (getCompany(company.hashCode()) == null) {
             graph.addVertex(company);
-        else getCompany(company.getTitle()).asCopyOf(company);
+            companiesAmount.setValue(companiesAmount.getValue()+1);
+            ViewUpdater.current().getGVController().add(company);
+        }
+        else getCompany(company.hashCode()).asCopyOf(company);
         setSaved(false);
-        companiesAmount.setValue(companiesAmount.get()+1);
     }
 
     public void add(Company one, Company two, double price){
-        if (graph.getEdge(one,two) == null)
-            graph.addEdge(one, two, price);
-        else
-            graph.getEdge(one,two).setPrice(price);
-        saved.setValue(false);
-        linksAmount.setValue(linksAmount.get() + 1);
+        if (one == null || two == null || one.equals(two)) return;
+        if (graph.getEdge(one,two) == null) {
+            Link newLink = new Link(one, two, price);
+            graph.addEdge(one, two, newLink);
+            linksAmount.setValue(linksAmount.get() + 1);
+            ViewUpdater.current().getGVController().add(newLink);
+        }
+        else {
+            graph.getEdge(one, two).setPrice(price);
+            saved.setValue(false);
+        }
     }
 
     public void remove(Link link){
 
-        if (graph.removeEdge(link)) {
-            saved.setValue(false);
+        if (graph.removeEdge(link.one(), link.two())) {
             linksAmount.setValue(linksAmount.get() - 1);
+            ViewUpdater.current().getGVController().remove(link);
         }
     }
 
     public void remove(Company company){
 
         coorsMap.remove(company.hashCode());
+        for (Iterator<Link> iterator = graph.getEdgeIteratorForVertex(company); iterator.hasNext();){
+            remove(iterator.next());
+        }
+
         if (graph.removeVertex(company)) {
-            saved.setValue(false);
+            companiesAmount.setValue(companiesAmount.getValue()-1);
             linksAmount.setValue(graphHandler.getEdgeSize());
+            ViewUpdater.current().getGVController().remove(company);
         }
     }
 

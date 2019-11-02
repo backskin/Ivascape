@@ -22,6 +22,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.Iterator;
@@ -50,6 +51,9 @@ public class AnalyseWindow {
 
     @FXML
     private void initialize(){
+        analyseStage.setTitle(prefs.getValueFromBundle("editwindows.analysetitle"));
+        analyseStage.initModality(Modality.WINDOW_MODAL);
+        analyseStage.initOwner(Loader.getMainStage());
 
         List<IvascapeGraph> components =  project.getComponents();
 
@@ -72,7 +76,7 @@ public class AnalyseWindow {
             surface.setMouseTransparent(true);
             GraphViewController controller = fxml.getTwo();
 
-            controller.setGraph(
+            controller.setView(
                     component,
                     project.getCoorsMap(),
                     Color.DARKCYAN,

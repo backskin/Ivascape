@@ -52,7 +52,10 @@ public class Loader {
             stage.setMinWidth(stage.getWidth());
         });
 
-        if (stage == primaryStage) stage.show(); else stage.showAndWait();
+        if (stage == primaryStage) {
+            stage.show();
+            prefs.applyWinParams(primaryStage);
+        } else stage.showAndWait();
     }
 
     public static Image loadImageResource(String img) {
@@ -70,13 +73,13 @@ public class Loader {
 
         primaryStage = mainStage;
         primaryStage.setOnCloseRequest(Preferences::onExit);
-        Stage startScreenStage = new Stage();
-        startScreenStage.initStyle(StageStyle.UNDECORATED);
-
-        if (welcomeScreen(startScreenStage) == TERMINATED) {
-            Platform.exit();
-            System.exit(0);
-        }
+//        Stage startScreenStage = new Stage();
+//        startScreenStage.initStyle(StageStyle.UNDECORATED);
+//
+//        if (welcomeScreen(startScreenStage) == TERMINATED) {
+//            Platform.exit();
+//            System.exit(0);
+//        }
         reloadApp();
     }
 
@@ -99,9 +102,7 @@ public class Loader {
 
         if (primaryStage.isShowing()) primaryStage.close();
 
-        primaryStage.setTitle(prefs.getValueFromBundle("maintitle"));
-        openInAWindow(primaryStage, loadFXML("RootLayout").getOne(),false);
-        prefs.applyWinParams(primaryStage);
+        openInAWindow(primaryStage, loadFXML("RootLayout").getOne(),true);
     }
 
     public static <T>T loadViewToTab(String path, AnchorPane tab) {
@@ -135,7 +136,7 @@ public class Loader {
         openInAWindow(dialogStage, fxmlData.getOne(), false);
 
         if (controller.isConfirmed()) {
-            ViewUpdater.current().updateLinksView().updateGraphView();
+            ViewUpdater.current().updateLinksView();
         }
     }
 
@@ -159,11 +160,7 @@ public class Loader {
 
         if (CEDController.isOkClicked()) {
 
-            ViewUpdater.current()
-                    .updateCompaniesView()
-                    .updateGraphView()
-                    .updateLinksView();
-
+            ViewUpdater.current().updateLinksView().updateCompaniesView();
             return CEDController.getEditCompany().hashCode();
         }
         return 0;

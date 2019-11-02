@@ -68,7 +68,7 @@ public class ResultWindowController {
 
         GraphViewController gvController = resultFxml.getTwo();
 
-        gvController.setGraph(
+        gvController.setView(
                 graph, map,
                 Color.CORNFLOWERBLUE,
                 Color.CORNFLOWERBLUE,true);

@@ -18,7 +18,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.RootLayout">
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="backsoft.ivascape.viewcontrol.RootLayout">
     <top>
         <MenuBar style="-fx-background-color: #eaeaea;">
             <Menu mnemonicParsing="false" style="-fx-focus-color: crimson;" text="%menu.file">
@@ -77,11 +77,12 @@
                         <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#_debug_gen" text="(Debug) Generate" />
             </Menu>
             <Menu mnemonicParsing="false" style="-fx-focus-color: crimson;" text="%menu.help">
                 <Menu mnemonicParsing="false" text="%menubutton.lang">
-                    <CheckMenuItem fx:id="eng" mnemonicParsing="false" text="%menubutton.eng" />
-                    <CheckMenuItem fx:id="rus" mnemonicParsing="false" text="%menubutton.rus" />
+                    <CheckMenuItem fx:id="engItem" mnemonicParsing="false" text="%menubutton.eng" />
+                    <CheckMenuItem fx:id="rusItem" mnemonicParsing="false" text="%menubutton.rus" />
                 </Menu>
                 <MenuItem mnemonicParsing="false" onAction="#handleHelpTips" text="%menubutton.help">
                     <accelerator>

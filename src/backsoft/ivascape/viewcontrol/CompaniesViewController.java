@@ -154,8 +154,7 @@ public class CompaniesViewController implements ViewController {
         if (AlertHandler.makeAlert(DELETE_CONFIRM).setOwner(Loader.getMainStage()).showAndGetResult()) {
 
             project.remove(company);
-            updateView();
-            ViewUpdater.current().updateLinksView().updateGraphView();
+            ViewUpdater.current().updateCompaniesView().updateLinksView();
         }
     }
 }

@@ -1,9 +1,6 @@
 package backsoft.ivascape.viewcontrol;
 
-import backsoft.ivascape.handler.AlertHandler;
-import backsoft.ivascape.handler.FileHandler;
-import backsoft.ivascape.handler.Loader;
-import backsoft.ivascape.handler.Preferences;
+import backsoft.ivascape.handler.*;
 import backsoft.ivascape.logic.Pair;
 import backsoft.ivascape.model.Project;
 import javafx.scene.Parent;
@@ -11,7 +8,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -20,6 +16,8 @@ import java.io.File;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.*;
 import static backsoft.ivascape.handler.Loader.loadViewToTab;
+import static javafx.scene.paint.Color.DARKRED;
+import static javafx.scene.paint.Color.GREEN;
 
 public class RootLayout {
 
@@ -48,51 +46,42 @@ public class RootLayout {
     @FXML
     private MenuItem saveMenuItem;
     @FXML
-    private CheckMenuItem rus;
+    private CheckMenuItem rusItem;
     @FXML
-    private CheckMenuItem eng;
+    private CheckMenuItem engItem;
 
     private final Stage mainStage = Loader.getMainStage();
-    private final Project project = Project.get();
+    private Project project = Project.get();
     private final Preferences preferences = Preferences.get();
 
     @FXML
     private void initialize(){
+        Loader.getMainStage().setTitle(preferences.getValueFromBundle("maintitle"));
 
-        addEdgeMenuItem.setDisable(true);
-        saveMenuItem.setDisable(true);
         saveAsMenuItem.setDisable(true);
+        addEdgeMenuItem.setDisable(true);
+        updateStatusBar(true);
 
-        saveIcon.setFill(Color.GREEN);
-        rus.setSelected(preferences.getCurrentLoc().getLanguage().equals("ru"));
-        rus.setDisable(rus.isSelected());
-        eng.setSelected(!rus.isSelected());
-        eng.setDisable(eng.isSelected());
-        rus.selectedProperty().addListener((val, on, bn) -> eng.setSelected(!bn));
-        eng.selectedProperty().addListener((val) -> {
+        rusItem.setSelected(preferences.getCurrentLoc().getLanguage().equals("ru"));
+        engItem.setSelected(!rusItem.isSelected());
+        rusItem.setDisable(rusItem.isSelected());
+        engItem.setDisable(engItem.isSelected());
+
+        rusItem.selectedProperty().addListener((val, on, bn) -> engItem.setSelected(!bn));
+        engItem.selectedProperty().addListener((val) -> {
             preferences.saveWinParams(mainStage);
             preferences.changeLoc();
             Loader.reloadApp();
         });
 
-        project.savedProperty().addListener((observable, oldValue, newValue) -> {
-            isSaved.setText(preferences.getValueFromBundle(newValue ? "bottombar.saved" : "bottombar.unsaved"));
-            saveIcon.setFill(newValue ? Color.GREEN : Color.DARKRED);
-            saveIcon.setFill(newValue ? Color.GREEN : Color.DARKRED);
-            if (newValue) {
-                filenameLabel.setText(project.getFile() != null ? project.getFile().getName() : "Empty");
-                saveMenuItem.setDisable(true);
-            }
-            saveAsMenuItem.setDisable(project.isEmpty());
-            saveMenuItem.setDisable(project.isEmpty() || project.isSaved());
+        project.companiesAmountProperty().addListener((o, vo, vn) -> {
+            saveAsMenuItem.setDisable(vn.intValue() < 1);
+            addEdgeMenuItem.setDisable(vn.intValue() < 2);
+            comsAmountLabel.setText(vn.intValue() + "");
         });
 
-        project.companiesAmountProperty().addListener(observable -> {
-            saveAsMenuItem.setDisable(project.isEmpty());
-            comsAmountLabel.setText(project.amountOfCompanies() + "");
-        });
-        project.linksAmountProperty().addListener(observable ->
-                linksAmountLabel.setText(project.amountOfLinks() + ""));
+        project.linksAmountProperty().addListener((o, vo, vn) -> linksAmountLabel.setText(vn.intValue() + ""));
+        project.savedProperty().addListener((o, bo, bn) -> updateStatusBar(bn));
 
         MapViewController mvController = loadViewToTab("MapView", MapPane);
         CompaniesViewController cvController = loadViewToTab("CompaniesView", CompaniesPane);
@@ -103,13 +92,18 @@ public class RootLayout {
         project.companiesAmountProperty().addListener((val, number, t1) ->
                 addEdgeMenuItem.setDisable(t1.intValue() < 2));
 
-        ViewUpdater.current().updateAll();
-
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable)
                 -> preferences.setCurrentTab(tabPane.getSelectionModel().getSelectedIndex()));
         tabPane.getSelectionModel().select(preferences.getCurrentTab());
+    }
 
-        ViewUpdater.current().updateAll();
+    private void updateStatusBar(boolean newValue){
+        isSaved.setText(preferences.getValueFromBundle(newValue ? "bottombar.saved" : "bottombar.unsaved"));
+        saveIcon.setFill(newValue ? GREEN : DARKRED);
+        saveMenuItem.setDisable(newValue);
+        if (newValue)
+            filenameLabel.setText(project.getFile() != null ?
+                    project.getFile().getName() : "Empty");
     }
 
     @FXML
@@ -164,10 +158,6 @@ public class RootLayout {
         Stage stage = new Stage();
         fxmlData.getTwo().setStage(stage);
 
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.initOwner(mainStage);
-        stage.setTitle(preferences.getValueFromBundle("editwindows.analysetitle"));
-
         Loader.openInAWindow(stage, fxmlData.getOne(), true);
     }
 
@@ -175,10 +165,10 @@ public class RootLayout {
     private void handleFileOpen() {
 
         if ((project.isSaved() || AlertHandler.makeAlert(CLOSE_CURR_CONFIRM).setOwner(mainStage)
-                .showAndGetResult())
-                && (project.load(FileHandler.dialogLoad(project.getFile()))))
-
-            ViewUpdater.current().updateAll();
+                .showAndGetResult())) {
+            project.load(FileHandler.dialogLoad(project.getFile()));
+        }
+        ViewUpdater.current().updateAll();
     }
 
 
@@ -188,9 +178,9 @@ public class RootLayout {
         if (project.isSaved() || AlertHandler.makeAlert(CLOSE_CURR_CONFIRM).setOwner(mainStage)
                 .showAndGetResult()) {
 
-            Project.newProject();
-            ViewUpdater.current().updateAll();
+            Project.get().erase();
         }
+        ViewUpdater.current().updateAll();
     }
 
     @FXML
@@ -232,5 +222,13 @@ public class RootLayout {
             Platform.exit();
             System.exit(0);
         }
+    }
+
+    @FXML
+    public void _debug_gen() {
+
+        String output = AlertHandler.makeAlert(DEBUG).debugGetInput();
+        IvascapeGenerator.generate(Integer.parseInt(output));
+        ViewUpdater.current().updateAll();
     }
 }

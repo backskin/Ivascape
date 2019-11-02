@@ -24,14 +24,14 @@ public class VisualEdge {
     public static void setColor(Color color){ currentColor = color; }
 
     VisualEdge(DoubleProperty xStart, DoubleProperty yStart,
-               DoubleProperty xEnd, DoubleProperty yEnd, double price) {
+               DoubleProperty xEnd, DoubleProperty yEnd, DoubleProperty price) {
 
         priceLabel.setVisible(false);
         priceLabel.setFont(Font.font("System",12));
         priceLabel.setMouseTransparent(true);
         priceLabel.setStyle("-fx-background-color : white");
         priceLabel.setTextFill(currentColor);
-        priceLabel.setText("$" + price);
+        priceLabel.setText(price.asString("%.2f").getValue());
 
         line.setMouseTransparent(true);
         line.setStrokeWidth(5.0);

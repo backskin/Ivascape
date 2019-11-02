@@ -63,7 +63,7 @@ public class StartWindowController {
     @FXML
     private void handleNew(){
 
-        Project.newProject();
+        Project.get().erase();
         startStage.close();
     }
 

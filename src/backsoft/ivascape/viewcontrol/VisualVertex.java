@@ -1,7 +1,9 @@
 package backsoft.ivascape.viewcontrol;
 
+import backsoft.ivascape.logic.Pair;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -27,6 +29,16 @@ public class VisualVertex {
     private static final Double defaultCircleRadius = 20.0;
     private static Color currentColor;
     static final Color defaultColor = Color.CRIMSON;
+
+    public Pair<Double, Double> getDragContext() {
+        return dragContext;
+    }
+
+    public void setDragContext(Pair<Double, Double> dragContext) {
+        this.dragContext = dragContext;
+    }
+
+    private Pair<Double,Double> dragContext;
 
     public static void setColor(Color color) {
         VisualVertex.currentColor = color;
@@ -67,7 +79,9 @@ public class VisualVertex {
                 + 0.5*(newval.doubleValue() - oldval.doubleValue())));
     }
 
-    void setTitle(String title) { name.setText(title); }
+    void setTitle(StringProperty title) {
+        name.textProperty().bind(title);
+    }
 
     VBox getItem() { return item; }
 

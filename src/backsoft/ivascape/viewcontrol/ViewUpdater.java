@@ -32,9 +32,8 @@ public class ViewUpdater {
         return this;
     }
 
-    public ViewUpdater updateGraphView() {
-        ((MapViewController) MVController).updateGraphView();
-        return this;
+    public GraphViewController getGVController(){
+        return ((MapViewController) MVController).getGVController();
     }
 
     void updateAll() {

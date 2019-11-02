@@ -8,14 +8,20 @@ import java.time.LocalDate;
 
 public class Company implements Serializable, Comparable<Company> {
 
-    private String title;
+    private static class SerializableStringProperty extends SimpleStringProperty implements Serializable {
+        SerializableStringProperty(){
+            super();
+        }
+    }
+
+    private StringProperty title = new SerializableStringProperty();
     private Double moneyCapital;
     private String address;
     private LocalDate date;
 
     public Company(String title, String address, double moneyCapital, LocalDate date){
 
-        this.title = title;
+        this.title.setValue(title);
 
         this.moneyCapital = Math.round(moneyCapital * 100) / 100.0;
         this.address = address;
@@ -23,15 +29,15 @@ public class Company implements Serializable, Comparable<Company> {
     }
 
     public String getTitle() {
-        return title;
+        return title.getValue();
     }
 
     public StringProperty titleProperty() {
-        return new SimpleStringProperty(title);
+        return title;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title.setValue(title);
     }
 
     public double getMoneyCapital() {
@@ -58,8 +64,8 @@ public class Company implements Serializable, Comparable<Company> {
         this.date = date;
     }
 
-    void asCopyOf(Company other){
-        setTitle(other.title);
+    public void asCopyOf(Company other){
+        title.setValue(other.title.getValue());
         setAddress(other.address);
         setDate(other.date);
         setMoneyCapital(other.moneyCapital);
@@ -67,6 +73,6 @@ public class Company implements Serializable, Comparable<Company> {
 
     @Override
     public int compareTo(Company o) {
-        return title.compareTo(o.title);
+            return title.getValue().compareTo(o.title.getValue());
     }
 }

@@ -2,6 +2,7 @@ package backsoft.ivascape.handler;
 
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import static javafx.scene.control.Alert.AlertType.*;
@@ -11,7 +12,7 @@ public class AlertHandler {
     public enum AlertType {
         EXIT_CONFIRM, CLOSE_CURR_CONFIRM, LOAD_ISSUE,
         SAVE_ISSUE, DELETE_CONFIRM, FIELDS_ISSUE, UPDATE_EDGE_CONFIRM,
-        ALGO_ISSUE, ISSUE, ABOUT
+        ALGO_ISSUE, ISSUE, ABOUT, DEBUG
     }
     private final Alert alert;
     private AlertType type;
@@ -38,6 +39,17 @@ public class AlertHandler {
     public boolean showAndGetResult(){
         alert.showAndWait();
         return alert.getResult().getButtonData().isDefaultButton();
+    }
+
+    public String debugGetInput(){
+        TextField field = new TextField();
+        field.setPromptText("debug value");
+        field.setText("");
+        alert.getDialogPane().setContent(field);
+        while (field.getText().isEmpty()){
+            alert.showAndWait();
+        }
+        return field.getText();
     }
 
     public AlertHandler customContent(String content){
@@ -69,7 +81,7 @@ public class AlertHandler {
     private AlertHandler setConfirmButtons(){
         alert.getButtonTypes().setAll(
                 new ButtonType(prefs.getValueFromBundle("alert.confirm"), ButtonBar.ButtonData.OK_DONE),
-                new ButtonType(prefs.getValueFromBundle("alert.exit"), ButtonBar.ButtonData.CANCEL_CLOSE));
+                new ButtonType(prefs.getValueFromBundle("alert.cancel"), ButtonBar.ButtonData.CANCEL_CLOSE));
         return this;
     }
 
@@ -82,7 +94,7 @@ public class AlertHandler {
     private AlertHandler fill(){
         ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons()
                 .add(Loader.loadImageResource("ico"));
-
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         switch (type){
             case EXIT_CONFIRM:
             case CLOSE_CURR_CONFIRM:
@@ -105,7 +117,8 @@ public class AlertHandler {
                 alert.setGraphic(imageView);
                 return setTitle().setHeader().setContent().setOkButton();
             default:
-                return this;
+                alert.setAlertType(NONE);
+                return setOkButton();
         }
     }
 

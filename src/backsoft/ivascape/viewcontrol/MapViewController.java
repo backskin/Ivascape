@@ -29,8 +29,8 @@ public class MapViewController implements ViewController {
     @FXML
     private ScrollPane surfaceScrollPane;
 
-    void updateGraphView(){
-        GVController.updateView();
+    GraphViewController getGVController(){
+        return GVController;
     }
 
     @Override
@@ -38,14 +38,14 @@ public class MapViewController implements ViewController {
 
         zoomSlider.setValue(100);
 
-        GVController.setGraph(
+        GVController.setView(
                 project.getGraph(),
                 project.getCoorsMap(),
                 VisualVertex.defaultColor,
                 VisualEdge.defaultColor,
                 true);
 
-        GVController.updateView();
+        if (!project.isEmpty()) GVController.updateView();
     }
 
     void bindToSurfaceChanged(BooleanProperty property){
@@ -74,8 +74,8 @@ public class MapViewController implements ViewController {
             togglePricesVisible.setDisable(project.isEmpty());
             resetZoomButton.setDisable(project.isEmpty());
             cropViewButton.setDisable(project.isEmpty());
-
-            if (!project.isEmpty()) zoomSlider.setValue(100);
         });
+
+        updateView();
     }
 }

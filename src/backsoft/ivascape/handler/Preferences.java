@@ -5,13 +5,8 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.*;
@@ -70,16 +65,7 @@ public class Preferences {
     }
 
     private void reloadBundle() {
-        try {
-            bundle = new PropertyResourceBundle(new BufferedReader(new InputStreamReader(
-                    getClass().getResourceAsStream(
-                            "../../../translate_"
-                                    + Locale.getDefault().toString()
-                                    + ".properties"), StandardCharsets.UTF_8)));
-        } catch (IOException e) {
-            AlertHandler.makeAlert(ISSUE).customContent(e.toString()).show();
-            throw new RuntimeException();
-        }
+            bundle = ResourceBundle.getBundle("translate", getCurrentLoc());
     }
 
     public int getCurrentTab() {
@@ -96,7 +82,7 @@ public class Preferences {
     static void onExit(WindowEvent event){
 
         if (!(Project.get().isEmpty() || Project.get().isSaved()) &&
-                AlertHandler.makeAlert(EXIT_CONFIRM).showAndGetResult())
+                !AlertHandler.makeAlert(EXIT_CONFIRM).showAndGetResult())
             event.consume();
     }
 
@@ -120,9 +106,7 @@ public class Preferences {
     }
 
     ResourceBundle getBundle() {
-        if (bundle == null) {
-            reloadBundle();
-        }
+        if (bundle == null) reloadBundle();
         return bundle;
     }
 }

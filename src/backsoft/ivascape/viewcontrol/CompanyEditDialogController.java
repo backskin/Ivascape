@@ -76,20 +76,20 @@ public class CompanyEditDialogController {
             double editCapital = Double.parseDouble(capitalField.getText());
 
             if (editCapital < 0.0)
-                errorMessage += prefs.getValueFromBundle("error.negmoney") + "\n";
+                errorMessage += "\n" + prefs.getValueFromBundle("error.negmoney");
 
         } catch (NumberFormatException e){
-            errorMessage += prefs.getValueFromBundle("error.wrongmoney") + "\n";
+            errorMessage += "\n" + prefs.getValueFromBundle("error.wrongmoney");
         }
-        if (addressField.getText().isEmpty())
-             errorMessage +=  prefs.getValueFromBundle("error.emptyaddress") + "\n";
+        if (addressField.getText().isEmpty()) addressField.setText(
+                prefs.getValueFromBundle("error.emptyaddress"));
 
         if (titleField.getText().isEmpty())
-            errorMessage += prefs.getValueFromBundle("error.emptyname") + "\n";
+            errorMessage += "\n" + prefs.getValueFromBundle("error.emptyname");
 
         if (editCompany == null && !titleField.getText().isEmpty()
                 && project.getCompany(titleField.getText()) != null)
-                errorMessage +=  prefs.getValueFromBundle("error.dubc")+ "\n";
+                errorMessage +=  "\n" + prefs.getValueFromBundle("error.dubc");
 
         if (errorMessage.length() == 0) {
             return true;
@@ -102,23 +102,22 @@ public class CompanyEditDialogController {
 
     @FXML
     private void handleOK() {
-
-        if (titleField.getText().isEmpty()) {
-            return;
-        }
-
         if (isInputValid()) {
-
-            Company tempCom = new Company(titleField.getText(),
+            Company c = new Company(titleField.getText(),
                     addressField.getText(),
                     Double.parseDouble(capitalField.getText()),
                     datePicker.getValue());
 
-            project.add(tempCom);
-            okClicked = true;
-        }
+            if (editCompany == null) {
+                editCompany = c;
+                project.add(editCompany);
+            } else {
+                editCompany.asCopyOf(c);
+            }
 
-        dialogStage.close();
+            okClicked = true;
+            dialogStage.close();
+        }
     }
 
     @FXML

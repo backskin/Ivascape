@@ -1,35 +1,47 @@
 package backsoft.ivascape.model;
 
 import backsoft.ivascape.logic.Complex;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 
 import java.io.Serializable;
 
 public class Link implements Serializable, Complex<Company, Link> {
 
+    private static class SerializableDoubleProperty extends SimpleDoubleProperty implements Serializable{
+        SerializableDoubleProperty(double initValue){
+            super(initValue);
+        }
+    }
+
     private final Company start;
     private final Company end;
-    private Double price;
+    private DoubleProperty price = new SerializableDoubleProperty(0);
     private Link mate = null;
 
     public Link(Company start, Company end, double price) {
 
         this.start = start;
         this.end = end;
-        this.price = Math.round(price*100)/100.0;
+        this.price.setValue(price);
     }
 
     @Override
     public int compareTo(Link o) {
 
-        return Double.compare(this.price, o.price);
+        return price.getValue().compareTo(o.getPrice());
     }
 
     public void setPrice(double price) {
 
-        this.price = price;
+        this.price.setValue(price);
     }
 
-    public Double getPrice() { return price;}
+    public DoubleProperty priceProperty() {
+        return price;
+    }
+
+    public Double getPrice() { return price.getValue();}
 
     @Override
     public Company one() { return start; }
@@ -46,7 +58,7 @@ public class Link implements Serializable, Complex<Company, Link> {
     @Override
     public Link createMating() {
 
-        mate = new Link(end, start, price);
+        mate = new Link(end, start, price.getValue());
         return mate;
     }
 }
