@@ -2,24 +2,25 @@ package backsoft.ivascape.viewcontrol;
 
 public class ViewUpdater {
 
-    private static ViewUpdater viewUpdater = null;
+    private static ViewUpdater viewUpdater;
     public static ViewUpdater current(){
-        return viewUpdater == null ? new ViewUpdater() : viewUpdater;
+        viewUpdater = viewUpdater == null ? new ViewUpdater() : viewUpdater;
+        return viewUpdater;
     }
 
-    private RootLayoutController RLController;
-    private CompaniesViewController CVController;
-    private LinksViewController LVController;
-    private MapViewController MVController;
+    private ViewController RLController;
+    private ViewController CVController;
+    private ViewController LVController;
+    private ViewController MVController;
 
-    public static void putRootController(RootLayoutController controller) {
+    public static void putRootController(ViewController controller) {
         viewUpdater.RLController = controller;
     }
 
     static void putTabControllers(
-            CompaniesViewController companiesViewController,
-            LinksViewController linksViewController,
-            MapViewController mapViewController) {
+            ViewController companiesViewController,
+            ViewController linksViewController,
+            ViewController mapViewController) {
 
         viewUpdater.CVController = companiesViewController;
         viewUpdater.LVController = linksViewController;
@@ -36,20 +37,15 @@ public class ViewUpdater {
         return this;
     }
 
-    public ViewUpdater updateMapView() {
-        MVController.updateView();
-        return this;
-    }
-
     public ViewUpdater updateGraphView() {
-        MVController.getGVController().updateView();
+        ((MapViewController) MVController).updateGraphView();
         return this;
     }
 
-    public void updateAll() {
+    void updateAll() {
         CVController.updateView();
         LVController.updateView();
         MVController.updateView();
-        RLController.updateStatusbar();
+        RLController.updateView();
     }
 }

@@ -20,6 +20,8 @@ import static backsoft.ivascape.handler.AlertHandler.AlertType.ISSUE;
 
 class ExcelHandler {
 
+    private static final Preferences prefs = Preferences.getCurrent();
+    
     private static HSSFCellStyle createStyleForTitle(HSSFWorkbook workbook) {
         HSSFFont font = workbook.createFont();
         font.setBold(true);
@@ -60,7 +62,7 @@ class ExcelHandler {
 
     private static void createFirstSheet(HSSFWorkbook workbook, IvascapeGraph graph){
 
-            HSSFSheet sheet = workbook.createSheet(Preferences.getCurrent().getBundle().getString("excelsheet.cmps"));
+            HSSFSheet sheet = workbook.createSheet(prefs.getValueFromBundle("excelsheet.cmps"));
             Cell cell;
             Row row = sheet.createRow(0);
 
@@ -68,19 +70,19 @@ class ExcelHandler {
             HSSFCellStyle styleRegular = createRegularStyle(workbook);
 
             cell = row.createCell(0);
-            cell.setCellValue(Preferences.getCurrent().getBundle().getString("tabletext.title"));
+            cell.setCellValue(prefs.getValueFromBundle("tabletext.title"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell(1);
-            cell.setCellValue(Preferences.getCurrent().getBundle().getString("tabletext.money"));
+            cell.setCellValue(prefs.getValueFromBundle("tabletext.money"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell( 2);
-            cell.setCellValue(Preferences.getCurrent().getBundle().getString("tabletext.address"));
+            cell.setCellValue(prefs.getValueFromBundle("tabletext.address"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell(3);
-            cell.setCellValue(Preferences.getCurrent().getBundle().getString("tabletext.date"));
+            cell.setCellValue(prefs.getValueFromBundle("tabletext.date"));
             cell.setCellStyle(styleForTitle);
 
             Iterator<Company> iterator = graph.getVertexIterator();
@@ -115,25 +117,25 @@ class ExcelHandler {
 
     private static void createSecondSheet(HSSFWorkbook workbook, IvascapeGraph graph){
 
-            HSSFSheet sheet = workbook.createSheet(Preferences.getCurrent().getBundle().getString("excelsheet.links"));
+            HSSFSheet sheet = workbook.createSheet(prefs.getValueFromBundle("excelsheet.links"));
             Cell cell;
             Row row = sheet.createRow(0);
             HSSFCellStyle styleForTitle = createStyleForTitle(workbook);
             HSSFCellStyle styleRegular = createRegularStyle(workbook);
             cell = row.createCell(0);
-            cell.setCellValue(Preferences.getCurrent().getBundle().getString("edittabs.neighbour"));
+            cell.setCellValue(prefs.getValueFromBundle("edittabs.neighbour"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell(1);
-            cell.setCellValue(Preferences.getCurrent().getBundle().getString("edittabs.neighbour"));
+            cell.setCellValue(prefs.getValueFromBundle("edittabs.neighbour"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell(2);
-            cell.setCellValue(Preferences.getCurrent().getBundle().getString("edittabs.price"));
+            cell.setCellValue(prefs.getValueFromBundle("edittabs.price"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell(4);
-            cell.setCellValue(Preferences.getCurrent().getBundle().getString("excelsheet.summ"));
+            cell.setCellValue(prefs.getValueFromBundle("excelsheet.summ"));
             cell.setCellStyle(styleForTitle);
 
             int count = 1;

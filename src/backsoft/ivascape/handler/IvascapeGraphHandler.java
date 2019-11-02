@@ -7,9 +7,9 @@ import backsoft.ivascape.model.Link;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IvaGraphHandler extends GraphHandler<Company, Link, IvascapeGraph> {
+public class IvascapeGraphHandler extends GraphHandler<Company, Link, IvascapeGraph> {
 
-    public IvaGraphHandler(IvascapeGraph graph) {
+    public IvascapeGraphHandler(IvascapeGraph graph) {
         super(graph);
     }
 

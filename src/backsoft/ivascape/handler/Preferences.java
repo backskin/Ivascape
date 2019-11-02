@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
@@ -16,7 +17,26 @@ import static backsoft.ivascape.handler.AlertHandler.AlertType.*;
 
 public class Preferences {
 
+    static class WinParams{
+
+        final double x;
+        final double y;
+        final double width;
+        final double height;
+
+        WinParams(double x, double y, double width, double height) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+        }
+    }
+
     private static Preferences instance = null;
+    private static final Locale ruLoc = new Locale("ru","RU");
+    private static final Locale enLoc = new Locale("en", "US");
+    private Locale currentLoc;
+
 
     private Preferences() {
 
@@ -27,21 +47,6 @@ public class Preferences {
 
     public Locale getCurrentLoc() {
         return currentLoc;
-    }
-
-    static class WinParams{
-
-        double x;
-        double y;
-        double width;
-        double height;
-
-        WinParams(double x, double y, double width, double height) {
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-        }
     }
 
     private WinParams windowParams;
@@ -72,10 +77,6 @@ public class Preferences {
                             "../../../translate_ru_RU.properties"), StandardCharsets.UTF_8)));
     }
 
-    private static final Locale ruLoc = new Locale("ru","RU");
-    private static final Locale enLoc = new Locale("en", "US");
-    private Locale currentLoc;
-
     public int getCurrentTab() {
         return currentTab;
     }
@@ -105,6 +106,15 @@ public class Preferences {
         try {
             reloadBundle();
         } catch (IOException e) {
+            AlertHandler.makeAlert(ISSUE).customContent("\n"+e.getLocalizedMessage()).show();
+            throw new RuntimeException();
+        }
+    }
+
+    public String getValueFromBundle(String resourceKey){
+        try {
+            return getBundle().getString(resourceKey);
+        } catch (MissingResourceException e){
             AlertHandler.makeAlert(ISSUE).customContent("\n"+e.getLocalizedMessage()).show();
             throw new RuntimeException();
         }

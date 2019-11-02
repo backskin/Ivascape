@@ -13,10 +13,12 @@ import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 
 import java.util.*;
 
@@ -32,12 +34,15 @@ public class GraphViewController {
     private Pair<Double,Double> dragContext;
     private Graph<Company, Link> graph;
 
+    @FXML
+    private Pane surface;
+
     private final DoubleProperty scaleProperty = new SimpleDoubleProperty(100.0);
     private final BooleanProperty priceShownProperty =  new SimpleBooleanProperty(false);
     private final BooleanProperty surfaceChangedProperty = new SimpleBooleanProperty(false);
 
     void bindToSurfaceChanged(BooleanProperty property){
-        surfaceChangedProperty.bindBidirectional(property);
+        surfaceChangedProperty.bind(property);
     }
 
     void setScale(double scaleProperty){
@@ -45,12 +50,6 @@ public class GraphViewController {
         this.scaleProperty.setValue(scaleProperty);
     }
 
-    @FXML
-    private Pane surface;
-
-    Pane getSurface() {
-        return surface;
-    }
 
     void setPricesVisible(boolean answer){
 
@@ -101,7 +100,7 @@ public class GraphViewController {
         draggable = isDraggable;
     }
 
-    private void addVertex(Company company){
+    void addVertex(Company company){
 
         Pair<Parent, VisualVertex> fxml;
 
@@ -122,22 +121,26 @@ public class GraphViewController {
         coorsMap.put(company.hashCode(), getCoors(company));
     }
 
-    private void addEdge(Link link){
+    void addEdge(Link link){
 
         VisualVertex one = visVerMap.get(link.one());
         VisualVertex two = visVerMap.get(link.two());
-        VisualEdge vE =  new VisualEdge(
+        VisualEdge edge =  new VisualEdge(
                 one.xCenterProperty(), one.xCenterProperty(),
                 two.xCenterProperty(), two.yCenterProperty(), link.getPrice());
-        vE.getPriceLabel().setVisible(priceShownProperty.getValue());
-        priceShownProperty.addListener(vE.getPriceListener());
-        scaleProperty.addListener(vE.getScaleListener());
-        visEdgeMap.put(link, vE);
+        Label priceLabel = edge.getPriceLabel();
+        priceLabel.setVisible(priceShownProperty.getValue());
+        edge.getPriceLabel().setVisible(priceShownProperty.getValue());
+        priceShownProperty.addListener((val, bo, bn) -> edge.getPriceLabel().setVisible(bn));
+        scaleProperty.addListener((val, no, nn) -> { edge.getLine().setStrokeWidth(.05 * nn.doubleValue());
+            edge.getPriceLabel().setFont(Font.font("System", 10 + .05 * nn.doubleValue())); });
+        visEdgeMap.put(link, edge);
     }
 
     void removeVertex(Company company){
 
-        removeEdgesOf(company);
+        for (Iterator<Link> it = graph.getEdgeIteratorForVertex(company); it.hasNext();)
+            removeEdge(it.next());
         scaleProperty.removeListener(visVerMap.get(company).getScaleListener());
         surface.getChildren().remove(visVerMap.get(company).getItem());
         dragMap.remove(visVerMap.get(company).getCircle());
@@ -145,26 +148,14 @@ public class GraphViewController {
         coorsMap.remove(company.hashCode());
     }
 
-
-    private void removeEdge(Link link) {
+    void removeEdge(Link link) {
 
         VisualEdge edge = getEdge(link);
 
         if (edge == null) return;
-
-        priceShownProperty.removeListener(edge.getPriceListener());
-        scaleProperty.removeListener(edge.getScaleListener());
         surface.getChildren().remove(edge.getPriceLabel());
         surface.getChildren().remove(edge.getLine());
         visEdgeMap.remove(link);
-    }
-
-    private void removeEdgesOf(Company company){
-
-        for (Iterator<Link> it = graph.getEdgeIteratorForVertex(company); it.hasNext();){
-
-            removeEdge(it.next());
-        }
     }
 
     private VisualEdge getEdge(Link link) {

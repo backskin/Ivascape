@@ -2,9 +2,9 @@ package backsoft.ivascape.logic;
 
 public class Triplet<A,B,C> {
 
-    private A one;
-    private B two;
-    private C three;
+    private final A one;
+    private final B two;
+    private final C three;
 
     public Triplet(A one, B two, C three) {
         this.one = one;

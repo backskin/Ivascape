@@ -13,15 +13,17 @@ import static backsoft.ivascape.handler.AlertHandler.AlertType.SAVE_ISSUE;
 
 public class FileHandler {
 
+    private static final Preferences prefs = Preferences.getCurrent();
+
     public static void dialogExport(IvascapeGraph graph, final Stage ownerStage){
 
         FileChooser fileChooser = new FileChooser();
 
-        fileChooser.setTitle(Preferences.getCurrent().getBundle().getString("filewindow.title.save"));
+        fileChooser.setTitle(prefs.getValueFromBundle("filewindow.title.save"));
 
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter(
-                        Preferences.getCurrent().getBundle().getString("filewindow.type.xls"),"*.xls")
+                        prefs.getValueFromBundle("filewindow.type.xls"),"*.xls")
         );
 
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+"\\Desktop"));
@@ -35,10 +37,10 @@ public class FileHandler {
 
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter(
-                        Preferences.getCurrent().getBundle().getString("filewindow.type.ivp"), "*.ivp")
+                        prefs.getValueFromBundle("filewindow.type.ivp"), "*.ivp")
         );
 
-        fileChooser.setTitle(Preferences.getCurrent().getBundle().getString("filewindow.title.open"));
+        fileChooser.setTitle(prefs.getValueFromBundle("filewindow.title.open"));
 
         fileChooser.setInitialDirectory(
                 new File(file == null ?
@@ -75,11 +77,11 @@ public class FileHandler {
 
         FileChooser fileChooser = new FileChooser();
 
-        fileChooser.setTitle(Preferences.getCurrent().getBundle().getString("filewindow.title.save"));
+        fileChooser.setTitle(prefs.getValueFromBundle("filewindow.title.save"));
 
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter(
-                        Preferences.getCurrent().getBundle().getString("filewindow.type.ivp"), "*.ivp"));
+                        prefs.getValueFromBundle("filewindow.type.ivp"), "*.ivp"));
 
         if (file == null) {
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "\\Desktop"));

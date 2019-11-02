@@ -2,12 +2,11 @@ package backsoft.ivascape.model;
 
 import backsoft.ivascape.handler.FileHandler;
 import backsoft.ivascape.handler.GraphHandler;
-import backsoft.ivascape.handler.IvaGraphHandler;
+import backsoft.ivascape.handler.IvascapeGraphHandler;
 
 import backsoft.ivascape.logic.CoorsMap;
 import backsoft.ivascape.logic.Triplet;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.*;
 
 import java.io.File;
 import java.io.Serializable;
@@ -29,17 +28,20 @@ public class Project implements Serializable {
 
     private IvascapeGraph graph;
     private CoorsMap coorsMap;
-    private GraphHandler<Company, Link, IvascapeGraph> graphHandler;
+    private final GraphHandler<Company, Link, IvascapeGraph> graphHandler;
     private final BooleanProperty saved;
+    private final IntegerProperty size;
     private File file;
 
     private Project(){
 
         coorsMap = new CoorsMap();
         saved = new SimpleBooleanProperty(true);
+        size = new SimpleIntegerProperty(0);
+
         file = null;
         graph = new IvascapeGraph();
-        graphHandler = new IvaGraphHandler(graph);
+        graphHandler = new IvascapeGraphHandler(graph);
     }
 
     public CoorsMap getCoorsMap() { return coorsMap; }
@@ -51,11 +53,13 @@ public class Project implements Serializable {
     public boolean isSaved() { return isEmpty() || saved.get(); }
 
     public BooleanProperty savedProperty() { return saved; }
-
-    public void setSaved(boolean value) { saved.setValue(value); }
+    public IntegerProperty sizeProperty() { return size; }
+    public void setSaved(boolean value) {
+        size.setValue(graph.size());
+        saved.setValue(value);
+    }
 
     public IvascapeGraph getGraph() { return graph; }
-
 
     public boolean isEmpty() { return graph == null || graph.size() < 1; }
 
@@ -80,21 +84,12 @@ public class Project implements Serializable {
         setSaved(true);
     }
 
-    public Company getCompany(Integer hashCode) {
-        for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext(); ) {
-            Company c = i.next();
-            if (hashCode.equals(c.hashCode())) return c;
-        }
-        return null;
-    }
-
-    public Company getCompany(String title){
+    public <T extends Comparable<T>> Company getCompany(T tag){
 
         for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext();){
-
             Company c = i.next();
-            if (c.getTitle().equals(title))
-                return c;
+            Object tempTag = tag instanceof String ? c.getTitle() : tag instanceof Integer ? c.hashCode() : null;
+            if (tag.equals(tempTag)) return c;
         }
         return null;
     }
@@ -108,10 +103,8 @@ public class Project implements Serializable {
 
         List<String> output = new ArrayList<>();
 
-        for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext();){
-
+        for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext();)
             output.add(i.next().getTitle());
-        }
 
         return output;
     }
@@ -145,7 +138,8 @@ public class Project implements Serializable {
     public void add(Company one, Company two, double price){
         if (graph.getEdge(one,two) == null)
             graph.addEdge(one, two, price);
-        else graph.getEdge(one,two).setPrice(price);
+        else
+            graph.getEdge(one,two).setPrice(price);
         setSaved(false);
     }
 
@@ -162,7 +156,7 @@ public class Project implements Serializable {
         setSaved(false);
     }
 
-    public Iterator<Company> getIteratorOfComs(){
+    public Iterator<Company> getIteratorOfCompanies(){
 
         return graph.getVertexIterator();
     }

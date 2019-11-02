@@ -17,7 +17,7 @@ public class LinkEditDialogController {
 
     private double price = .0;
     private boolean confirmed = false;
-    private Project project = Project.get();
+    private final Project project = Project.get();
 
     @FXML
     TextField firstField;
@@ -75,32 +75,26 @@ public class LinkEditDialogController {
     private void handleOK() {
 
         String errorMessage = "";
-
         try {
             try {
                 price = Double.parseDouble(priceField.getText());
-                if (price <= 0.0) throw new NumberFormatException();
+                if (price <= 0.0)
+                    throw new NumberFormatException();
 
             } catch (NumberFormatException e) {
-                errorMessage += Preferences.getCurrent().getBundle().getString("error.wrongmoney") + "\n";
+                errorMessage += Preferences.getCurrent().getValueFromBundle("error.wrongmoney") + "\n";
             }
-
-
             Company one = project.getCompany(firstField.getText());
             Company another = project.getCompany(secondField.getText());
 
             if (one == null || another == null)
-                errorMessage += Preferences.getCurrent().getBundle().getString("error.wrongcomname") + "\n";
-
-
-            if ( firstField.getText().equals(secondField.getText()))
-                errorMessage += Preferences.getCurrent().getBundle().getString("error.reflex") + "\n";
-
+                errorMessage += Preferences.getCurrent().getValueFromBundle("error.wrongcomname") + "\n";
+            if (firstField.getText().equals(secondField.getText()))
+                errorMessage += Preferences.getCurrent().getValueFromBundle("error.reflex") + "\n";
 
             if (errorMessage.length() > 0) {
                 throw new Exception(errorMessage);
             }
-
             project.add(one, another, price);
             confirmed = true;
             dialogStage.close();

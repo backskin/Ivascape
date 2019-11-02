@@ -18,11 +18,9 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="rootPane" focusTraversable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="backsoft.ivascape.viewcontrol.RootLayoutController">
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.RootLayoutController">
     <top>
-        <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #eaeaea;">
+        <MenuBar style="-fx-background-color: #eaeaea;">
             <Menu mnemonicParsing="false" style="-fx-focus-color: crimson;" text="%menu.file">
                 <MenuItem mnemonicParsing="false" onAction="#handleFileNew" text="%start.new">
                     <accelerator>

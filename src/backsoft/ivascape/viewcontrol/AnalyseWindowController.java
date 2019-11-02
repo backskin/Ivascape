@@ -6,6 +6,7 @@ import backsoft.ivascape.logic.Pair;
 import backsoft.ivascape.model.Company;
 import backsoft.ivascape.model.IvascapeGraph;
 import backsoft.ivascape.model.Project;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -29,11 +30,10 @@ import java.util.List;
 public class AnalyseWindowController {
 
     private Stage analyseStage;
-    private Project project = Project.get();
-
+    private final Project project = Project.get();
+    private final Preferences prefs = Preferences.getCurrent();
     @FXML
     private HBox componentTables;
-
     @FXML
     private Label cAmount;
 
@@ -54,7 +54,7 @@ public class AnalyseWindowController {
         List<IvascapeGraph> components =  project.getComponents();
 
         if (components.size() == 0) {
-            Label label = new Label(Preferences.getCurrent().getBundle().getString("editwindows.emptygraph"));
+            Label label = new Label(prefs.getValueFromBundle("editwindows.emptygraph"));
 
             label.setFont(new Font("System",15));
             componentTables.getChildren().add(label);
@@ -85,7 +85,7 @@ public class AnalyseWindowController {
             VBox.setVgrow(scrollPane,Priority.ALWAYS);
             scrollPane.setPrefHeight(125);
 
-            ViewUpdater.current().updateGraphView();
+            controller.updateView();
 
             controller.cropIt();
             controller.setScale(50);
@@ -110,7 +110,7 @@ public class AnalyseWindowController {
             TableColumn<Company,String> column = new TableColumn<>();
             column.setSortable(false);
             column.setText((components.indexOf(component)+1)
-                    + Preferences.getCurrent().getBundle().getString("editwindows.component"));
+                    + prefs.getValueFromBundle("editwindows.component"));
 
             componentTable.getColumns().add(column);
             componentTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

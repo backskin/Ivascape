@@ -35,7 +35,7 @@ public class LinksViewCellController {
 
         if (AlertHandler.makeAlert(DELETE_CONFIRM).setOwner(Loader.getMainStage()).showAndGetResult()){
             Project.get().remove(link);
-            ViewUpdater.current().updateLinksView().updateMapView();
+            ViewUpdater.current().updateLinksView().updateGraphView();
         }
     }
 }

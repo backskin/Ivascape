@@ -27,14 +27,14 @@
                <Insets left="4.0" />
            </padding>
         </Separator>
-        <Button fx:id="cropView" disable="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="110.0" mnemonicParsing="false" onAction="#cropIt" text="%button.crop" />
-        <Button fx:id="ResetZoom" disable="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="110.0" mnemonicParsing="false" onAction="#handleReset" text="%mainmap.reset" />
-        <ToggleButton fx:id="showHidePrices" disable="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="110.0" mnemonicParsing="false" text="%mainmap.showhide" />
+        <Button fx:id="cropViewButton" disable="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="110.0" mnemonicParsing="false" onAction="#handleCrop" text="%button.crop" />
+        <Button fx:id="resetZoomButton" disable="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="110.0" mnemonicParsing="false" onAction="#handleResetZoom" text="%mainmap.reset" />
+        <ToggleButton fx:id="togglePricesVisible" disable="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="110.0" mnemonicParsing="false" text="%mainmap.showhide" />
         <Separator orientation="VERTICAL" prefHeight="200.0">
            <padding>
                <Insets left="4.0" right="4.0" top="-2.0" />
            </padding>
         </Separator>
     </ToolBar>
-    <ScrollPane fx:id="surface" cacheShape="false" prefHeight="100.0" prefWidth="500.0" VBox.vgrow="ALWAYS" />
+    <ScrollPane fx:id="surfaceScrollPane" cacheShape="false" prefHeight="100.0" prefWidth="500.0" VBox.vgrow="ALWAYS" />
 </VBox>

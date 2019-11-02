@@ -22,20 +22,23 @@ import static backsoft.ivascape.viewcontrol.StartWindowController.TERMINATED;
 
 public class Loader {
 
+    private static final Preferences prefs = Preferences.getCurrent();
+    private static Stage stage;
+
     public static Stage getMainStage() {
         return stage;
     }
-    private static Stage stage;
 
     public static <T> Pair<Parent, T> loadFXML(String fxmlDocName) {
 
         FXMLLoader loader = new FXMLLoader(
                 FXApp.class.getResource("fxml/" + fxmlDocName + ".fxml"),
-                Preferences.getCurrent().getBundle());
+                prefs.getBundle());
         try {
             return new Pair<>(loader.load(), loader.getController());
         } catch (IOException e) {
-            AlertHandler.makeAlert(ISSUE).customContent("\n"+e.getMessage()).show();
+            AlertHandler.makeAlert(ISSUE).customContent(e.toString()).show();
+            e.printStackTrace();
             throw new RuntimeException();
         }
     }
@@ -56,10 +59,10 @@ public class Loader {
     public static Image loadImageResource(String img) {
 
         try {
-            return new Image(new FileInputStream(new File("resources/"
-                    + img + ".png")));
+            return new Image(new FileInputStream(new File(
+                    "resources/" + img + ".png")));
         } catch (FileNotFoundException e) {
-            AlertHandler.makeAlert(ISSUE).customContent("\n"+e.getMessage()).show();
+            AlertHandler.makeAlert(ISSUE).customContent(e.getMessage()).show();
             throw new RuntimeException();
         }
     }
@@ -79,19 +82,17 @@ public class Loader {
 
     private static boolean welcomeScreen(Stage stage) {
 
-        stage.setTitle(Preferences.getCurrent().getBundle().getString("welcome"));
+        stage.setTitle(prefs.getValueFromBundle("welcome"));
         Pair<Parent, StartWindowController> fxmlData = loadFXML("StartWindow");
         StartWindowController controller = fxmlData.getTwo();
         controller.setStartStage(stage);
 
         openInAWindow(stage, fxmlData.getOne(), false);
 
+        stage.close();
         if (controller.isLocaleChanged()) {
-
-            stage.close();
             return welcomeScreen(stage);
         }
-
         return controller.getStatus();
     }
 
@@ -99,11 +100,11 @@ public class Loader {
 
         if (stage.isShowing()) stage.close();
         stage.setOnCloseRequest(Preferences::onExit);
-        stage.setTitle(Preferences.getCurrent().getBundle().getString("program_name"));
+        stage.setTitle(prefs.getValueFromBundle("program_name"));
         Pair<Parent, RootLayoutController> fxml = loadFXML("RootLayout");
         ViewUpdater.putRootController(fxml.getTwo());
         openInAWindow(stage,fxml.getOne(),false);
-        Preferences.getCurrent().applyWinParams(stage);
+        prefs.applyWinParams(stage);
     }
 
     public static void loadDialogEditLink(Integer... hashes) {
@@ -112,7 +113,7 @@ public class Loader {
         LinkEditDialogController controller = fxmlData.getTwo();
 
         Stage dialogStage = new Stage();
-        dialogStage.setTitle(Preferences.getCurrent().getBundle().getString((hashes != null) ?
+        dialogStage.setTitle(prefs.getValueFromBundle((hashes != null) ?
                 "edittabs.header.editlink" : "edittabs.header.newlink"));
         dialogStage.initModality(Modality.WINDOW_MODAL);
         dialogStage.initOwner(stage);
@@ -122,7 +123,7 @@ public class Loader {
         openInAWindow(dialogStage, fxmlData.getOne(), false);
 
         if (controller.isConfirmed()) {
-            ViewUpdater.current().updateLinksView().updateMapView();
+            ViewUpdater.current().updateLinksView().updateGraphView();
         }
     }
 
@@ -133,7 +134,7 @@ public class Loader {
 
         Stage dialogStage = new Stage();
 
-        dialogStage.setTitle(Preferences.getCurrent().getBundle().getString((comHash != 0) ?
+        dialogStage.setTitle(prefs.getValueFromBundle((comHash != 0) ?
                 "edittabs.header.editcmp" : "edittabs.header.newcmp"));
 
         dialogStage.initModality(Modality.WINDOW_MODAL);
@@ -146,7 +147,11 @@ public class Loader {
 
         if (CEDController.isOkClicked()) {
 
-            ViewUpdater.current().updateAll();
+            ViewUpdater.current()
+                    .updateCompaniesView()
+                    .updateGraphView()
+                    .updateLinksView();
+
             return CEDController.getEditCompany().hashCode();
         }
         return 0;

@@ -3,41 +3,38 @@ package backsoft.ivascape.viewcontrol;
 import backsoft.ivascape.handler.Loader;
 import backsoft.ivascape.logic.Pair;
 import backsoft.ivascape.model.Project;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.Parent;
-import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 
-public class MapViewController {
+public class MapViewController implements ViewController {
 
     private GraphViewController GVController;
-    private Project project = Project.get();
+    private final Project project = Project.get();
     
     @FXML
-    private Button cropView;
+    private Button cropViewButton;
+    @FXML
+    private Button resetZoomButton;
 
     @FXML
-    private Button ResetZoom;
-
-    @FXML
-    private ToggleButton showHidePrices;
-
+    private ToggleButton togglePricesVisible;
     @FXML
     private Slider zoomSlider;
-
     @FXML
-    private ScrollPane surface;
+    private ScrollPane surfaceScrollPane;
 
-    GraphViewController getGVController() {
-        return GVController;
+    void updateGraphView(){
+        GVController.updateView();
     }
 
-    void updateView(){
+    @Override
+    public void updateView(){
 
         zoomSlider.setValue(100);
 
@@ -51,54 +48,35 @@ public class MapViewController {
         GVController.updateView();
     }
 
-    void bindSurfaceChangedBidirectional(BooleanProperty property){
+    void bindToSurfaceChanged(BooleanProperty property){
         GVController.bindToSurfaceChanged(property);
     }
 
+    @FXML
+    private void handleCrop(){ GVController.cropIt(); }
+    @FXML
+    private void handleResetZoom(){ zoomSlider.setValue(100); }
     @FXML
     private void initialize(){
 
         Pair<Parent, GraphViewController> fxml = Loader.loadFXML("GraphView");
 
-        surface.setContent(fxml.getOne());
-
+        surfaceScrollPane.setContent(fxml.getOne());
         GVController = fxml.getTwo();
 
-        showHidePrices.selectedProperty().addListener((observable, oldValue, newValue) -> GVController.setPricesVisible(newValue));
+        togglePricesVisible.selectedProperty().addListener(
+                (o, b0, value) -> GVController.setPricesVisible(value));
 
-        zoomSlider.valueProperty().addListener((observable, oldValue, newValue)
+        zoomSlider.valueProperty().addListener(
+                (o, b0, value) -> GVController.setScale(value.doubleValue()));
 
-                -> GVController.setScale(newValue.doubleValue()));
+        project.sizeProperty().addListener(c -> {
+            zoomSlider.setDisable(project.isEmpty());
+            togglePricesVisible.setDisable(project.isEmpty());
+            resetZoomButton.setDisable(project.isEmpty());
+            cropViewButton.setDisable(project.isEmpty());
 
-        GVController.getSurface().getChildren().addListener((ListChangeListener<Node>) c -> {
-
-            if (GVController.getSurface().getChildren().size() < 1) {
-
-                zoomSlider.setValue(100);
-                zoomSlider.setDisable(true);
-                showHidePrices.setSelected(false);
-                showHidePrices.setDisable(true);
-                ResetZoom.setDisable(true);
-                cropView.setDisable(true);
-
-            } else {
-                zoomSlider.setDisable(false);
-                showHidePrices.setDisable(false);
-                ResetZoom.setDisable(false);
-                cropView.setDisable(false);
-            }
+            if (!project.isEmpty()) zoomSlider.setValue(100);
         });
-    }
-
-    @FXML
-    private void cropIt(){
-
-        GVController.cropIt();
-    }
-
-    @FXML
-    private void handleReset(){
-
-        zoomSlider.setValue(100);
     }
 }

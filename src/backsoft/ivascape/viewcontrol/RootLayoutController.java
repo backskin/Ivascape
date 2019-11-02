@@ -9,12 +9,9 @@ import backsoft.ivascape.model.Project;
 import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
 import javafx.application.Platform;
-import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
@@ -24,7 +21,7 @@ import java.io.File;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.*;
 
-public class RootLayoutController {
+public class RootLayoutController implements ViewController {
 
     @FXML
     private TabPane tabPane;
@@ -34,8 +31,6 @@ public class RootLayoutController {
     private AnchorPane TablePane;
     @FXML
     private AnchorPane MapPane;
-    @FXML
-    private BorderPane rootPane;
     @FXML
     private Circle saveIcon;
     @FXML
@@ -103,25 +98,15 @@ public class RootLayoutController {
         CompaniesViewController cvController = loadViewToTab("CompaniesView", CompaniesPane);
         LinksViewController lvController = loadViewToTab("LinksView", TablePane);
         ViewUpdater.putTabControllers(cvController, lvController, mvController);
-        mvController.bindSurfaceChangedBidirectional(project.savedProperty());
+        mvController.bindToSurfaceChanged(project.savedProperty());
+        project.sizeProperty().addListener((val, number, t1) ->
+                addEdgeMenuItem.setDisable(t1.intValue() < 2));
 
-        mvController.getGVController().getSurface().getChildren()
-                .addListener(
-                        (ListChangeListener<Node>) c
-                                ->
-                                addEdgeMenuItem.setDisable(mvController.getGVController()
-                                        .getSurface()
-                                        .getChildren()
-                                        .size()
-                                        < 2));
+        if (!project.isEmpty()) ViewUpdater.current().updateAll();
 
-        mainStage.setScene(new Scene(rootPane));
-
-        if (!project.isEmpty())
-            ViewUpdater.current().updateAll();
-
-        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue)
+        tabPane.getSelectionModel().selectedItemProperty().addListener((observable)
                 -> preferences.setCurrentTab(tabPane.getSelectionModel().getSelectedIndex()));
+
         tabPane.getSelectionModel().select(preferences.getCurrentTab());
     }
 
@@ -141,7 +126,8 @@ public class RootLayoutController {
 
     }
 
-    void updateStatusbar(){
+    @Override
+    public void updateView(){
 
         filenameLabel.setText(project.getFile() != null ? project.getFile().getName() : "Empty");
         comsAmountLabel.setText(project.amountOfComs() + "");
@@ -158,7 +144,7 @@ public class RootLayoutController {
         TipsController tipsController = fxmlData.getTwo();
         Stage tipsStage = new Stage();
         tipsController.setStage(tipsStage);
-        tipsStage.setTitle(preferences.getBundle().getString("tips.caption"));
+        tipsStage.setTitle(preferences.getValueFromBundle("tips.caption"));
         tipsStage.initModality(Modality.WINDOW_MODAL);
         tipsStage.initOwner(mainStage);
 
@@ -188,7 +174,7 @@ public class RootLayoutController {
         } else {
             Pair<Parent, ResultWindowController> fxmlData = Loader.loadFXML("ResultWindow");
             Stage resStage = new Stage();
-            resStage.setTitle(preferences.getBundle().getString("result_window"));
+            resStage.setTitle(preferences.getValueFromBundle("result_window"));
             fxmlData.getTwo().setStage(resStage);
 
             Loader.openInAWindow(resStage, fxmlData.getOne(), true);
@@ -204,7 +190,7 @@ public class RootLayoutController {
 
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner(mainStage);
-        stage.setTitle(preferences.getBundle().getString("editwindows.analysetitle"));
+        stage.setTitle(preferences.getValueFromBundle("editwindows.analysetitle"));
 
         Loader.openInAWindow(stage, fxmlData.getOne(), true);
     }
@@ -239,7 +225,7 @@ public class RootLayoutController {
         } else {
             handleFileSaveAs();
         }
-        updateStatusbar();
+        updateView();
     }
 
     @FXML
@@ -257,7 +243,7 @@ public class RootLayoutController {
             project.setSaved(true);
         }
 
-        updateStatusbar();
+        updateView();
     }
 
     @FXML

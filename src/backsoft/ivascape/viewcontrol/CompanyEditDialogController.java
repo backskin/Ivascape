@@ -15,9 +15,23 @@ import java.time.LocalDate;
 import static backsoft.ivascape.handler.AlertHandler.AlertType.FIELDS_ISSUE;
 
 public class CompanyEditDialogController {
+    
+    @FXML
+    private TextField titleField;
+    @FXML
+    private TextField addressField;
+    @FXML
+    private TextField capitalField;
+    @FXML
+    private DatePicker datePicker;
+    
+    private Stage dialogStage;
 
-    private Project project = Project.get();
+    private Company editCompany = null;
+    private final Project project = Project.get();
     private boolean okClicked = false;
+    private final Preferences prefs = Preferences.getCurrent();
+    
     public boolean isOkClicked() {
         return okClicked;
     }
@@ -25,8 +39,6 @@ public class CompanyEditDialogController {
     public Company getEditCompany() {
         return editCompany;
     }
-
-    private Company editCompany = null;
 
     public void setEditCompany(Integer comHash){
 
@@ -40,27 +52,13 @@ public class CompanyEditDialogController {
 
         capitalField.requestFocus();
     }
-
-    private Stage dialogStage;
-
+    
     public void setDialogStage(Stage dialogStage) {
 
         this.dialogStage = dialogStage;
         titleField.requestFocus();
     }
-
-    @FXML
-    TextField titleField;
-
-    @FXML
-    TextField addressField;
-
-    @FXML
-    TextField capitalField;
-
-    @FXML
-    private DatePicker datePicker;
-
+    
     public CompanyEditDialogController(){}
 
     @FXML
@@ -78,20 +76,20 @@ public class CompanyEditDialogController {
             double editCapital = Double.parseDouble(capitalField.getText());
 
             if (editCapital < 0.0)
-                errorMessage += Preferences.getCurrent().getBundle().getString("error.negmoney") + "\n";
+                errorMessage += prefs.getValueFromBundle("error.negmoney") + "\n";
 
         } catch (NumberFormatException e){
-            errorMessage += Preferences.getCurrent().getBundle().getString("error.wrongmoney") + "\n";
+            errorMessage += prefs.getValueFromBundle("error.wrongmoney") + "\n";
         }
         if (addressField.getText().isEmpty())
-             errorMessage +=  Preferences.getCurrent().getBundle().getString("error.emptyaddress") + "\n";
+             errorMessage +=  prefs.getValueFromBundle("error.emptyaddress") + "\n";
 
         if (titleField.getText().isEmpty())
-            errorMessage += Preferences.getCurrent().getBundle().getString("error.emptyname") + "\n";
+            errorMessage += prefs.getValueFromBundle("error.emptyname") + "\n";
 
         if (editCompany == null && !titleField.getText().isEmpty()
                 && project.getCompany(titleField.getText()) != null)
-                errorMessage +=  Preferences.getCurrent().getBundle().getString("error.dubc")+ "\n";
+                errorMessage +=  prefs.getValueFromBundle("error.dubc")+ "\n";
 
         if (errorMessage.length() == 0) {
             return true;

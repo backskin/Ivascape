@@ -14,7 +14,7 @@ public class LinksViewItemController {
 
     private Company company;
 
-    private Project project = Project.get();
+    private final Project project = Project.get();
 
     @FXML
     TitledPane theItem;

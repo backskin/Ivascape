@@ -22,8 +22,8 @@ import static backsoft.ivascape.handler.AlertHandler.AlertType.DELETE_CONFIRM;
 public class CompaniesViewController implements ViewController {
 
     private int lastSelected = 0;
-
-    private Project project = Project.get();
+    private final Project project = Project.get();
+    private final Preferences prefs = Preferences.getCurrent();
 
     @FXML
     private TableView<Company> companiesTable;
@@ -48,7 +48,7 @@ public class CompaniesViewController implements ViewController {
     private ObservableList<Company> getCompaniesViewItems(){
 
         ObservableList<Company> list = FXCollections.observableArrayList();
-        for (Iterator<Company> i = project.getIteratorOfComs(); i.hasNext();)
+        for (Iterator<Company> i = project.getIteratorOfCompanies(); i.hasNext();)
             list.add(i.next());
         return list;
     }
@@ -93,7 +93,7 @@ public class CompaniesViewController implements ViewController {
     @FXML
     private void initialize(){
 
-        TextFlow nocontent = new TextFlow(new Text(Preferences.getCurrent().getBundle().getString("tabletext.nocontent")));
+        TextFlow nocontent = new TextFlow(new Text(prefs.getValueFromBundle("tabletext.nocontent")));
 
         nocontent.setTextAlignment(TextAlignment.CENTER);
         nocontent.setPadding(new Insets(8,8,0,8));

@@ -11,7 +11,8 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<StackPane maxHeight="345.0" maxWidth="450.0" minHeight="345.0" minWidth="450.0" prefHeight="345.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.StartWindowController">
+<StackPane maxHeight="345.0" maxWidth="450.0" minHeight="345.0" minWidth="450.0" prefHeight="345.0" prefWidth="450.0"
+           xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.StartWindowController">
     <VBox alignment="CENTER" scaleShape="false" snapToPixel="false" StackPane.alignment="CENTER">
         <StackPane alignment="CENTER_RIGHT" nodeOrientation="LEFT_TO_RIGHT">
             <cursor>

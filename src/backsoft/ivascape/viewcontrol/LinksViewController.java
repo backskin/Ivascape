@@ -30,7 +30,7 @@ public class LinksViewController implements ViewController{
 
         List<TitledPane> list = new ArrayList<>();
 
-        for (Iterator<Company> itCom = Project.get().getIteratorOfComs(); itCom.hasNext(); ) {
+        for (Iterator<Company> itCom = Project.get().getIteratorOfCompanies(); itCom.hasNext(); ) {
 
             Pair<Parent, LinksViewItemController> fxml = Loader.loadFXML("LinksViewItem");
             LinksViewItemController LVIController = fxml.getTwo();
