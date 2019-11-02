@@ -23,18 +23,15 @@ import static backsoft.ivascape.viewcontrol.StartWindowController.TERMINATED;
 public class Loader {
 
     private static final Preferences prefs = Preferences.getCurrent();
-    private static Stage stage;
+    private static Stage primaryStage;
 
     public static Stage getMainStage() {
-        return stage;
+        return primaryStage;
     }
 
-    public static <T> Pair<Parent, T> loadFXML(String fxmlDocName) {
-
-        FXMLLoader loader = new FXMLLoader(
-                FXApp.class.getResource("fxml/" + fxmlDocName + ".fxml"),
-                prefs.getBundle());
+    public static <T> Pair<Parent, T> loadFXML(String fxml) {
         try {
+            FXMLLoader loader = new FXMLLoader(FXApp.class.getResource("fxml/"+ fxml + ".fxml"), prefs.getBundle());
             return new Pair<>(loader.load(), loader.getController());
         } catch (IOException e) {
             AlertHandler.makeAlert(ISSUE).customContent(e.toString()).show();
@@ -53,7 +50,7 @@ public class Loader {
             stage.setMinWidth(stage.getWidth());
         });
 
-        stage.showAndWait();
+        if (stage == primaryStage) stage.show(); else stage.showAndWait();
     }
 
     public static Image loadImageResource(String img) {
@@ -69,7 +66,8 @@ public class Loader {
 
     public static void start(Stage mainStage) {
 
-        stage = mainStage;
+        primaryStage = mainStage;
+        primaryStage.setOnCloseRequest(Preferences::onExit);
         Stage startScreenStage = new Stage();
         startScreenStage.initStyle(StageStyle.UNDECORATED);
 
@@ -98,13 +96,13 @@ public class Loader {
 
     public static void reloadApp() {
 
-        if (stage.isShowing()) stage.close();
-        stage.setOnCloseRequest(Preferences::onExit);
-        stage.setTitle(prefs.getValueFromBundle("program_name"));
-        Pair<Parent, RootLayoutController> fxml = loadFXML("RootLayout");
-        ViewUpdater.putRootController(fxml.getTwo());
-        openInAWindow(stage,fxml.getOne(),false);
-        prefs.applyWinParams(stage);
+        if (primaryStage.isShowing()) primaryStage.close();
+
+        primaryStage.setTitle(prefs.getValueFromBundle("maintitle"));
+        Pair<Parent, MainController> fxml = loadFXML("MainWindow");
+        ViewUpdater.current().putRootController(fxml.getTwo());
+        openInAWindow(primaryStage, fxml.getOne(),false);
+        prefs.applyWinParams(primaryStage);
     }
 
     public static void loadDialogEditLink(Integer... hashes) {
@@ -116,7 +114,7 @@ public class Loader {
         dialogStage.setTitle(prefs.getValueFromBundle((hashes != null) ?
                 "edittabs.header.editlink" : "edittabs.header.newlink"));
         dialogStage.initModality(Modality.WINDOW_MODAL);
-        dialogStage.initOwner(stage);
+        dialogStage.initOwner(primaryStage);
         controller.setDialogStage(dialogStage);
         controller.setFields(hashes);
 
@@ -138,7 +136,7 @@ public class Loader {
                 "edittabs.header.editcmp" : "edittabs.header.newcmp"));
 
         dialogStage.initModality(Modality.WINDOW_MODAL);
-        dialogStage.initOwner(stage);
+        dialogStage.initOwner(primaryStage);
         CEDController.setDialogStage(dialogStage);
 
         CEDController.setEditCompany(comHash);

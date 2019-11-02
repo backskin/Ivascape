@@ -13,18 +13,18 @@ public class ViewUpdater {
     private ViewController LVController;
     private ViewController MVController;
 
-    public static void putRootController(ViewController controller) {
-        viewUpdater.RLController = controller;
+    public void putRootController(ViewController controller) {
+        RLController = controller;
     }
 
-    static void putTabControllers(
+    public void putTabControllers(
             ViewController companiesViewController,
             ViewController linksViewController,
             ViewController mapViewController) {
 
-        viewUpdater.CVController = companiesViewController;
-        viewUpdater.LVController = linksViewController;
-        viewUpdater.MVController = mapViewController;
+        CVController = companiesViewController;
+        LVController = linksViewController;
+        MVController = mapViewController;
     }
 
     public ViewUpdater updateCompaniesView() {

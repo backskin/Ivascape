@@ -21,7 +21,7 @@ import java.io.File;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.*;
 
-public class RootLayoutController implements ViewController {
+public class MainController implements ViewController {
 
     @FXML
     private TabPane tabPane;
@@ -97,7 +97,8 @@ public class RootLayoutController implements ViewController {
         MapViewController mvController = loadViewToTab("MapView", MapPane);
         CompaniesViewController cvController = loadViewToTab("CompaniesView", CompaniesPane);
         LinksViewController lvController = loadViewToTab("LinksView", TablePane);
-        ViewUpdater.putTabControllers(cvController, lvController, mvController);
+
+        ViewUpdater.current().putTabControllers(cvController, lvController, mvController);
         mvController.bindToSurfaceChanged(project.savedProperty());
         project.sizeProperty().addListener((val, number, t1) ->
                 addEdgeMenuItem.setDisable(t1.intValue() < 2));

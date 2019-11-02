@@ -60,7 +60,6 @@ public class MapViewController implements ViewController {
     private void initialize(){
 
         Pair<Parent, GraphViewController> fxml = Loader.loadFXML("GraphView");
-
         surfaceScrollPane.setContent(fxml.getOne());
         GVController = fxml.getTwo();
 
