@@ -95,6 +95,7 @@ public class LinkEditDialogController {
             if (errorMessage.length() > 0) {
                 throw new Exception(errorMessage);
             }
+
             project.add(one, another, price);
             confirmed = true;
             dialogStage.close();

@@ -8,7 +8,7 @@ import javafx.scene.text.Font;
 
 public class VisualEdge {
 
-    private final Label priceLabel = new Label("0.0");
+    private final Label priceLabel = new Label("0.00");
     private final Line line = new Line();
 
     Label getPriceLabel() {
@@ -37,32 +37,24 @@ public class VisualEdge {
         line.setStrokeWidth(5.0);
         line.setStroke(currentColor);
 
-        xStart.addListener((ov, oldval, newval)-> {
-            line.setStartX(newval.doubleValue());
-            priceLabel.setLayoutX((newval.doubleValue()+line.getEndX() - priceLabel.getWidth())/2.0);
-        });
-
-        yStart.addListener((ov, oldval, newval)-> {
-            line.setStartY(newval.doubleValue());
-            priceLabel.setLayoutY((newval.doubleValue()+line.getEndY() - priceLabel.getHeight())/2.0);
-        });
-
-        xEnd.addListener((ov, oldval, newval)-> {
-            line.setEndX(newval.doubleValue());
-            priceLabel.setLayoutX((line.getStartX()+newval.doubleValue() - priceLabel.getWidth())/2.0);
-        });
-
-        yEnd.addListener((ov, oldval, newval)-> {
-            line.setEndY(newval.doubleValue());
-            priceLabel.setLayoutY((line.getStartY()+newval.doubleValue() - priceLabel.getHeight())/2.0);
-        });
-
-        line.setStartX(xStart.doubleValue());
-        line.setStartY(yStart.doubleValue());
-        line.setEndX(xEnd.doubleValue());
-        line.setEndY(yEnd.doubleValue());
+        line.startXProperty().bind(xStart);
+        line.startYProperty().bind(yStart);
+        line.endXProperty().bind(xEnd);
+        line.endYProperty().bind(yEnd);
 
         priceLabel.setLayoutX((line.getStartX()+line.getEndX() - priceLabel.getWidth())/2.0);
         priceLabel.setLayoutY((line.getStartY()+line.getEndY() - priceLabel.getHeight())/2.0);
+
+        line.startXProperty().addListener(ov ->
+                priceLabel.setLayoutX((line.getStartX() + line.getEndX() - priceLabel.getWidth())/2.0));
+
+        line.startYProperty().addListener(ov ->
+                priceLabel.setLayoutY((line.getStartY() + line.getEndY() - priceLabel.getHeight())/2.0));
+
+        line.endXProperty().addListener(ov ->
+                priceLabel.setLayoutX((line.getStartX() + line.getEndX() - priceLabel.getWidth())/2.0));
+
+        line.endYProperty().addListener(ov ->
+                priceLabel.setLayoutY((line.getStartY() + line.getEndY() - priceLabel.getHeight())/2.0));
     }
 }

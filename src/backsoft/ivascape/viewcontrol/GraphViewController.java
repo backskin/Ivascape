@@ -9,18 +9,16 @@ import backsoft.ivascape.logic.CoorsMap;
 import backsoft.ivascape.model.Link;
 import javafx.beans.property.*;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 
 import java.util.*;
 
 public class GraphViewController implements ViewController {
 
-    private final Map<Node, VisualVertex> dragMap = new HashMap<>();
     private final Map<Integer, VisualVertex> visVerHashMap = new HashMap<>();
     private final Map<Link, VisualEdge> visEdgeMap = new HashMap<>();
     private CoorsMap coorsMap = new CoorsMap();
@@ -48,7 +46,7 @@ public class GraphViewController implements ViewController {
 
         for (Iterator<Company> iterator = graph.getVertexIterator(); iterator.hasNext();) {
             VisualVertex vv = visVerHashMap.get(iterator.next().hashCode());
-            vv.setAllCoors(vv.x() + xShift, vv.y() + yShift);
+            vv.setXY(vv.x() + xShift, vv.y() + yShift);
         }
     }
 
@@ -84,15 +82,17 @@ public class GraphViewController implements ViewController {
 
     private VisualVertex loadVertex(StringProperty title, int hashcode){
 
-        VisualVertex vertex = (VisualVertex) Loader.loadFXML("VisualVertex").getTwo();
+        Pair<Parent, VisualVertex> fxml = Loader.loadFXML("VisualVertex");
+
+        surface.getChildren().add(fxml.getOne());
+        VisualVertex vertex = fxml.getTwo();
+
         vertex.setTitle(title);
         scaleProperty.addListener(vertex.getScaleListener());
         visVerHashMap.put(hashcode, vertex);
         if (draggable) {
             makeNodeDraggable(vertex, hashcode);
-            dragMap.put(vertex.getCircle(), vertex);
         }
-        surface.getChildren().add(vertex.getItem());
         return vertex;
     }
 
@@ -100,7 +100,7 @@ public class GraphViewController implements ViewController {
 
         VisualVertex vertex = loadVertex(company.titleProperty(), company.hashCode());
 
-        vertex.setAllCoors(
+        vertex.setXY(
                 5.0 + (new Random()).nextInt(200),
                 5.0 + (new Random()).nextInt(200)
         );
@@ -143,7 +143,6 @@ public class GraphViewController implements ViewController {
         scaleProperty.removeListener(visVerHashMap.get(company.hashCode()).getScaleListener());
         surface.getChildren().remove(visVerHashMap.get(company.hashCode()).getItem());
 
-        dragMap.remove(visVerHashMap.get(company.hashCode()).getCircle());
         visVerHashMap.remove(company.hashCode());
         coorsMap.remove(company.hashCode());
     }
@@ -162,8 +161,7 @@ public class GraphViewController implements ViewController {
     private VisualEdge getEdge(Link link) {
 
         VisualEdge out = visEdgeMap.get(link);
-        if (out == null)
-            out = visEdgeMap.get(link.getMating());
+        if (out == null) out = visEdgeMap.get(link.getMating());
         return out;
     }
 
@@ -171,13 +169,15 @@ public class GraphViewController implements ViewController {
 
         Double scaleValue = scaleProperty.getValue();
         scaleProperty.setValue(100.0);
+
         surface.getChildren().clear();
+
         for (Iterator<Company> iterator = graph.getVertexIterator(); iterator.hasNext();) {
 
             Company company = iterator.next();
             VisualVertex vertex = loadVertex(company.titleProperty(), company.hashCode());
 
-            vertex.setAllCoors(
+            vertex.setXY(
                     surface.getLayoutX() + coorsMap.get(company.hashCode()).x,
                     surface.getLayoutY() + coorsMap.get(company.hashCode()).y);
         }
@@ -186,23 +186,21 @@ public class GraphViewController implements ViewController {
         scaleProperty.setValue(scaleValue);
     }
 
-    private void makeNodeDraggable(VisualVertex vertex, Integer hash) {
+    private void makeNodeDraggable(VisualVertex v, Integer hash) {
 
-        vertex.getCircle().setOnMousePressed(event ->
-                vertex.setDragContext(new Pair<>(event.getScreenX(), event.getScreenY())));
+        v.getCircle().setOnMousePressed(event ->
+                v.setDragContext(new Pair<>(event.getScreenX(), event.getScreenY())));
 
-        vertex.getCircle().setOnMouseDragged(event -> {
-            Circle source = (Circle) event.getSource();
-            Node item = dragMap.get(source).getItem();
-                item.relocate(
-                    Math.max(0, item.getLayoutX() + event.getScreenX() - vertex.getDragContext().getOne()),
-                    Math.max(0, item.getLayoutY() + event.getScreenY() - vertex.getDragContext().getTwo()));
+        v.getCircle().setOnMouseDragged(event -> {
+            v.moveXY(
+                    event.getScreenX() - v.getDragContext().getOne(),
+                    event.getScreenY() - v.getDragContext().getTwo());
 
-            vertex.setDragContext(new Pair<>(event.getScreenX(), event.getScreenY()));
+            v.setDragContext(new Pair<>(event.getScreenX(), event.getScreenY()));
         });
 
-        vertex.getCircle().setOnMouseReleased(event -> {
-            coorsMap.put(hash, new CoorsMap.Coors(vertex.x(), vertex.y()));
+        v.getCircle().setOnMouseReleased(event -> {
+            coorsMap.put(hash, new CoorsMap.Coors(v.x(), v.y()));
             surfaceSavedProperty.setValue(false);
         });
     }

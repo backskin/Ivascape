@@ -7,7 +7,6 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -21,24 +20,18 @@ public class VisualVertex {
     private VBox item;
     @FXML
     private Label name;
-    @FXML
-    private Circle shadow;
-    @FXML
-    private StackPane stackPane;
 
     private static final Double defaultCircleRadius = 20.0;
     private static Color currentColor;
     static final Color defaultColor = Color.CRIMSON;
+    private Pair<Double,Double> dragContext;
 
-    public Pair<Double, Double> getDragContext() {
+    Pair<Double, Double> getDragContext() {
         return dragContext;
     }
-
-    public void setDragContext(Pair<Double, Double> dragContext) {
+    void setDragContext(Pair<Double, Double> dragContext) {
         this.dragContext = dragContext;
     }
-
-    private Pair<Double,Double> dragContext;
 
     public static void setColor(Color color) {
         VisualVertex.currentColor = color;
@@ -56,27 +49,19 @@ public class VisualVertex {
 
         name.setMouseTransparent(true);
         item.setPickOnBounds(false);
-        shadow.setMouseTransparent(true);
-        stackPane.setPickOnBounds(false);
-        circle.radiusProperty().addListener((observable, oldValue, newValue) -> {
-            shadow.setRadius(shadow.getRadius() * (newValue.doubleValue() / oldValue.doubleValue()));
-            name.fontProperty().setValue(Font.font("Arial",
-                    name.fontProperty().getValue().getSize()*(newValue.doubleValue() / oldValue.doubleValue())));
-        });
         circle.setRadius(defaultCircleRadius);
         circle.setFill(currentColor);
-        item.layoutXProperty().addListener(
-                (ov, oldval, newval) -> xCenter.setValue(xCenter.get()
-                + (newval.doubleValue() - oldval.doubleValue())));
-        item.layoutYProperty().addListener(
-                (ov, oldval,newval) -> yCenter.setValue(yCenter.get()
-                + (newval.doubleValue() - oldval.doubleValue())));
-        item.widthProperty().addListener(
-                (ov, oldval, newval) -> xCenter.setValue(xCenter.get()
-                + 0.5*(newval.doubleValue() - oldval.doubleValue())));
-        item.heightProperty().addListener(
-                (ov, oldval, newval) -> yCenter.setValue(yCenter.get()
-                + 0.5*(newval.doubleValue() - oldval.doubleValue())));
+        xCenter.set(circle.getCenterX() + item.getLayoutX() + item.getWidth()/2);
+        yCenter.set(circle.getCenterY() + item.getLayoutY() + item.getHeight()/2);
+
+        item.layoutXProperty().addListener((o, ov, nv) ->
+                xCenter.add((nv.doubleValue() - ov.doubleValue())));
+        item.layoutYProperty().addListener((o, ov, nv) ->
+                yCenter.add((nv.doubleValue() - ov.doubleValue())));
+        item.widthProperty().addListener((o, ov, nv) ->
+                xCenter.add((nv.doubleValue() - ov.doubleValue())/2));
+        item.heightProperty().addListener((o, ov, nv) ->
+                yCenter.add((nv.doubleValue() - ov.doubleValue())/2));
     }
 
     void setTitle(StringProperty title) {
@@ -87,21 +72,25 @@ public class VisualVertex {
 
     Circle getCircle() { return circle; }
 
-    void setAllCoors(double xCoors, double yCoors){
+    void setXY(double xCoors, double yCoors){
         item.setLayoutX(xCoors);
         item.setLayoutY(yCoors);
     }
+    void moveXY(double xAdd, double yAdd){
+        item.setLayoutX(Math.max(0, item.getLayoutX()+xAdd));
+        item.setLayoutY(Math.max(0, item.getLayoutY()+yAdd));
+    }
+
+    private ChangeListener<Number> scaleListener = (o, ov, nv) -> {
+        getCircle().setRadius(VisualVertex.defaultCircleRadius * nv.doubleValue() / 100);
+        double scale = nv.doubleValue() / ov.doubleValue();
+        setXY(
+                item.getLayoutX() * scale,
+                item.getLayoutY() * scale);
+        name.fontProperty().setValue(Font.font("Arial", 14 * nv.doubleValue() / 100));
+    };
 
     ChangeListener<Number> getScaleListener() {
-        return (observableValue, number, t1) -> {
-            getCircle().setRadius(
-                    VisualVertex.defaultCircleRadius
-                            + VisualVertex.defaultCircleRadius *
-                            (t1.doubleValue() - 100.0) / 120.0);
-            setAllCoors(
-                    getItem().getLayoutX()*(t1.doubleValue()/number.doubleValue()),
-                    getItem().getLayoutY()*(t1.doubleValue()/number.doubleValue())
-            );
-        };
+        return scaleListener;
     }
 }
