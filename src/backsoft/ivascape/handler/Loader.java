@@ -4,6 +4,7 @@ import backsoft.ivascape.FXApp;
 import backsoft.ivascape.viewcontrol.*;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,7 +12,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import backsoft.ivascape.logic.Pair;
 
 import java.io.File;
@@ -20,7 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.ISSUE;
-import static backsoft.ivascape.viewcontrol.StartWindowController.TERMINATED;
 
 public class Loader {
 
@@ -47,13 +46,10 @@ public class Loader {
         stage.setResizable(resizable);
         stage.setScene(new Scene(parent));
 
-        Platform.runLater(()->{
-            stage.setMinHeight(stage.getHeight());
-            stage.setMinWidth(stage.getWidth());
-        });
-
         if (stage == primaryStage) {
             stage.show();
+            stage.setMinHeight(stage.getHeight());
+            stage.setMinWidth(stage.getWidth());
             prefs.applyWinParams(primaryStage);
         } else stage.showAndWait();
     }
@@ -85,7 +81,7 @@ public class Loader {
 
     private static boolean welcomeScreen(Stage stage) {
 
-        stage.setTitle(prefs.getValueFromBundle("welcome"));
+        stage.setTitle(prefs.getStringFromBundle("welcome"));
         Pair<Parent, StartWindowController> fxmlData = loadFXML("StartWindow");
         StartWindowController controller = fxmlData.getTwo();
         controller.setStartStage(stage);
@@ -126,7 +122,7 @@ public class Loader {
         LinkEditDialogController controller = fxmlData.getTwo();
 
         Stage dialogStage = new Stage();
-        dialogStage.setTitle(prefs.getValueFromBundle((hashes != null) ?
+        dialogStage.setTitle(prefs.getStringFromBundle((hashes != null) ?
                 "edittabs.header.editlink" : "edittabs.header.newlink"));
         dialogStage.initModality(Modality.WINDOW_MODAL);
         dialogStage.initOwner(primaryStage);
@@ -147,7 +143,7 @@ public class Loader {
 
         Stage dialogStage = new Stage();
 
-        dialogStage.setTitle(prefs.getValueFromBundle((comHash != 0) ?
+        dialogStage.setTitle(prefs.getStringFromBundle((comHash != 0) ?
                 "edittabs.header.editcmp" : "edittabs.header.newcmp"));
 
         dialogStage.initModality(Modality.WINDOW_MODAL);

@@ -119,18 +119,19 @@ public class Project implements Serializable {
     }
 
     public void add(Company company){
-        if (getCompany(company.hashCode()) == null) {
+        if (getCompany(company.getTitle()) == null) {
             graph.addVertex(company);
             companiesAmount.setValue(companiesAmount.getValue()+1);
             ViewUpdater.current().getGVController().add(company);
         }
-        else getCompany(company.hashCode()).asCopyOf(company);
+        else getCompany(company.getTitle()).asCopyOf(company);
         setSaved(false);
     }
 
     public void add(Company one, Company two, double price){
         if (one == null || two == null || one.equals(two)) return;
-        if (graph.getEdge(one,two) == null) {
+
+        if (graph.getEdge(one, two) == null) {
             Link newLink = new Link(one, two, price);
             graph.addEdge(one, two, newLink);
             linksAmount.setValue(linksAmount.get() + 1);
@@ -168,7 +169,7 @@ public class Project implements Serializable {
         return graph.getVertexIterator();
     }
 
-    public Iterator<Link> getIteratorOfLinks(Company company){
+    public Iterator<Link> getIteratorOfLinksOf(Company company){
         return graph.getEdgeIteratorForVertex(company);
     }
 

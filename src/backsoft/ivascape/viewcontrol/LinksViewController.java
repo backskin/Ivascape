@@ -7,38 +7,39 @@ import backsoft.ivascape.model.Link;
 import backsoft.ivascape.model.Project;
 import javafx.scene.Parent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Accordion;
-import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class LinksViewController implements ViewController{
+public class LinksViewController{
 
-    public void updateView(){
+    void updateView(){
 
-        table.getPanes().clear();
-        table.getPanes().addAll(getTableViewItems());
+        table.getChildren().clear();
+        table.getChildren().addAll(getTableViewItems());
     }
 
     @FXML
-    private Accordion table;
+    private VBox table;
 
-    private List<TitledPane> getTableViewItems(){
+    @FXML
+    private void initialize(){
+    }
 
-        List<TitledPane> list = new ArrayList<>();
+    private List<VBox> getTableViewItems(){
+
+        List<VBox> list = new ArrayList<>();
 
         for (Iterator<Company> itCom = Project.get().getIteratorOfCompanies(); itCom.hasNext(); ) {
-
             Pair<Parent, LinksViewItemController> fxml = Loader.loadFXML("LinksViewItem");
             LinksViewItemController LVIController = fxml.getTwo();
             Company nextCom = itCom.next();
             LVIController.setCompany(nextCom);
             List<VBox> cells = new ArrayList<>();
 
-            for (Iterator<Link> itLink = Project.get().getIteratorOfLinks(nextCom); itLink.hasNext(); ) {
+            for (Iterator<Link> itLink = Project.get().getIteratorOfLinksOf(nextCom); itLink.hasNext(); ) {
 
                 Pair<Parent, LinksViewCellController> fxmlCell = Loader.loadFXML("LinksViewCell");
                 fxmlCell.getTwo().setFieldsFor(itLink.next());
@@ -46,7 +47,7 @@ public class LinksViewController implements ViewController{
             }
 
             LVIController.setCells(cells);
-            list.add((TitledPane) fxml.getOne());
+            list.add((VBox) fxml.getOne());
         }
 
         return list;

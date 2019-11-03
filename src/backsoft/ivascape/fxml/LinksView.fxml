@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
 
-<ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-            minHeight="350.0" minWidth="540.0" xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml" fx:controller="backsoft.ivascape.viewcontrol.LinksViewController">
-    <Accordion fx:id="table"/>
+<ScrollPane cacheShape="false" maxWidth="1.7976931348623157E308" pannable="true" prefHeight="100.0" prefWidth="500.0" vbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.LinksViewController">
+   <content>
+      <VBox fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+   </content>
 </ScrollPane>

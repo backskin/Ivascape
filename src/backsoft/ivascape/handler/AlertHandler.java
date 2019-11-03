@@ -42,14 +42,14 @@ public class AlertHandler {
     }
 
     public String debugGetInput(){
+        alert.setAlertType(INFORMATION);
         TextField field = new TextField();
         field.setPromptText("debug value");
         field.setText("");
+        alert.getDialogPane().setPrefHeight(150);
         alert.getDialogPane().setContent(field);
-        while (field.getText().isEmpty()){
-            alert.showAndWait();
-        }
-        return field.getText();
+        alert.showAndWait();
+        return field.getText().isEmpty() ? null : field.getText();
     }
 
     public AlertHandler customContent(String content){
@@ -67,27 +67,27 @@ public class AlertHandler {
         return this;
     }
     private AlertHandler setTitle(){
-        return customTitle(prefs.getValueFromBundle("alert.text.title."+ rsrcString));
+        return customTitle(prefs.getStringFromBundle("alert.text.title."+ rsrcString));
     }
 
     private AlertHandler setHeader(){
-        return customHeader(prefs.getValueFromBundle("alert.text.header."+ rsrcString));
+        return customHeader(prefs.getStringFromBundle("alert.text.header."+ rsrcString));
     }
 
     private AlertHandler setContent(){
-        return customContent(prefs.getValueFromBundle("alert.text.body."+ rsrcString));
+        return customContent(prefs.getStringFromBundle("alert.text.body."+ rsrcString));
     }
 
     private AlertHandler setConfirmButtons(){
         alert.getButtonTypes().setAll(
-                new ButtonType(prefs.getValueFromBundle("alert.confirm"), ButtonBar.ButtonData.OK_DONE),
-                new ButtonType(prefs.getValueFromBundle("alert.cancel"), ButtonBar.ButtonData.CANCEL_CLOSE));
+                new ButtonType(prefs.getStringFromBundle("alert.confirm"), ButtonBar.ButtonData.OK_DONE),
+                new ButtonType(prefs.getStringFromBundle("alert.cancel"), ButtonBar.ButtonData.CANCEL_CLOSE));
         return this;
     }
 
     private AlertHandler setOkButton(){
         alert.getButtonTypes().setAll(
-                new ButtonType(prefs.getValueFromBundle("alert.OK"), ButtonBar.ButtonData.OK_DONE));
+                new ButtonType(prefs.getStringFromBundle("alert.OK"), ButtonBar.ButtonData.OK_DONE));
         return this;
     }
 

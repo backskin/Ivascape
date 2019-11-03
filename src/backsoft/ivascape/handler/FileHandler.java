@@ -19,11 +19,11 @@ public class FileHandler {
 
         FileChooser fileChooser = new FileChooser();
 
-        fileChooser.setTitle(prefs.getValueFromBundle("filewindow.title.save"));
+        fileChooser.setTitle(prefs.getStringFromBundle("filewindow.title.save"));
 
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter(
-                        prefs.getValueFromBundle("filewindow.type.xls"),"*.xls")
+                        prefs.getStringFromBundle("filewindow.type.xls"),"*.xls")
         );
 
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+"\\Desktop"));
@@ -37,10 +37,10 @@ public class FileHandler {
 
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter(
-                        prefs.getValueFromBundle("filewindow.type.ivp"), "*.ivp")
+                        prefs.getStringFromBundle("filewindow.type.ivp"), "*.ivp")
         );
 
-        fileChooser.setTitle(prefs.getValueFromBundle("filewindow.title.open"));
+        fileChooser.setTitle(prefs.getStringFromBundle("filewindow.title.open"));
 
         fileChooser.setInitialDirectory(
                 new File(file == null ?
@@ -77,11 +77,11 @@ public class FileHandler {
 
         FileChooser fileChooser = new FileChooser();
 
-        fileChooser.setTitle(prefs.getValueFromBundle("filewindow.title.save"));
+        fileChooser.setTitle(prefs.getStringFromBundle("filewindow.title.save"));
 
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter(
-                        prefs.getValueFromBundle("filewindow.type.ivp"), "*.ivp"));
+                        prefs.getStringFromBundle("filewindow.type.ivp"), "*.ivp"));
 
         if (file == null) {
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "\\Desktop"));

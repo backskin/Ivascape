@@ -8,53 +8,53 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml" fx:controller="backsoft.ivascape.viewcontrol.LinksViewCellController">
-    <HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-          minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" spacing="2.0">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.LinksViewCellController">
+    <HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" spacing="2.0" VBox.vgrow="ALWAYS">
         <padding>
-            <Insets left="8.0" right="8.0"/>
+            <Insets left="8.0" right="8.0" />
         </padding>
-        <Label fx:id="name" minWidth="150.0" text="Company name">
+      <Separator orientation="VERTICAL" prefHeight="200.0">
+         <padding>
+            <Insets left="24.0" />
+         </padding>
+      </Separator>
+      <Separator orientation="VERTICAL" prefHeight="200.0" />
+        <Label fx:id="name" minWidth="200.0" text="Company name">
             <font>
-                <Font name="Arial" size="14.0"/>
+                <Font name="Arial" size="14.0" />
             </font>
             <padding>
-                <Insets top="4.0"/>
+                <Insets left="24.0" top="4.0" />
             </padding>
         </Label>
-        <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-              spacing="8.0" HBox.hgrow="ALWAYS">
-            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" minWidth="50.0"
-                   text="%tablecell.price">
+        <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="8.0" HBox.hgrow="ALWAYS">
+            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" minWidth="50.0" text="%tablecell.price">
                 <font>
-                    <Font name="Arial" size="14.0"/>
+                    <Font name="Arial" size="14.0" />
                 </font>
                 <padding>
-                    <Insets top="4.0"/>
+                    <Insets top="4.0" />
                 </padding>
             </Label>
             <Label fx:id="price" minWidth="63.0" prefWidth="63.0" text="999 999">
                 <font>
-                    <Font name="Arial" size="14.0"/>
+                    <Font name="Arial" size="14.0" />
                 </font>
                 <padding>
-                    <Insets top="4.0"/>
+                    <Insets top="4.0" />
                 </padding>
             </Label>
-            <Button minWidth="65.0" mnemonicParsing="false" onAction="#handleEdit" prefWidth="65.0"
-                    text="%button.cell.edit">
+            <Button minWidth="65.0" mnemonicParsing="false" onAction="#handleEdit" prefWidth="65.0" text="%button.cell.edit">
                 <font>
-                    <Font name="Arial" size="12.0"/>
+                    <Font name="Arial" size="12.0" />
                 </font>
             </Button>
-            <Button minWidth="65.0" mnemonicParsing="false" onAction="#handleDelete" prefWidth="65.0"
-                    text="%button.delete">
+            <Button minWidth="65.0" mnemonicParsing="false" onAction="#handleDelete" prefWidth="65.0" text="%button.delete">
                 <font>
-                    <Font name="Arial" size="12.0"/>
+                    <Font name="Arial" size="12.0" />
                 </font>
             </Button>
         </HBox>
     </HBox>
-    <Separator prefWidth="200.0"/>
+    <Separator prefWidth="200.0" />
 </VBox>

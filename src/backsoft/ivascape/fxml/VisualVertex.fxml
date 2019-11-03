@@ -8,18 +8,18 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="item" alignment="CENTER" cacheShape="false" fillWidth="false" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="backsoft.ivascape.viewcontrol.VisualVertex">
-    <Label fx:id="name" alignment="CENTER" cacheShape="false" centerShape="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" scaleShape="false" text="-">
-        <font>
-        <Font name="System Italic" size="12.0" />
-        </font>
+<VBox fx:id="pane" alignment="CENTER" cacheShape="false" fillWidth="false" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.VisualVertex">
+    <Label fx:id="titleLabel" alignment="CENTER" cacheShape="false" centerShape="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" scaleShape="false" text="-">
+      <font>
+         <Font size="14.0" />
+      </font>
     </Label>
      <Circle fx:id="circle" radius="15.0" strokeLineCap="BUTT" strokeType="INSIDE" strokeWidth="3.0">
      <cursor>
          <Cursor fx:constant="MOVE" />
      </cursor>
       <fill>
-         <LinearGradient endX="1.0" endY="1.0" startX="0.1619047687167213">
+         <LinearGradient startX="0.1619047687167213">
             <stops>
                <Stop color="#ff2121" />
                <Stop color="WHITE" offset="1.0" />

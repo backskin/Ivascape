@@ -62,7 +62,7 @@ class ExcelHandler {
 
     private static void createFirstSheet(HSSFWorkbook workbook, IvascapeGraph graph){
 
-            HSSFSheet sheet = workbook.createSheet(prefs.getValueFromBundle("excelsheet.cmps"));
+            HSSFSheet sheet = workbook.createSheet(prefs.getStringFromBundle("excelsheet.cmps"));
             Cell cell;
             Row row = sheet.createRow(0);
 
@@ -70,19 +70,19 @@ class ExcelHandler {
             HSSFCellStyle styleRegular = createRegularStyle(workbook);
 
             cell = row.createCell(0);
-            cell.setCellValue(prefs.getValueFromBundle("tabletext.title"));
+            cell.setCellValue(prefs.getStringFromBundle("tabletext.title"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell(1);
-            cell.setCellValue(prefs.getValueFromBundle("tabletext.money"));
+            cell.setCellValue(prefs.getStringFromBundle("tabletext.money"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell( 2);
-            cell.setCellValue(prefs.getValueFromBundle("tabletext.address"));
+            cell.setCellValue(prefs.getStringFromBundle("tabletext.address"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell(3);
-            cell.setCellValue(prefs.getValueFromBundle("tabletext.date"));
+            cell.setCellValue(prefs.getStringFromBundle("tabletext.date"));
             cell.setCellStyle(styleForTitle);
 
             Iterator<Company> iterator = graph.getVertexIterator();
@@ -117,25 +117,25 @@ class ExcelHandler {
 
     private static void createSecondSheet(HSSFWorkbook workbook, IvascapeGraph graph){
 
-            HSSFSheet sheet = workbook.createSheet(prefs.getValueFromBundle("excelsheet.links"));
+            HSSFSheet sheet = workbook.createSheet(prefs.getStringFromBundle("excelsheet.links"));
             Cell cell;
             Row row = sheet.createRow(0);
             HSSFCellStyle styleForTitle = createStyleForTitle(workbook);
             HSSFCellStyle styleRegular = createRegularStyle(workbook);
             cell = row.createCell(0);
-            cell.setCellValue(prefs.getValueFromBundle("edittabs.neighbour"));
+            cell.setCellValue(prefs.getStringFromBundle("edittabs.neighbour"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell(1);
-            cell.setCellValue(prefs.getValueFromBundle("edittabs.neighbour"));
+            cell.setCellValue(prefs.getStringFromBundle("edittabs.neighbour"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell(2);
-            cell.setCellValue(prefs.getValueFromBundle("edittabs.price"));
+            cell.setCellValue(prefs.getStringFromBundle("edittabs.price"));
             cell.setCellStyle(styleForTitle);
 
             cell = row.createCell(4);
-            cell.setCellValue(prefs.getValueFromBundle("excelsheet.summ"));
+            cell.setCellValue(prefs.getStringFromBundle("excelsheet.summ"));
             cell.setCellStyle(styleForTitle);
 
             int count = 1;

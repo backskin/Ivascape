@@ -93,7 +93,7 @@ public class Preferences {
         reloadBundle();
     }
 
-    public String getValueFromBundle(String resourceKey){
+    public String getStringFromBundle(String resourceKey){
         try {
             return getBundle().getString(resourceKey);
         } catch (MissingResourceException e){

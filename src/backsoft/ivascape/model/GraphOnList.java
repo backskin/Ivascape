@@ -45,18 +45,19 @@ public abstract class GraphOnList<K extends Comparable<K>, V extends Complex<K, 
         edges.get(edges.size()-1).add(null);
     }
     @Override
-    public void addEdge(K start, K end, V value) {
+    public boolean addEdge(K start, K end, V value) {
 
         int i = indexOf(start);
         int j = indexOf(end);
 
-        if (i < 0 || j < 0) return;
+        if (i < 0 || j < 0 || i == j) return false;
 
         V mateValue = value.createMating();
         mateValue.setMating(value);
 
         edges.get(i).set(j, value);
         edges.get(j).set(i, value.getMating());
+        return true;
     }
 
     @Override
@@ -113,32 +114,24 @@ public abstract class GraphOnList<K extends Comparable<K>, V extends Complex<K, 
     @Override
     public Iterator<V> getEdgeIterator() {
 
-        return new ArrayList<V>(){{
+        return (new ArrayList<V>(){{
             for (int i = 0; i < edges.size(); i++) {
-                for (int j = i; j < edges.size(); j++) {
-
-                    V value = edges.get(i).get(j);
-                    if (value != null)
-                        add(value);
-                }
+                for (int j = 0; j < i; j++)
+                    if (edges.get(i).get(j) != null)
+                        add(edges.get(i).get(j));
             }
             sort(V::compareTo);
-        }}.iterator();
+        }}).iterator();
     }
 
     @Override
     public Iterator<V> getEdgeIteratorForVertex(K vertex) {
 
         return new ArrayList<V>(){{
-            for (int i = 0; i < edges.size(); i++) {
-                for (int j = i; j < edges.size(); j++) {
-
-                    V value = edges.get(i).get(j);
-                    if (value != null
-                            && (vertex.equals(value.one()) || vertex.equals(value.two())))
-                        add(value);
-                }
-            }
+            int index = vers.indexOf(vertex);
+            for (int i = 0; i < edges.get(index).size(); i++)
+                if (i != index && edges.get(index).get(i) != null)
+                    add(edges.get(index).get(i));
             sort(V::compareTo);
         }}.iterator();
     }

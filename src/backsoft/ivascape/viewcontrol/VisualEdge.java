@@ -1,6 +1,7 @@
 package backsoft.ivascape.viewcontrol;
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -20,41 +21,51 @@ public class VisualEdge {
 
     static final Color defaultColor = Color.CRIMSON;
     private static Color currentColor = defaultColor;
-
     public static void setColor(Color color){ currentColor = color; }
+
+    private ChangeListener<Number> scaleListener = (val, no, nn) -> {
+        line.setStrokeWidth(nn.doubleValue() / 10);
+        priceLabel.setFont(Font.font(18 * nn.doubleValue() / 100));
+    };
+
+    ChangeListener<Number> getScaleListener() {
+        return scaleListener;
+    }
+
+    private void rotatePriceLabel(){
+        priceLabel.setRotate(Math.toDegrees(Math.atan(
+                (line.getStartY()-line.getEndY()) /
+                        (line.getStartX()-line.getEndX()))));
+    }
 
     VisualEdge(DoubleProperty xStart, DoubleProperty yStart,
                DoubleProperty xEnd, DoubleProperty yEnd, DoubleProperty price) {
 
         priceLabel.setVisible(false);
-        priceLabel.setFont(Font.font("System",12));
+        priceLabel.setFont(Font.font(18));
         priceLabel.setMouseTransparent(true);
         priceLabel.setStyle("-fx-background-color : white");
         priceLabel.setTextFill(currentColor);
         priceLabel.setText(price.asString("%.2f").getValue());
 
         line.setMouseTransparent(true);
-        line.setStrokeWidth(5.0);
+        line.setStrokeWidth(10);
         line.setStroke(currentColor);
 
         line.startXProperty().bind(xStart);
         line.startYProperty().bind(yStart);
         line.endXProperty().bind(xEnd);
         line.endYProperty().bind(yEnd);
+        priceLabel.layoutXProperty().bind(line.startXProperty().add(line.endXProperty())
+                .subtract(priceLabel.widthProperty()).divide(2.0));
+        priceLabel.layoutYProperty().bind(line.startYProperty().add(line.endYProperty())
+                .subtract(priceLabel.heightProperty()).divide(2.0));
 
-        priceLabel.setLayoutX((line.getStartX()+line.getEndX() - priceLabel.getWidth())/2.0);
-        priceLabel.setLayoutY((line.getStartY()+line.getEndY() - priceLabel.getHeight())/2.0);
+        rotatePriceLabel();
 
-        line.startXProperty().addListener(ov ->
-                priceLabel.setLayoutX((line.getStartX() + line.getEndX() - priceLabel.getWidth())/2.0));
-
-        line.startYProperty().addListener(ov ->
-                priceLabel.setLayoutY((line.getStartY() + line.getEndY() - priceLabel.getHeight())/2.0));
-
-        line.endXProperty().addListener(ov ->
-                priceLabel.setLayoutX((line.getStartX() + line.getEndX() - priceLabel.getWidth())/2.0));
-
-        line.endYProperty().addListener(ov ->
-                priceLabel.setLayoutY((line.getStartY() + line.getEndY() - priceLabel.getHeight())/2.0));
+        line.startXProperty().addListener(ov -> rotatePriceLabel());
+        line.startYProperty().addListener(ov -> rotatePriceLabel());
+        line.endXProperty().addListener(ov -> rotatePriceLabel());
+        line.endYProperty().addListener(ov -> rotatePriceLabel());
     }
 }

@@ -7,6 +7,7 @@ import backsoft.ivascape.model.Project;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -19,7 +20,7 @@ public class CompanyEditDialogController {
     @FXML
     private TextField titleField;
     @FXML
-    private TextField addressField;
+    private TextArea addressArea;
     @FXML
     private TextField capitalField;
     @FXML
@@ -47,7 +48,7 @@ public class CompanyEditDialogController {
         editCompany = project.getCompany(comHash);
         titleField.setText(editCompany.getTitle());
         capitalField.setText(Double.toString(editCompany.getMoneyCapital()));
-        addressField.setText(editCompany.getAddress());
+        addressArea.setText(editCompany.getAddress());
         datePicker.setValue(editCompany.getDate());
 
         capitalField.requestFocus();
@@ -76,20 +77,20 @@ public class CompanyEditDialogController {
             double editCapital = Double.parseDouble(capitalField.getText());
 
             if (editCapital < 0.0)
-                errorMessage += "\n" + prefs.getValueFromBundle("error.negmoney");
+                errorMessage += "\n" + prefs.getStringFromBundle("error.negmoney");
 
         } catch (NumberFormatException e){
-            errorMessage += "\n" + prefs.getValueFromBundle("error.wrongmoney");
+            errorMessage += "\n" + prefs.getStringFromBundle("error.wrongmoney");
         }
-        if (addressField.getText().isEmpty()) addressField.setText(
-                prefs.getValueFromBundle("error.emptyaddress"));
+        if (addressArea.getText().isEmpty()) addressArea.setText(
+                prefs.getStringFromBundle("error.emptyaddress"));
 
         if (titleField.getText().isEmpty())
-            errorMessage += "\n" + prefs.getValueFromBundle("error.emptyname");
+            errorMessage += "\n" + prefs.getStringFromBundle("error.emptyname");
 
         if (editCompany == null && !titleField.getText().isEmpty()
                 && project.getCompany(titleField.getText()) != null)
-                errorMessage +=  "\n" + prefs.getValueFromBundle("error.dubc");
+                errorMessage +=  "\n" + prefs.getStringFromBundle("error.dubc");
 
         if (errorMessage.length() == 0) {
             return true;
@@ -104,7 +105,7 @@ public class CompanyEditDialogController {
     private void handleOK() {
         if (isInputValid()) {
             Company c = new Company(titleField.getText(),
-                    addressField.getText(),
+                    addressArea.getText(),
                     Double.parseDouble(capitalField.getText()),
                     datePicker.getValue());
 

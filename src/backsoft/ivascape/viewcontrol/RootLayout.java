@@ -52,11 +52,12 @@ public class RootLayout {
 
     private final Stage mainStage = Loader.getMainStage();
     private Project project = Project.get();
+
     private final Preferences preferences = Preferences.get();
 
     @FXML
     private void initialize(){
-        Loader.getMainStage().setTitle(preferences.getValueFromBundle("maintitle"));
+        Loader.getMainStage().setTitle(preferences.getStringFromBundle("maintitle"));
 
         saveAsMenuItem.setDisable(true);
         addEdgeMenuItem.setDisable(true);
@@ -74,6 +75,13 @@ public class RootLayout {
             Loader.reloadApp();
         });
 
+        MapViewController mvController = loadViewToTab("MapView", MapPane);
+        CompaniesViewController cvController = loadViewToTab("CompaniesView", CompaniesPane);
+        LinksViewController lvController = loadViewToTab("LinksView", TablePane);
+
+        ViewUpdater.putTabControllers(cvController, lvController, mvController);
+        mvController.bindToSurfaceChanged(project.savedProperty());
+
         project.companiesAmountProperty().addListener((o, vo, vn) -> {
             saveAsMenuItem.setDisable(vn.intValue() < 1);
             addEdgeMenuItem.setDisable(vn.intValue() < 2);
@@ -83,12 +91,6 @@ public class RootLayout {
         project.linksAmountProperty().addListener((o, vo, vn) -> linksAmountLabel.setText(vn.intValue() + ""));
         project.savedProperty().addListener((o, bo, bn) -> updateStatusBar(bn));
 
-        MapViewController mvController = loadViewToTab("MapView", MapPane);
-        CompaniesViewController cvController = loadViewToTab("CompaniesView", CompaniesPane);
-        LinksViewController lvController = loadViewToTab("LinksView", TablePane);
-
-        ViewUpdater.current().putTabControllers(cvController, lvController, mvController);
-        mvController.bindToSurfaceChanged(project.savedProperty());
         project.companiesAmountProperty().addListener((val, number, t1) ->
                 addEdgeMenuItem.setDisable(t1.intValue() < 2));
 
@@ -98,7 +100,7 @@ public class RootLayout {
     }
 
     private void updateStatusBar(boolean newValue){
-        isSaved.setText(preferences.getValueFromBundle(newValue ? "bottombar.saved" : "bottombar.unsaved"));
+        isSaved.setText(preferences.getStringFromBundle(newValue ? "bottombar.saved" : "bottombar.unsaved"));
         saveIcon.setFill(newValue ? GREEN : DARKRED);
         saveMenuItem.setDisable(newValue);
         if (newValue)
@@ -114,7 +116,7 @@ public class RootLayout {
         TipsController tipsController = fxmlData.getTwo();
         Stage tipsStage = new Stage();
         tipsController.setStage(tipsStage);
-        tipsStage.setTitle(preferences.getValueFromBundle("tips.caption"));
+        tipsStage.setTitle(preferences.getStringFromBundle("tips.caption"));
         tipsStage.initModality(Modality.WINDOW_MODAL);
         tipsStage.initOwner(mainStage);
 
@@ -144,7 +146,7 @@ public class RootLayout {
         } else {
             Pair<Parent, ResultWindowController> fxmlData = Loader.loadFXML("ResultWindow");
             Stage resStage = new Stage();
-            resStage.setTitle(preferences.getValueFromBundle("result_window"));
+            resStage.setTitle(preferences.getStringFromBundle("result_window"));
             fxmlData.getTwo().setStage(resStage);
 
             Loader.openInAWindow(resStage, fxmlData.getOne(), true);
@@ -228,7 +230,11 @@ public class RootLayout {
     public void _debug_gen() {
 
         String output = AlertHandler.makeAlert(DEBUG).debugGetInput();
-        IvascapeGenerator.generate(Integer.parseInt(output));
-        ViewUpdater.current().updateAll();
+        try {
+            IvascapeGenerator.generate(Integer.parseInt(output));
+            ViewUpdater.current().updateLinksView().updateCompaniesView();
+        } catch (NumberFormatException e){
+            System.out.println(e.toString());
+        }
     }
 }

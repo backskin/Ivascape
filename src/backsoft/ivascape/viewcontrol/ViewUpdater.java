@@ -3,23 +3,22 @@ package backsoft.ivascape.viewcontrol;
 public class ViewUpdater {
 
     private static ViewUpdater viewUpdater;
-    public static ViewUpdater current(){
-        viewUpdater = viewUpdater == null ? new ViewUpdater() : viewUpdater;
-        return viewUpdater;
-    }
 
-    private ViewController CVController;
-    private ViewController LVController;
-    private ViewController MVController;
+    public static ViewUpdater current(){ return viewUpdater; }
 
-    void putTabControllers(
-            ViewController companiesViewController,
-            ViewController linksViewController,
-            ViewController mapViewController) {
+    private CompaniesViewController CVController;
+    private LinksViewController LVController;
+    private MapViewController MVController;
 
-        CVController = companiesViewController;
-        LVController = linksViewController;
-        MVController = mapViewController;
+    static void putTabControllers(
+            CompaniesViewController companiesViewController,
+            LinksViewController linksViewController,
+            MapViewController mapViewController) {
+
+        viewUpdater = new ViewUpdater();
+        viewUpdater.CVController = companiesViewController;
+        viewUpdater.LVController = linksViewController;
+        viewUpdater.MVController = mapViewController;
     }
 
     public ViewUpdater updateCompaniesView() {
@@ -33,10 +32,10 @@ public class ViewUpdater {
     }
 
     public GraphViewController getGVController(){
-        return ((MapViewController) MVController).getGVController();
+        return MVController.getGVController();
     }
 
-    void updateAll() {
+    public void updateAll() {
         CVController.updateView();
         LVController.updateView();
         MVController.updateView();

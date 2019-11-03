@@ -19,7 +19,7 @@ import java.util.Iterator;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.DELETE_CONFIRM;
 
-public class CompaniesViewController implements ViewController {
+public class CompaniesViewController {
 
     private int lastSelected = 0;
     private final Project project = Project.get();
@@ -93,7 +93,7 @@ public class CompaniesViewController implements ViewController {
     @FXML
     private void initialize(){
 
-        TextFlow nocontent = new TextFlow(new Text(prefs.getValueFromBundle("tabletext.nocontent")));
+        TextFlow nocontent = new TextFlow(new Text(prefs.getStringFromBundle("tabletext.nocontent")));
 
         nocontent.setTextAlignment(TextAlignment.CENTER);
         nocontent.setPadding(new Insets(8,8,0,8));

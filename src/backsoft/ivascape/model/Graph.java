@@ -4,7 +4,7 @@ import java.util.Iterator;
 public interface Graph<K, V> {
 
     void addVertex(K vertex);
-    void addEdge(K start, K end, V value);
+    boolean addEdge(K start, K end, V value);
 
     V getEdge(K start, K end);
     default V getEdge(int start, int end) {

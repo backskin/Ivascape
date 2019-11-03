@@ -51,14 +51,14 @@ public class AnalyseWindow {
 
     @FXML
     private void initialize(){
-        analyseStage.setTitle(prefs.getValueFromBundle("editwindows.analysetitle"));
+        analyseStage.setTitle(prefs.getStringFromBundle("editwindows.analysetitle"));
         analyseStage.initModality(Modality.WINDOW_MODAL);
         analyseStage.initOwner(Loader.getMainStage());
 
         List<IvascapeGraph> components =  project.getComponents();
 
         if (components.size() == 0) {
-            Label label = new Label(prefs.getValueFromBundle("editwindows.emptygraph"));
+            Label label = new Label(prefs.getStringFromBundle("editwindows.emptygraph"));
 
             label.setFont(new Font("System",15));
             componentTables.getChildren().add(label);
@@ -91,7 +91,7 @@ public class AnalyseWindow {
 
             controller.updateView();
 
-            controller.cropIt();
+            controller.cropView();
             controller.setScale(50);
 
             TableView<Company> componentTable = new TableView<>();
@@ -114,7 +114,7 @@ public class AnalyseWindow {
             TableColumn<Company,String> column = new TableColumn<>();
             column.setSortable(false);
             column.setText((components.indexOf(component)+1)
-                    + prefs.getValueFromBundle("editwindows.component"));
+                    + prefs.getStringFromBundle("editwindows.component"));
 
             componentTable.getColumns().add(column);
             componentTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

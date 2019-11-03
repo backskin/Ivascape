@@ -12,7 +12,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 
-public class MapViewController implements ViewController {
+public class MapViewController {
 
     private GraphViewController GVController;
     private final Project project = Project.get();
@@ -33,8 +33,7 @@ public class MapViewController implements ViewController {
         return GVController;
     }
 
-    @Override
-    public void updateView(){
+    void updateView(){
 
         zoomSlider.setValue(100);
 
@@ -45,7 +44,7 @@ public class MapViewController implements ViewController {
                 VisualEdge.defaultColor,
                 true);
 
-        if (!project.isEmpty()) GVController.updateView();
+        GVController.updateView();
     }
 
     void bindToSurfaceChanged(BooleanProperty property){
@@ -53,7 +52,7 @@ public class MapViewController implements ViewController {
     }
 
     @FXML
-    private void handleCrop(){ GVController.cropIt(); }
+    private void handleCrop(){ GVController.cropView(); }
     @FXML
     private void handleResetZoom(){ zoomSlider.setValue(100); }
     @FXML
@@ -63,11 +62,11 @@ public class MapViewController implements ViewController {
         surfaceScrollPane.setContent(fxml.getOne());
         GVController = fxml.getTwo();
 
-        togglePricesVisible.selectedProperty().addListener(
-                (o, b0, value) -> GVController.setPricesVisible(value));
+        togglePricesVisible.selectedProperty().addListener((o, b0, value) ->
+                GVController.setPricesVisible(value));
 
-        zoomSlider.valueProperty().addListener(
-                (o, b0, value) -> GVController.setScale(value.doubleValue()));
+        zoomSlider.valueProperty().addListener((o, b0, value) ->
+                GVController.setScale(value.doubleValue()));
 
         project.companiesAmountProperty().addListener(c -> {
             zoomSlider.setDisable(project.isEmpty());

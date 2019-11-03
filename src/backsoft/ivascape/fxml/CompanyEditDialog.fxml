@@ -5,6 +5,7 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -12,79 +13,74 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0"
-      prefWidth="450.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="backsoft.ivascape.viewcontrol.CompanyEditDialogController">
-    <GridPane alignment="CENTER" vgap="12.0">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="450.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.CompanyEditDialogController">
+    <GridPane alignment="CENTER" vgap="10.0" VBox.vgrow="ALWAYS">
         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="241.0" minWidth="10.0" prefWidth="173.0"/>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="323.0" minWidth="10.0" prefWidth="277.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="241.0" minWidth="10.0" prefWidth="173.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="323.0" minWidth="10.0" prefWidth="277.0" />
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints minHeight="35.0" prefHeight="35.0" vgrow="SOMETIMES"/>
-            <RowConstraints minHeight="35.0" prefHeight="35.0" vgrow="SOMETIMES"/>
-            <RowConstraints minHeight="35.0" prefHeight="35.0" vgrow="SOMETIMES"/>
-            <RowConstraints minHeight="35.0" prefHeight="35.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="35.0" prefHeight="35.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="35.0" prefHeight="35.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="35.0" prefHeight="35.0" vgrow="SOMETIMES" />
         </rowConstraints>
         <VBox.margin>
-            <Insets top="12.0"/>
+            <Insets top="12.0" />
         </VBox.margin>
         <TextField fx:id="titleField" onAction="#handleOK" promptText="%prompt.title" GridPane.columnIndex="1">
             <GridPane.margin>
-                <Insets left="12.0" right="12.0"/>
+                <Insets left="12.0" right="12.0" />
             </GridPane.margin>
         </TextField>
-        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="4.0" GridPane.columnIndex="1"
-              GridPane.rowIndex="1">
+        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <GridPane.margin>
-                <Insets right="12.0"/>
+                <Insets right="12.0" />
             </GridPane.margin>
-            <Label minWidth="8.0" prefWidth="8.0" text="\$"/>
-            <TextField fx:id="capitalField" minWidth="100.0" onAction="#handleOK" prefWidth="100.0"
-                       promptText="%prompt.capital"/>
+            <Label minWidth="8.0" prefWidth="8.0" text="\$" />
+            <TextField fx:id="capitalField" onAction="#handleOK" promptText="%prompt.capital" />
         </HBox>
-        <TextField fx:id="addressField" onAction="#handleOK" prefWidth="253.0" promptText="%prompt.address"
-                   GridPane.columnIndex="1" GridPane.rowIndex="2">
+      <TextArea fx:id="addressArea" prefHeight="38.0" prefWidth="257.0" promptText="%prompt.address" GridPane.columnIndex="1" GridPane.rowIndex="2">
+         <GridPane.margin>
+            <Insets left="12.0" right="12.0" />
+         </GridPane.margin>
+      </TextArea>
+        <DatePicker fx:id="datePicker" onAction="#handleOK" promptText="Date" GridPane.columnIndex="1" GridPane.rowIndex="3">
             <GridPane.margin>
-                <Insets left="12.0" right="12.0"/>
+                <Insets left="12.0" right="12.0" />
             </GridPane.margin>
-        </TextField>
+        </DatePicker>
         <Label text="%tabletext.title">
             <GridPane.margin>
-                <Insets left="12.0"/>
+                <Insets left="12.0" />
             </GridPane.margin>
         </Label>
         <Label text="%tabletext.money" GridPane.rowIndex="1">
             <GridPane.margin>
-                <Insets left="12.0"/>
+                <Insets left="12.0" />
             </GridPane.margin>
         </Label>
         <Label text="%tabletext.address" GridPane.rowIndex="2">
             <GridPane.margin>
-                <Insets left="12.0"/>
+                <Insets left="12.0" />
             </GridPane.margin>
         </Label>
         <Label text="%tabletext.date" GridPane.rowIndex="3">
             <GridPane.margin>
-                <Insets left="12.0"/>
+                <Insets left="12.0" />
             </GridPane.margin>
         </Label>
-        <DatePicker fx:id="datePicker" onAction="#handleOK" promptText="Date" GridPane.columnIndex="1"
-                    GridPane.rowIndex="3">
-            <GridPane.margin>
-                <Insets left="12.0" right="12.0"/>
-            </GridPane.margin>
-        </DatePicker>
     </GridPane>
     <Separator prefWidth="200.0">
         <VBox.margin>
             <Insets top="10.0" />
         </VBox.margin>
     </Separator>
-    <HBox alignment="CENTER" prefHeight="195.0" prefWidth="457.0" spacing="12.0" VBox.vgrow="ALWAYS">
-        <Button defaultButton="true" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#handleOK"
-                prefWidth="80.0" text="%alert.confirm"/>
-        <Button cancelButton="true" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#handleCancel"
-                prefWidth="80.0" text="%alert.cancel"/>
+    <HBox alignment="CENTER" prefWidth="450.0" spacing="12.0" VBox.vgrow="NEVER">
+        <Button defaultButton="true" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#handleOK" prefWidth="80.0" text="%alert.confirm" />
+        <Button cancelButton="true" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#handleCancel" prefWidth="80.0" text="%alert.cancel" />
+      <VBox.margin>
+         <Insets bottom="10.0" top="10.0" />
+      </VBox.margin>
     </HBox>
 </VBox>

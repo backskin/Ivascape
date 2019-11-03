@@ -63,6 +63,8 @@ public class LinkEditDialogController {
         } else {
             com1 = project.getCompany(hashes[0]);
             com2 = project.getCompany(hashes[1]);
+            firstField.setText(com1.getTitle());
+            firstField.setDisable(true);
             secondField.setText(com2.getTitle());
             secondField.setDisable(true);
             priceField.setText(project.getLink(com1, com2).getPrice().toString());
@@ -82,15 +84,15 @@ public class LinkEditDialogController {
                     throw new NumberFormatException();
 
             } catch (NumberFormatException e) {
-                errorMessage += Preferences.get().getValueFromBundle("error.wrongmoney") + "\n";
+                errorMessage +="\n"+Preferences.get().getStringFromBundle("error.wrongmoney");
             }
             Company one = project.getCompany(firstField.getText());
             Company another = project.getCompany(secondField.getText());
 
             if (one == null || another == null)
-                errorMessage += Preferences.get().getValueFromBundle("error.wrongcomname") + "\n";
+                errorMessage += "\n"+Preferences.get().getStringFromBundle("error.wrongcomname");
             if (firstField.getText().equals(secondField.getText()))
-                errorMessage += Preferences.get().getValueFromBundle("error.reflex") + "\n";
+                errorMessage += "\n"+Preferences.get().getStringFromBundle("error.reflex");
 
             if (errorMessage.length() > 0) {
                 throw new Exception(errorMessage);
@@ -101,7 +103,7 @@ public class LinkEditDialogController {
             dialogStage.close();
 
         } catch (Exception e) {
-            AlertHandler.makeAlert(FIELDS_ISSUE).show();
+            AlertHandler.makeAlert(FIELDS_ISSUE).setOwner(dialogStage).customContent(e.getMessage()).show();
         }
     }
 

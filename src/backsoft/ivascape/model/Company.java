@@ -72,6 +72,12 @@ public class Company implements Serializable, Comparable<Company> {
     }
 
     @Override
+    public boolean equals(Object o){
+        if (!(o instanceof Company)) return false;
+        return title.equals(((Company)o).title);
+    }
+
+    @Override
     public int compareTo(Company o) {
             return title.getValue().compareTo(o.title.getValue());
     }
