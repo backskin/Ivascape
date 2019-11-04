@@ -21,7 +21,7 @@ public abstract class GraphHandler<Ver extends Comparable<Ver>, Edge extends Com
         visited.put(start, true);
         for (Iterator<Ver> iterator = graph.getVertexIterator(); iterator.hasNext();){
             Ver iVer = iterator.next();
-            if (graph.getEdge(start,iVer) != null && !visited.get(iVer) && dfs(iVer,end,visited)) return true;
+            if (graph.getEdge(start,iVer) != null && visited.get(iVer) == null && dfs(iVer,end,visited)) return true;
         }
         return false;
     }

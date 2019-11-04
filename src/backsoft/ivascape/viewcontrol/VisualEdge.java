@@ -39,14 +39,14 @@ public class VisualEdge {
     }
 
     VisualEdge(DoubleProperty xStart, DoubleProperty yStart,
-               DoubleProperty xEnd, DoubleProperty yEnd, DoubleProperty price) {
+               DoubleProperty xEnd, DoubleProperty yEnd, DoubleProperty priceProp) {
 
         priceLabel.setVisible(false);
         priceLabel.setFont(Font.font(18));
         priceLabel.setMouseTransparent(true);
         priceLabel.setStyle("-fx-background-color : white");
         priceLabel.setTextFill(currentColor);
-        priceLabel.setText(price.asString("%.2f").getValue());
+        priceLabel.setText(priceProp.asString("%.2f").getValue());
 
         line.setMouseTransparent(true);
         line.setStrokeWidth(10);

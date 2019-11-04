@@ -24,7 +24,7 @@
           <RowConstraints vgrow="NEVER" />
         </rowConstraints>
          <children>
-            <Button fx:id="addButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleAdd" text="Add new Link..." GridPane.columnIndex="3" GridPane.hgrow="ALWAYS">
+            <Button fx:id="addButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleAdd" text="Add new Link..." GridPane.columnIndex="3" GridPane.hgrow="NEVER">
                <GridPane.margin>
                   <Insets right="20.0" />
                </GridPane.margin>
@@ -76,4 +76,7 @@
       <Separator prefWidth="200.0" />
       <VBox fx:id="cellsBox" prefWidth="100.0" />
    </children>
+   <padding>
+      <Insets left="16.0" />
+   </padding>
 </VBox>

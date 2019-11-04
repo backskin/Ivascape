@@ -39,6 +39,7 @@ public class Project implements Serializable {
         if (instance == null) instance = new Project();
         return instance;
     }
+
     public void erase(){
         graph = new IvascapeGraph();
         graphHandler = new IvascapeGraphHandler(graph);
@@ -121,9 +122,8 @@ public class Project implements Serializable {
             graph.addVertex(company);
             companiesAmount.setValue(companiesAmount.getValue()+1);
             ViewUpdater.current().getGVController().add(company);
+            setSaved(false);
         }
-        else getCompany(company.getTitle()).asCopyOf(company);
-        setSaved(false);
     }
 
     public void add(String titleOne, String titleTwo, double price){
@@ -157,7 +157,7 @@ public class Project implements Serializable {
     public void remove(Company company){
 
         if (company == null) return;
-        coorsMap.remove(company.hashCode());
+        coorsMap.remove(company.getID());
         ViewUpdater.current().getGVController().remove(company);
 
         if (graph.removeVertex(company)) {

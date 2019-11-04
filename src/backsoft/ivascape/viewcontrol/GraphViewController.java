@@ -24,25 +24,32 @@ public class GraphViewController {
 
     @FXML
     private Pane surface;
-
-    private final DoubleProperty scale = new SimpleDoubleProperty(100.0);
+    private DoubleProperty scale;
     private final BooleanProperty priceShown =  new SimpleBooleanProperty(false);
-    private final BooleanProperty surfaceSaved = new SimpleBooleanProperty(true);
+    private BooleanProperty saved;
 
     void setPricesVisible(boolean visibility){ priceShown.setValue(visibility); }
-    DoubleProperty scaleProperty() { return scale; }
+
     BooleanProperty priceShownProperty() { return priceShown; }
-    void bindToSurfaceChanged(BooleanProperty property){
-        property.bindBidirectional(surfaceSaved);
+    void setSavedProperty(BooleanProperty property){
+        saved = property;
     }
 
     CoorsMap getCoorsMap() { return coorsMap; }
     Graph<Company, Link> getGraph() { return graph; }
 
-    void setView(GraphOnList<Company, Link> graph, CoorsMap coorsMap, boolean isDraggable) {
+    void setView(DoubleProperty scaleProp, GraphOnList<Company, Link> graph, CoorsMap coorsMap, boolean isDraggable) {
         this.graph = graph;
+        scale = scaleProp;
         this.coorsMap = coorsMap;
         draggable = isDraggable;
+
+        visualEdgeMap.clear();
+        visualVertexMap.clear();
+        surface.getChildren().clear();
+
+        for (Iterator<Company> iterator = graph.getVertexIterator(); iterator.hasNext();) add(iterator.next());
+        for (Iterator<Link> it = graph.getEdgeIterator(); it.hasNext();) add(it.next());
     }
 
     void cropView(){
@@ -54,16 +61,16 @@ public class GraphViewController {
             minY = Math.min(minY, vertex.getPane().getLayoutY());
         }
         if (minX > 0 && minY > 0) shiftGraph(-minX,-minY);
-        surfaceSaved.setValue(false);
+        if (saved != null) saved.setValue(false);
     }
 
     private void shiftGraph(double xShift, double yShift){
         for (VisualVertex vertex : visualVertexMap.values()) vertex.moveXY(xShift, yShift);
     }
 
-    private void loadVertex(Company company, double x, double y){
+    public void add(Company company){
 
-        Double scaleValue = scale.getValue();
+        double scaleValue = scale.getValue();
         scale.setValue(100.0);
 
         Pair<Parent, VisualVertex> fxml = Loader.loadFXML("VisualVertex");
@@ -71,21 +78,35 @@ public class GraphViewController {
         VisualVertex vertex = fxml.getTwo();
 
         vertex.setTitle(company.titleProperty());
+        if (coorsMap.get(company.getID()) == null) coorsMap.put(company.getID(),
+                new CoorsMap.Coors(
+                        surface.getLayoutX() + (new Random()).nextInt(1000),
+                        surface.getLayoutY() + (new Random()).nextInt(500)));
 
-        coorsMap.put(company.hashCode(), new CoorsMap.Coors(x, y));
-        vertex.xCenterProperty().addListener((o, ov, nv) -> coorsMap.get(company.hashCode()).x = nv.doubleValue());
-        vertex.yCenterProperty().addListener((o, ov, nv) -> coorsMap.get(company.hashCode()).y = nv.doubleValue());
-        vertex.bind(scale);
+        vertex.xCenterProperty().addListener((o, ov, nv) -> coorsMap.get(company.getID()).x = nv.doubleValue());
+        vertex.yCenterProperty().addListener((o, ov, nv) -> coorsMap.get(company.getID()).y = nv.doubleValue());
+        scale.addListener(vertex.scaleListener);
         visualVertexMap.put(company, vertex);
         if (draggable) makeNodeDraggable(vertex);
-        vertex.setXY(x, y);
+        vertex.setXY(coorsMap.get(company.getID()));
+
         scale.setValue(scaleValue);
     }
 
-    public void add(Company company){
-        double randomX = 5.0 + (new Random()).nextInt(1000);
-        double randomY = 5.0 + (new Random()).nextInt(1000);
-        loadVertex(company, randomX, randomY);
+    void flush(){
+        for (VisualVertex vertex : visualVertexMap.values()){
+            scale.removeListener(vertex.scaleListener);
+            surface.getChildren().remove(vertex.getPane());
+        }
+        for (VisualEdge edge : visualEdgeMap.values()){
+            edge.getPriceLabel().textProperty().unbind();
+            scale.removeListener(edge.getScaleListener());
+            surface.getChildren().remove(edge.getPriceLabel());
+            surface.getChildren().remove(edge.getLine());
+        }
+        coorsMap.clear();
+        visualVertexMap.clear();
+        visualEdgeMap.clear();
     }
 
     public void add(Link link){
@@ -113,12 +134,12 @@ public class GraphViewController {
 
         for (Iterator<Link> it = graph.getEdgeIteratorForVertex(company); it.hasNext();)
             remove(it.next());
-        visualVertexMap.get(company).unbind(scale);
 
+        scale.removeListener(visualVertexMap.get(company).scaleListener);
         surface.getChildren().remove(visualVertexMap.get(company).getPane());
 
         visualVertexMap.remove(company);
-        coorsMap.remove(company.hashCode());
+        coorsMap.remove(company.getID());
     }
 
     public void remove(Link link) {
@@ -139,34 +160,19 @@ public class GraphViewController {
         return out;
     }
 
-    void updateView(){
-
-        visualEdgeMap.clear();
-        visualVertexMap.clear();
-        surface.getChildren().clear();
-
-        for (Iterator<Company> iterator = graph.getVertexIterator(); iterator.hasNext();) {
-            Company company = iterator.next();
-            loadVertex(company,
-                    surface.getLayoutX() + coorsMap.get(company.hashCode()).x,
-                    surface.getLayoutY() + coorsMap.get(company.hashCode()).y);
-        }
-        for (Iterator<Link> it = graph.getEdgeIterator(); it.hasNext();) add(it.next());
-    }
-
     private void makeNodeDraggable(VisualVertex v) {
 
         v.getCircle().setOnMousePressed(event ->
-                v.setDragContext(new Pair<>(event.getScreenX(), event.getScreenY())));
+                v.setDragContext(event.getScreenX(), event.getScreenY()));
 
         v.getCircle().setOnMouseDragged(event -> {
             v.moveXY(
                     event.getScreenX() - v.getDragContext().getOne(),
                     event.getScreenY() - v.getDragContext().getTwo());
 
-            v.setDragContext(new Pair<>(event.getScreenX(), event.getScreenY()));
+            v.setDragContext(event.getScreenX(), event.getScreenY());
         });
 
-        v.getCircle().setOnMouseReleased(event -> surfaceSaved.setValue(false));
+        v.getCircle().setOnMouseReleased(event -> {if (saved != null) saved.setValue(false);});
     }
 }

@@ -79,7 +79,7 @@ public class RootLayout {
         LinksViewController lvController = loadViewToTab("LinksView", TablePane);
 
         ViewUpdater.putTabControllers(cvController, lvController, mvController);
-        mvController.bindToSurfaceChanged(project.savedProperty());
+        mvController.setSavedProperty(project.savedProperty());
 
         project.companiesAmountProperty().addListener((o, vo, vn) -> {
             saveAsMenuItem.setDisable(vn.intValue() < 1);
@@ -130,9 +130,7 @@ public class RootLayout {
     }
 
     @FXML
-    private void handleAddEdge(){
-        Loader.loadDialogEditLink();
-    }
+    private void handleAddEdge(){ Loader.loadDialogEditLink(); }
 
     @FXML
     private void handleEditRun(){

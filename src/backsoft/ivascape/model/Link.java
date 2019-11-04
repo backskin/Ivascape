@@ -8,40 +8,38 @@ import java.io.Serializable;
 
 public class Link implements Serializable, Complex<Company, Link> {
 
-    private static class SerializableDoubleProperty extends SimpleDoubleProperty implements Serializable{
-        SerializableDoubleProperty(double initValue){
-            super(initValue);
-        }
-    }
 
     private final Company start;
     private final Company end;
-    private DoubleProperty price = new SerializableDoubleProperty(0);
+    private transient DoubleProperty priceProp;
+    private double price;
     private Link mate = null;
 
     public Link(Company start, Company end, double price) {
 
+        priceProp = new SimpleDoubleProperty(price);
+        this.price = price;
         this.start = start;
         this.end = end;
-        this.price.setValue(price);
     }
 
     @Override
     public int compareTo(Link o) {
 
-        return price.getValue().compareTo(o.getPrice());
-    }
-
-    public void setPrice(double price) {
-
-        this.price.setValue(price);
+        return Double.compare(price, o.price);
     }
 
     public DoubleProperty priceProperty() {
-        return price;
+        if (priceProp == null) priceProp = new SimpleDoubleProperty(price);
+        else if (Double.compare(priceProp.getValue(), price) != 0) priceProp.setValue(price);
+        return priceProp;
     }
 
-    public Double getPrice() { return price.getValue();}
+    public Double getPrice() { return price;}
+    public void setPrice(double price) {
+        this.price = price;
+        priceProp.setValue(price);
+    }
 
     @Override
     public Company one() { return start; }
@@ -58,7 +56,7 @@ public class Link implements Serializable, Complex<Company, Link> {
     @Override
     public Link createMating() {
 
-        mate = new Link(end, start, price.getValue());
+        mate = new Link(end, start, price);
         return mate;
     }
 }

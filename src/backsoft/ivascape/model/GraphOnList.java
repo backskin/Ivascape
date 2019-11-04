@@ -113,7 +113,7 @@ public abstract class GraphOnList<K extends Comparable<K>, V extends Complex<K, 
 
         return new ArrayList<V>(){{
                 for(V value : edges.get(vers.indexOf(vertex)))
-                    if (value != null && value.two().equals(vertex))
+                    if (value != null && value.one().equals(vertex))
                         add(value);
             sort(V::compareTo);
         }}.iterator();

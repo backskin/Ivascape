@@ -52,7 +52,7 @@ public class DialogEditCompanyController {
 
         editCompany = (Company) company;
         titleField.setText(editCompany.getTitle());
-        capitalField.setText(Double.toString(editCompany.getMoneyCapital()));
+        capitalField.setText(Double.toString(editCompany.getMoney()));
         addressArea.setText(editCompany.getAddress());
         datePicker.setValue(editCompany.getDate());
         capitalField.requestFocus();
@@ -110,16 +110,19 @@ public class DialogEditCompanyController {
     @FXML
     private void handleOK() {
         if (isInputValid()) {
-            Company c = new Company(titleField.getText(),
-                    addressArea.getText(),
-                    Double.parseDouble(capitalField.getText()),
-                    datePicker.getValue());
 
             if (editCompany == null) {
-                editCompany = c;
+                editCompany = Company.createCompany().setTitle(titleField.getText()).setAddress(
+                        addressArea.getText()).setMoney(
+                        Double.parseDouble(capitalField.getText())).setDate(datePicker.getValue());
+
                 project.add(editCompany);
             } else {
-                editCompany.asCopyOf(c);
+                editCompany
+                        .setDate(datePicker.getValue())
+                        .setTitle(titleField.getText())
+                        .setAddress(addressArea.getText())
+                        .setMoney(Double.parseDouble(capitalField.getText()));
             }
 
             confirmed = true;

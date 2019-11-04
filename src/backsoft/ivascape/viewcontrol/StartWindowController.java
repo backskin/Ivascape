@@ -7,7 +7,6 @@ import backsoft.ivascape.model.Project;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 public class StartWindowController {
 
@@ -49,12 +48,10 @@ public class StartWindowController {
     public void setStage(Stage stage){
 
         this.startStage = stage;
-        startStage.initStyle(StageStyle.UNDECORATED);
         if (restart) {
             startStage.setX(x > 0 ? x : 0);
             startStage.setY(y > 0 ? y : 0);
         }
-        restart = false;
     }
 
     public boolean getStatus(){ return status;}

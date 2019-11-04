@@ -1,5 +1,6 @@
 package backsoft.ivascape.viewcontrol;
 
+import backsoft.ivascape.logic.CoorsMap;
 import backsoft.ivascape.logic.Pair;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -29,9 +30,7 @@ public class VisualVertex {
     Pair<Double, Double> getDragContext() {
         return dragContext;
     }
-    void setDragContext(Pair<Double, Double> dragContext) {
-        this.dragContext = dragContext;
-    }
+    void setDragContext(Double x, Double y) { this.dragContext = new Pair<>(x, y); }
 
     public static void setColor(Color color) {
         VisualVertex.currentColor = color;
@@ -62,9 +61,9 @@ public class VisualVertex {
 
     Circle getCircle() { return circle; }
 
-    void setXY(double xCoors, double yCoors){
-        pane.setLayoutX(xCoors);
-        pane.setLayoutY(yCoors);
+    void setXY(CoorsMap.Coors coors){
+        pane.setLayoutX(coors.x);
+        pane.setLayoutY(coors.y);
     }
 
     void moveXY(double xAdd, double yAdd){
@@ -72,20 +71,11 @@ public class VisualVertex {
         pane.setLayoutY(Math.max(0, pane.getLayoutY()+yAdd));
     }
 
-    private ChangeListener<Number> scaleListener = (o, ov, nv) -> {
+    ChangeListener<Number> scaleListener = (o, ov, nv) -> {
         double scale = nv.doubleValue() / ov.doubleValue();
         pane.setLayoutX(pane.getLayoutX() * scale);
         pane.setLayoutY(pane.getLayoutY() * scale);
+        circle.setRadius(.20 * nv.doubleValue());
         titleLabel.setFont(Font.font(.14 * nv.doubleValue()));
     };
-
-    void bind(DoubleProperty property){
-        circle.radiusProperty().bind(property.multiply(.20));
-        property.addListener(scaleListener);
-    }
-
-    void unbind(DoubleProperty property){
-        circle.radiusProperty().unbind();
-        property.removeListener(scaleListener);
-    }
 }

@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import backsoft.ivascape.logic.Pair;
+import javafx.stage.StageStyle;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -69,6 +70,7 @@ public class Loader {
         primaryStage = mainStage;
         primaryStage.setOnCloseRequest(Preferences::onExit);
         Stage startScreenStage = new Stage();
+        startScreenStage.initStyle(StageStyle.TRANSPARENT);
         if (welcomeScreen(startScreenStage) == TERMINATED) {
             Platform.exit();
             System.exit(0);
@@ -91,7 +93,6 @@ public class Loader {
     public static void reloadApp() {
 
         if (primaryStage.isShowing()) primaryStage.close();
-
         openInAWindow(primaryStage, loadFXML("RootLayout").getOne(),true);
     }
 

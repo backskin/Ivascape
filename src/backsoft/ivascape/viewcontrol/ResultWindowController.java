@@ -61,11 +61,10 @@ public class ResultWindowController {
         pane.setContent(resultFxml.getOne());
         gvController = resultFxml.getTwo();
 
-        gvController.setView(Project.get().applyPrimAlgorithm(), Project.get().getCoorsMap(),true);
-        gvController.scaleProperty().bind(zoomSlider.valueProperty());
-        gvController.priceShownProperty().bind(showHidePrices.selectedProperty());
+        gvController.setView(zoomSlider.valueProperty(), Project.get().applyPrimAlgorithm(),
+                Project.get().getCoorsMap(),true);
 
-        gvController.updateView();
+        gvController.priceShownProperty().bind(showHidePrices.selectedProperty());
 
         for (Iterator<Link> it = gvController.getGraph().getEdgeIterator(); it.hasNext();){
             Link link = it.next();

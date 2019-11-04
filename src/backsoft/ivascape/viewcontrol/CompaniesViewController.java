@@ -54,12 +54,7 @@ public class CompaniesViewController {
 
         companiesTable.getItems().clear();
         showDetails(null);
-        if (project.isEmpty()) {
-            TextFlow nocontent = new TextFlow(new Text(prefs.getStringFromBundle("tabletext.nocontent")));
-            nocontent.setTextAlignment(TextAlignment.CENTER);
-            nocontent.setPadding(new Insets(8, 8, 0, 8));
-            companiesTable.setPlaceholder(nocontent);
-        } else {
+        if (!project.isEmpty()) {
             companiesTable.setItems(getCompaniesViewItems());
             companiesTable.getSelectionModel().select(lastSelected);
         }
@@ -68,13 +63,17 @@ public class CompaniesViewController {
     private void showDetails(Company company){
 
             Title.setText(company == null ? "" :company.getTitle());
-            Money.setText(company == null ? "" :Double.toString(company.getMoneyCapital()));
+            Money.setText(company == null ? "" :Double.toString(company.getMoney()));
             Address.setText(company == null ? "" :company.getAddress());
             Date.setText(company == null ? "" :company.getDate().toString());
     }
 
     @FXML
     private void initialize(){
+        TextFlow nocontent = new TextFlow(new Text(prefs.getStringFromBundle("tabletext.nocontent")));
+        nocontent.setTextAlignment(TextAlignment.CENTER);
+        nocontent.setPadding(new Insets(8, 8, 0, 8));
+        companiesTable.setPlaceholder(nocontent);
 
         companyNameColumn.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         companiesTable.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {

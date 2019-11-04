@@ -7,6 +7,8 @@ import backsoft.ivascape.model.Company;
 import backsoft.ivascape.model.IvascapeGraph;
 import backsoft.ivascape.model.Project;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,10 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
@@ -71,23 +70,22 @@ public class AnalyseWindow {
             form.setAlignment(Pos.CENTER);
 
             Pair<Parent, GraphViewController> fxml = Loader.loadFXML("GraphView");
-
             Pane surface = (Pane) fxml.getOne();
+
             surface.setMouseTransparent(true);
             GraphViewController controller = fxml.getTwo();
 
-            controller.setView(component, project.getCoorsMap(), false);
+            DoubleProperty scale = new SimpleDoubleProperty(50);
+            controller.setView(scale, component, project.getCoorsMap(), false);
+            controller.cropView();
 
             ScrollPane scrollPane = new ScrollPane();
-            form.getChildren().add(scrollPane);
+            StackPane stackPane = new StackPane(surface);
+            stackPane.setAlignment(Pos.CENTER);
+            form.getChildren().add(stackPane);
             scrollPane.setContent(surface);
             VBox.setVgrow(scrollPane,Priority.ALWAYS);
             scrollPane.setPrefHeight(125);
-
-            controller.updateView();
-
-            controller.cropView();
-            controller.scaleProperty().set(50);;
 
             TableView<Company> componentTable = new TableView<>();
             componentTable.setFocusTraversable(false);

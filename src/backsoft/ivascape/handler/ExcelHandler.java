@@ -82,7 +82,7 @@ class ExcelHandler {
                 row = sheet.createRow(sheet.getLastRowNum()+1);
                 setRow(row, 4, createRegularStyle(workbook));
                 row.getCell(0).setCellValue(company.getTitle());
-                row.getCell(1).setCellValue(company.getMoneyCapital());
+                row.getCell(1).setCellValue(company.getMoney());
                 row.getCell(2).setCellValue(company.getAddress());
                 row.getCell(3).setCellValue(company.getDate().toString());
             }

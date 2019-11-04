@@ -34,19 +34,15 @@ public class MapViewController {
 
     void updateView(){
 
-        zoomSlider.setValue(100);
         VisualVertex.setColor(VisualVertex.defaultColor);
         VisualEdge.setColor(VisualEdge.defaultColor);
-        GVController.setView(
-                project.getGraph(),
-                project.getCoorsMap(),
-                true);
-
-        GVController.updateView();
+        GVController.flush();
+        GVController.setView(zoomSlider.valueProperty(),
+                project.getGraph(), project.getCoorsMap(), true);
     }
 
-    void bindToSurfaceChanged(BooleanProperty property){
-        GVController.bindToSurfaceChanged(property);
+    void setSavedProperty(BooleanProperty property){
+        GVController.setSavedProperty(property);
     }
 
     @FXML
@@ -62,8 +58,6 @@ public class MapViewController {
 
         togglePricesVisible.selectedProperty().addListener((o, b0, value) ->
                 GVController.setPricesVisible(value));
-
-        GVController.scaleProperty().bindBidirectional(zoomSlider.valueProperty());
 
         project.companiesAmountProperty().addListener(c -> {
             zoomSlider.setDisable(project.isEmpty());

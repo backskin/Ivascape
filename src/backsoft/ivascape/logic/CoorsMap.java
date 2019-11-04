@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import static backsoft.ivascape.logic.CoorsMap.*;
 
-public class CoorsMap extends HashMap<Integer, Coors> {
+public class CoorsMap extends HashMap<String, Coors> {
 
     public static class Coors implements Serializable {
         public double x;
