@@ -21,7 +21,6 @@ public class MapViewController {
     private Button cropViewButton;
     @FXML
     private Button resetZoomButton;
-
     @FXML
     private ToggleButton togglePricesVisible;
     @FXML

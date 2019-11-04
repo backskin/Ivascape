@@ -75,7 +75,7 @@ public class Project implements Serializable {
         coorsMap = triplet.getThree();
         companiesAmount.setValue(graph.size());
         graphHandler = new IvascapeGraphHandler(graph);
-        linksAmount.setValue(graphHandler.getEdgeSize());
+        linksAmount.setValue(graph.getEdgeSize());
 
         return true;
     }
@@ -126,14 +126,19 @@ public class Project implements Serializable {
         setSaved(false);
     }
 
-    public void add(Company one, Company two, double price){
+    public void add(String titleOne, String titleTwo, double price){
+        Company one = getCompany(titleOne);
+        Company two = getCompany(titleTwo);
+
         if (one == null || two == null || one.equals(two)) return;
 
         if (graph.getEdge(one, two) == null) {
             Link newLink = new Link(one, two, price);
-            graph.addEdge(one, two, newLink);
-            linksAmount.setValue(linksAmount.get() + 1);
-            ViewUpdater.current().getGVController().add(newLink);
+            if (graph.addEdge(one, two, newLink)) {
+                linksAmount.setValue(linksAmount.get() + 1);
+                saved.setValue(false);
+                ViewUpdater.current().getGVController().add(newLink);
+            }
         }
         else {
             graph.getEdge(one, two).setPrice(price);
@@ -153,14 +158,11 @@ public class Project implements Serializable {
 
         if (company == null) return;
         coorsMap.remove(company.hashCode());
-        for (Iterator<Link> iterator = graph.getEdgeIteratorForVertex(company); iterator.hasNext();){
-            remove(iterator.next());
-        }
+        ViewUpdater.current().getGVController().remove(company);
 
         if (graph.removeVertex(company)) {
             companiesAmount.setValue(companiesAmount.getValue()-1);
-            linksAmount.setValue(graphHandler.getEdgeSize());
-            ViewUpdater.current().getGVController().remove(company);
+            linksAmount.setValue(graph.getEdgeSize());
         }
     }
 

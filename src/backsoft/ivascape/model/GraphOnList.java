@@ -9,25 +9,17 @@ import java.util.List;
 
 public abstract class GraphOnList<K extends Comparable<K>, V extends Complex<K, V>> implements Graph<K, V>, Serializable {
 
-    private final List<K> vers;
-    private final List<List<V>> edges;
+    private final List<K> vers = new ArrayList<>();
+    private final List<List<V>> edges = new ArrayList<>();
 
-    GraphOnList() {
-
-        vers = new ArrayList<>();
-        edges = new ArrayList<>();
-    }
-
-    @Override
-    public int indexOf(K ver){
-
-        return vers.indexOf(ver);
-    }
-
-    @Override
-    public V getEdge(int start, int end) {
-
-        return edges.get(start).get(end);
+    public int getEdgeSize(){
+        int result = 0;
+        for (int i = 0; i < edges.size(); i++){
+            for (int j = i+1; j < edges.get(i).size(); j++)
+                if (edges.get(i).get(j) != null)
+                    result += 1;
+        }
+        return result;
     }
 
     @Override
@@ -47,8 +39,8 @@ public abstract class GraphOnList<K extends Comparable<K>, V extends Complex<K, 
     @Override
     public boolean addEdge(K start, K end, V value) {
 
-        int i = indexOf(start);
-        int j = indexOf(end);
+        int i = vers.indexOf(start);
+        int j = vers.indexOf(end);
 
         if (i < 0 || j < 0 || i == j) return false;
 
@@ -61,26 +53,18 @@ public abstract class GraphOnList<K extends Comparable<K>, V extends Complex<K, 
     }
 
     @Override
-    public K getVertex(int index) {
-
-        return vers.get(index);
-    }
-
-    @Override
     public V getEdge(K start, K end) {
 
-        int i = indexOf(start);
-        int j = indexOf(end);
-        return i < 0 || j < 0 ? null : getEdge(i, j);
+        int i = vers.indexOf(start);
+        int j = vers.indexOf(end);
+        return i < 0 || j < 0 ? null : edges.get(i).get(j);
     }
 
     @Override
     public boolean removeVertex(K vertex) {
 
-        int i = indexOf(vertex);
-        if (i < 0) return false;
-        for (List<V> edge : edges)
-            edge.remove(i);
+        int i = vers.indexOf(vertex);
+        for (List<V> edge : edges) edge.remove(i);
         edges.remove(i);
         vers.remove(vertex);
         return true;
@@ -89,8 +73,8 @@ public abstract class GraphOnList<K extends Comparable<K>, V extends Complex<K, 
     @Override
     public boolean removeEdge(K start, K end) {
 
-        int i = indexOf(start);
-        int j = indexOf(end);
+        int i = vers.indexOf(start);
+        int j = vers.indexOf(end);
 
         if (i < 0 || j < 0 || edges.get(i).get(j) == null || edges.get(j).get(i) == null) return false;
 
@@ -115,8 +99,8 @@ public abstract class GraphOnList<K extends Comparable<K>, V extends Complex<K, 
     public Iterator<V> getEdgeIterator() {
 
         return (new ArrayList<V>(){{
-            for (int i = 0; i < edges.size(); i++) {
-                for (int j = 0; j < i; j++)
+            for (int i = 0; i < edges.size(); i++){
+                for (int j = i+1; j < edges.get(i).size(); j++)
                     if (edges.get(i).get(j) != null)
                         add(edges.get(i).get(j));
             }
@@ -128,10 +112,9 @@ public abstract class GraphOnList<K extends Comparable<K>, V extends Complex<K, 
     public Iterator<V> getEdgeIteratorForVertex(K vertex) {
 
         return new ArrayList<V>(){{
-            int index = vers.indexOf(vertex);
-            for (int i = 0; i < edges.get(index).size(); i++)
-                if (i != index && edges.get(index).get(i) != null)
-                    add(edges.get(index).get(i));
+                for(V value : edges.get(vers.indexOf(vertex)))
+                    if (value != null && value.two().equals(vertex))
+                        add(value);
             sort(V::compareTo);
         }}.iterator();
     }

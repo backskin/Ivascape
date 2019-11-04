@@ -33,10 +33,7 @@ public class LinksViewItemController {
         promptTitleLabel.setText(Preferences.get().getStringFromBundle("tabletext.title"));
     }
     @FXML
-    private void handleAdd(){
-
-        Loader.loadDialogEditLink(company.hashCode());
-    }
+    private void handleAdd(){ Loader.loadDialogEditLink(company.hashCode()); }
 
     void setItem(Company company, List<VBox> cells){
 

@@ -4,13 +4,11 @@ import backsoft.ivascape.FXApp;
 import backsoft.ivascape.viewcontrol.*;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import backsoft.ivascape.logic.Pair;
 
@@ -20,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.ISSUE;
+import static backsoft.ivascape.viewcontrol.StartWindowController.TERMINATED;
 
 public class Loader {
 
@@ -69,13 +68,11 @@ public class Loader {
 
         primaryStage = mainStage;
         primaryStage.setOnCloseRequest(Preferences::onExit);
-//        Stage startScreenStage = new Stage();
-//        startScreenStage.initStyle(StageStyle.UNDECORATED);
-//
-//        if (welcomeScreen(startScreenStage) == TERMINATED) {
-//            Platform.exit();
-//            System.exit(0);
-//        }
+        Stage startScreenStage = new Stage();
+        if (welcomeScreen(startScreenStage) == TERMINATED) {
+            Platform.exit();
+            System.exit(0);
+        }
         reloadApp();
     }
 
@@ -84,14 +81,11 @@ public class Loader {
         stage.setTitle(prefs.getStringFromBundle("welcome"));
         Pair<Parent, StartWindowController> fxmlData = loadFXML("StartWindow");
         StartWindowController controller = fxmlData.getTwo();
-        controller.setStartStage(stage);
+        controller.setStage(stage);
+
         openInAWindow(stage, fxmlData.getOne(), false);
 
-        stage.close();
-        if (controller.isLocaleChanged()) {
-            return welcomeScreen(stage);
-        }
-        return controller.getStatus();
+        return controller.isLocaleChanged() ? welcomeScreen(stage) : controller.getStatus();
     }
 
     public static void reloadApp() {
@@ -116,18 +110,14 @@ public class Loader {
         return fxmlData.getTwo();
     }
 
-    public static void loadDialogEditLink(Integer... hashes) {
+    public static void loadDialogEditLink(int... coms) {
 
-        Pair<Parent, LinkEditDialogController> fxmlData = loadFXML("LinkEditDialog");
-        LinkEditDialogController controller = fxmlData.getTwo();
+        Pair<Parent, DialogEditLinkController> fxmlData = loadFXML("DialogEditLink");
+        DialogEditLinkController controller = fxmlData.getTwo();
 
         Stage dialogStage = new Stage();
-        dialogStage.setTitle(prefs.getStringFromBundle((hashes != null) ?
-                "edittabs.header.editlink" : "edittabs.header.newlink"));
-        dialogStage.initModality(Modality.WINDOW_MODAL);
-        dialogStage.initOwner(primaryStage);
-        controller.setDialogStage(dialogStage);
-        controller.setFields(hashes);
+        controller.setStage(dialogStage);
+        controller.setFields(coms);
 
         openInAWindow(dialogStage, fxmlData.getOne(), false);
 
@@ -136,29 +126,22 @@ public class Loader {
         }
     }
 
-    public static Integer loadDialogEditCompany(Integer comHash) {
+    public static Object loadDialogEditCompany(Object company) {
 
-        Pair<Parent, CompanyEditDialogController> fxmlData = loadFXML("CompanyEditDialog");
-        CompanyEditDialogController CEDController = fxmlData.getTwo();
+        Pair<Parent, DialogEditCompanyController> fxmlData = loadFXML("DialogEditCompany");
+        DialogEditCompanyController controller = fxmlData.getTwo();
 
         Stage dialogStage = new Stage();
-
-        dialogStage.setTitle(prefs.getStringFromBundle((comHash != 0) ?
-                "edittabs.header.editcmp" : "edittabs.header.newcmp"));
-
-        dialogStage.initModality(Modality.WINDOW_MODAL);
-        dialogStage.initOwner(primaryStage);
-        CEDController.setDialogStage(dialogStage);
-
-        CEDController.setEditCompany(comHash);
+        controller.setStage(dialogStage);
+        controller.setFields(company);
 
         openInAWindow(dialogStage, fxmlData.getOne(), false);
 
-        if (CEDController.isOkClicked()) {
+        if (controller.isConfirmed()) {
 
             ViewUpdater.current().updateLinksView().updateCompaniesView();
-            return CEDController.getEditCompany().hashCode();
+            return controller.getEditCompany();
         }
-        return 0;
+        return null;
     }
 }

@@ -13,18 +13,18 @@
 <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.LinksViewItemController">
    <children>
       <Separator prefWidth="200.0" />
-      <GridPane style="-fx-background-color: #4577df;">
+      <GridPane style="-fx-background-color: CORNFLOWERBLUE;">
         <columnConstraints>
           <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
             <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" />
             <ColumnConstraints halignment="LEFT" hgrow="NEVER" minWidth="10.0" />
-            <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints vgrow="SOMETIMES" />
+          <RowConstraints vgrow="NEVER" />
         </rowConstraints>
          <children>
-            <Button fx:id="addButton" mnemonicParsing="false" onAction="#handleAdd" text="Add new Link..." GridPane.columnIndex="3" GridPane.hgrow="ALWAYS">
+            <Button fx:id="addButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleAdd" text="Add new Link..." GridPane.columnIndex="3" GridPane.hgrow="ALWAYS">
                <GridPane.margin>
                   <Insets right="20.0" />
                </GridPane.margin>
@@ -51,7 +51,7 @@
                   <Insets bottom="8.0" left="9.0" />
                </GridPane.margin>
             </VBox>
-            <Label fx:id="promptAmountLabel" style="-fx-background-color: white;" text="кол-во:" GridPane.columnIndex="1">
+            <Label fx:id="promptAmountLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" nodeOrientation="LEFT_TO_RIGHT" style="-fx-background-color: white;" text="кол-во:" textAlignment="RIGHT" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets left="48.0" />
                </GridPane.margin>
@@ -59,7 +59,7 @@
                   <Font size="14.0" />
                </font>
                <padding>
-                  <Insets left="8.0" right="8.0" />
+                  <Insets left="8.0" right="4.0" />
                </padding></Label>
             <Label fx:id="amountLabel" style="-fx-background-color: white;" text="15" GridPane.columnIndex="2">
                <GridPane.margin>

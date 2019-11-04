@@ -1,6 +1,7 @@
 package backsoft.ivascape.viewcontrol;
 
 import backsoft.ivascape.handler.AlertHandler;
+import backsoft.ivascape.handler.Loader;
 import backsoft.ivascape.handler.Preferences;
 import backsoft.ivascape.model.Company;
 import backsoft.ivascape.model.Project;
@@ -9,13 +10,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.FIELDS_ISSUE;
 
-public class CompanyEditDialogController {
+public class DialogEditCompanyController {
     
     @FXML
     private TextField titleField;
@@ -30,37 +32,41 @@ public class CompanyEditDialogController {
 
     private Company editCompany = null;
     private final Project project = Project.get();
-    private boolean okClicked = false;
+    private boolean confirmed = false;
     private final Preferences prefs = Preferences.get();
     
-    public boolean isOkClicked() {
-        return okClicked;
+    public boolean isConfirmed() {
+        return confirmed;
     }
 
     public Company getEditCompany() {
         return editCompany;
     }
 
-    public void setEditCompany(Integer comHash){
+    public void setFields(Object company){
 
-        if (comHash == 0) return;
+        dialogStage.setTitle(prefs.getStringFromBundle(company == null ?
+                "edittabs.header.newcmp" : "edittabs.header.editcmp"));
 
-        editCompany = project.getCompany(comHash);
+        if (company == null) return;
+
+        editCompany = (Company) company;
         titleField.setText(editCompany.getTitle());
         capitalField.setText(Double.toString(editCompany.getMoneyCapital()));
         addressArea.setText(editCompany.getAddress());
         datePicker.setValue(editCompany.getDate());
-
         capitalField.requestFocus();
     }
     
-    public void setDialogStage(Stage dialogStage) {
+    public void setStage(Stage stage) {
 
-        this.dialogStage = dialogStage;
+        this.dialogStage = stage;
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(Loader.getMainStage());
         titleField.requestFocus();
     }
     
-    public CompanyEditDialogController(){}
+    public DialogEditCompanyController(){}
 
     @FXML
     private void initialize(){
@@ -116,7 +122,7 @@ public class CompanyEditDialogController {
                 editCompany.asCopyOf(c);
             }
 
-            okClicked = true;
+            confirmed = true;
             dialogStage.close();
         }
     }

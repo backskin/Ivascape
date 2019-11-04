@@ -79,7 +79,7 @@
         </VBox>
     </ScrollPane>
     <HBox alignment="CENTER" maxHeight="40.0" minHeight="40.0" prefHeight="40.0" prefWidth="200.0">
-        <Button mnemonicParsing="false" onAction="#handleGotIt" prefHeight="30.0" prefWidth="120.0"
+        <Button mnemonicParsing="false" onAction="#handleClose" prefHeight="30.0" prefWidth="120.0"
                 text="%button.gotit"/>
     </HBox>
 </VBox>

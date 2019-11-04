@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="450.0" xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml" fx:controller="backsoft.ivascape.viewcontrol.LinkEditDialogController">
+      xmlns:fx="http://javafx.com/fxml" fx:controller="backsoft.ivascape.viewcontrol.DialogEditLinkController">
     <GridPane alignment="CENTER" vgap="10.0" VBox.vgrow="ALWAYS">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="193.0" minWidth="10.0" prefWidth="172.0"/>

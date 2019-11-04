@@ -9,7 +9,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.shape.Circle;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -116,11 +115,8 @@ public class RootLayout {
         TipsController tipsController = fxmlData.getTwo();
         Stage tipsStage = new Stage();
         tipsController.setStage(tipsStage);
-        tipsStage.setTitle(preferences.getStringFromBundle("tips.caption"));
-        tipsStage.initModality(Modality.WINDOW_MODAL);
-        tipsStage.initOwner(mainStage);
 
-        Loader.openInAWindow(tipsStage,fxmlData.getOne(),true);
+        Loader.openInAWindow(tipsStage, fxmlData.getOne(),true);
     }
 
     @FXML
@@ -130,7 +126,7 @@ public class RootLayout {
 
     @FXML
     private void handleAddVertex(){
-        Loader.loadDialogEditCompany(0);
+        Loader.loadDialogEditCompany(null);
     }
 
     @FXML

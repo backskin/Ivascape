@@ -86,20 +86,15 @@ public class CompaniesViewController {
         updateView();
     }
 
-    @FXML
-    public void handleNew(){
-
-        companiesTable.getSelectionModel().select(project.getCompany(
-                Loader.loadDialogEditCompany(0)));
+    private void openEditDialog(Company company){
+        companiesTable.getSelectionModel().select((Company) Loader.loadDialogEditCompany(company));
     }
 
     @FXML
-    private void handleEdit() {
+    public void handleNew(){ openEditDialog(null); }
 
-        if (lastSelected == null) return;
-        companiesTable.getSelectionModel().select(project.getCompany(
-                Loader.loadDialogEditCompany(lastSelected.hashCode())));
-    }
+    @FXML
+    private void handleEdit() { openEditDialog(lastSelected); }
 
     @FXML
     private void handleDelete(){

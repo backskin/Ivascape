@@ -44,9 +44,7 @@ public class IvascapeGenerator {
             if (a == b){
                 System.out.println("luck");
             }
-            project.add(project.getCompany(list.get(a)),
-                    project.getCompany(list.get(b)),
-                    100.0 + r.nextInt(100));
+            project.add(list.get(a), list.get(b), 100.0 + r.nextInt(1000));
         }
     }
 }

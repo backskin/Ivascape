@@ -16,8 +16,8 @@ import java.util.*;
 
 public class GraphViewController {
 
-    private final Map<Integer, VisualVertex> visVerHashMap = new HashMap<>();
-    private final Map<Link, VisualEdge> visEdgeMap = new HashMap<>();
+    private final Map<Company, VisualVertex> visualVertexMap = new HashMap<>();
+    private final Map<Link, VisualEdge> visualEdgeMap = new HashMap<>();
     private CoorsMap coorsMap = new CoorsMap();
     private boolean draggable = false;
     private Graph<Company, Link> graph;
@@ -49,7 +49,7 @@ public class GraphViewController {
 
         double minX = Double.MAX_VALUE;
         double minY = Double.MAX_VALUE;
-        for (VisualVertex vertex : visVerHashMap.values()) {
+        for (VisualVertex vertex : visualVertexMap.values()) {
             minX = Math.min(minX, vertex.getPane().getLayoutX());
             minY = Math.min(minY, vertex.getPane().getLayoutY());
         }
@@ -58,10 +58,10 @@ public class GraphViewController {
     }
 
     private void shiftGraph(double xShift, double yShift){
-        for (VisualVertex vertex : visVerHashMap.values()) vertex.moveXY(xShift, yShift);
+        for (VisualVertex vertex : visualVertexMap.values()) vertex.moveXY(xShift, yShift);
     }
 
-    private void loadVertex(StringProperty title, int hashcode, double x, double y){
+    private void loadVertex(Company company, double x, double y){
 
         Double scaleValue = scale.getValue();
         scale.setValue(100.0);
@@ -70,13 +70,13 @@ public class GraphViewController {
         surface.getChildren().add(fxml.getOne());
         VisualVertex vertex = fxml.getTwo();
 
-        vertex.setTitle(title);
+        vertex.setTitle(company.titleProperty());
 
-        coorsMap.put(hashcode, new CoorsMap.Coors(x, y));
-        vertex.xCenterProperty().addListener((o, ov, nv) -> coorsMap.get(hashcode).x = nv.doubleValue());
-        vertex.yCenterProperty().addListener((o, ov, nv) -> coorsMap.get(hashcode).y = nv.doubleValue());
+        coorsMap.put(company.hashCode(), new CoorsMap.Coors(x, y));
+        vertex.xCenterProperty().addListener((o, ov, nv) -> coorsMap.get(company.hashCode()).x = nv.doubleValue());
+        vertex.yCenterProperty().addListener((o, ov, nv) -> coorsMap.get(company.hashCode()).y = nv.doubleValue());
         vertex.bind(scale);
-        visVerHashMap.put(hashcode, vertex);
+        visualVertexMap.put(company, vertex);
         if (draggable) makeNodeDraggable(vertex);
         vertex.setXY(x, y);
         scale.setValue(scaleValue);
@@ -85,15 +85,15 @@ public class GraphViewController {
     public void add(Company company){
         double randomX = 5.0 + (new Random()).nextInt(1000);
         double randomY = 5.0 + (new Random()).nextInt(1000);
-        loadVertex(company.titleProperty(), company.hashCode(), randomX, randomY);
+        loadVertex(company, randomX, randomY);
     }
 
     public void add(Link link){
         Double scaleValue = scale.getValue();
         scale.setValue(100.0);
 
-        VisualVertex one = visVerHashMap.get(link.one().hashCode());
-        VisualVertex two = visVerHashMap.get(link.two().hashCode());
+        VisualVertex one = visualVertexMap.get(link.one());
+        VisualVertex two = visualVertexMap.get(link.two());
 
         VisualEdge edge =  new VisualEdge(
                 one.xCenterProperty(), one.yCenterProperty(),
@@ -101,7 +101,7 @@ public class GraphViewController {
         edge.getPriceLabel().visibleProperty().bind(priceShown);
 
         scale.addListener(edge.getScaleListener());
-        visEdgeMap.put(link, edge);
+        visualEdgeMap.put(link, edge);
 
         surface.getChildren().add(0, edge.getLine());
         surface.getChildren().add(edge.getPriceLabel());
@@ -113,11 +113,11 @@ public class GraphViewController {
 
         for (Iterator<Link> it = graph.getEdgeIteratorForVertex(company); it.hasNext();)
             remove(it.next());
-        visVerHashMap.get(company.hashCode()).unbind(scale);
+        visualVertexMap.get(company).unbind(scale);
 
-        surface.getChildren().remove(visVerHashMap.get(company.hashCode()).getPane());
+        surface.getChildren().remove(visualVertexMap.get(company).getPane());
 
-        visVerHashMap.remove(company.hashCode());
+        visualVertexMap.remove(company);
         coorsMap.remove(company.hashCode());
     }
 
@@ -126,7 +126,7 @@ public class GraphViewController {
         VisualEdge edge = getEdge(link);
         if (edge == null) return;
 
-        visEdgeMap.remove(link);
+        visualEdgeMap.remove(link);
         surface.getChildren().remove(edge.getPriceLabel());
         surface.getChildren().remove(edge.getLine());
         scale.removeListener(edge.getScaleListener());
@@ -134,20 +134,20 @@ public class GraphViewController {
 
     private VisualEdge getEdge(Link link) {
 
-        VisualEdge out = visEdgeMap.get(link);
-        if (out == null) out = visEdgeMap.get(link.getMating());
+        VisualEdge out = visualEdgeMap.get(link);
+        if (out == null) out = visualEdgeMap.get(link.getMating());
         return out;
     }
 
     void updateView(){
 
-        visEdgeMap.clear();
-        visVerHashMap.clear();
+        visualEdgeMap.clear();
+        visualVertexMap.clear();
         surface.getChildren().clear();
 
         for (Iterator<Company> iterator = graph.getVertexIterator(); iterator.hasNext();) {
             Company company = iterator.next();
-            loadVertex(company.titleProperty(), company.hashCode(),
+            loadVertex(company,
                     surface.getLayoutX() + coorsMap.get(company.hashCode()).x,
                     surface.getLayoutY() + coorsMap.get(company.hashCode()).y);
         }
