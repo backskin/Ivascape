@@ -43,7 +43,7 @@ public abstract class GraphHandler<Ver extends Comparable<Ver>, Edge extends Com
 
     private void buildComponent(Ver ver, G original, G component, Map<Ver, Boolean> visited){
 
-        if (visited.get(ver)) return;
+        if (visited.get(ver) != null && visited.get(ver)) return;
         visited.put(ver, true);
 
         component.addVertex(ver);
