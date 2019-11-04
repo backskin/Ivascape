@@ -14,14 +14,14 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.DELETE_CONFIRM;
 
 public class CompaniesViewController {
 
-    private int lastSelected = 0;
+    private Company lastSelected;
     private final Project project = Project.get();
     private final Preferences prefs = Preferences.get();
 
@@ -42,87 +42,48 @@ public class CompaniesViewController {
     @FXML
     private Button Delete;
 
-    public CompaniesViewController(){
-    }
-
     private ObservableList<Company> getCompaniesViewItems(){
 
-        ObservableList<Company> list = FXCollections.observableArrayList();
-        for (Iterator<Company> i = project.getIteratorOfCompanies(); i.hasNext();)
-            list.add(i.next());
-        return list;
+        return FXCollections.observableList(new ArrayList<>(){{
+            for (Iterator<Company> i = project.getIteratorOfCompanies(); i.hasNext();)
+                add(i.next());
+        }});
     }
 
-    public void updateView(){
-
-        ObservableList<Company> companies = getCompaniesViewItems();
+    void updateView() {
 
         companiesTable.getItems().clear();
-        companiesTable.setItems(companies);
-        companiesTable.getItems().sort(Comparator.comparing(Company::getTitle));
-
-        if (companies.isEmpty()){
-            Edit.setDisable(true);
-            Delete.setDisable(true);
-
+        showDetails(null);
+        if (project.isEmpty()) {
+            TextFlow nocontent = new TextFlow(new Text(prefs.getStringFromBundle("tabletext.nocontent")));
+            nocontent.setTextAlignment(TextAlignment.CENTER);
+            nocontent.setPadding(new Insets(8, 8, 0, 8));
+            companiesTable.setPlaceholder(nocontent);
         } else {
-            Edit.setDisable(false);
-            Delete.setDisable(false);
-            companiesTable.getSelectionModel().select(lastSelected < companies.size() ? lastSelected : 0);
-            showCompanyDetails(companiesTable.getSelectionModel().getSelectedItem());
+            companiesTable.setItems(getCompaniesViewItems());
+            companiesTable.getSelectionModel().select(lastSelected);
         }
     }
 
-    private void showCompanyDetails(Company company){
+    private void showDetails(Company company){
 
-        if (company != null){
-
-            Title.setText(company.getTitle());
-            Money.setText(Double.toString(company.getMoneyCapital()));
-            Address.setText(company.getAddress());
-            Date.setText(company.getDate().toString());
-
-        } else {
-            Title.setText("");
-            Money.setText("");
-            Address.setText("");
-            Date.setText("");
-        }
+            Title.setText(company == null ? "" :company.getTitle());
+            Money.setText(company == null ? "" :Double.toString(company.getMoneyCapital()));
+            Address.setText(company == null ? "" :company.getAddress());
+            Date.setText(company == null ? "" :company.getDate().toString());
     }
 
     @FXML
     private void initialize(){
 
-        TextFlow nocontent = new TextFlow(new Text(prefs.getStringFromBundle("tabletext.nocontent")));
-
-        nocontent.setTextAlignment(TextAlignment.CENTER);
-        nocontent.setPadding(new Insets(8,8,0,8));
-
-        companiesTable.setPlaceholder(nocontent);
-
         companyNameColumn.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
-
-        companiesTable.getSelectionModel().selectedItemProperty().
-                addListener((observable, oldValue, newValue) -> {
-
-                    lastSelected = companiesTable.getSelectionModel().getSelectedIndex() < 0 ? lastSelected : companiesTable.getSelectionModel().getSelectedIndex();
-                    showCompanyDetails(newValue);
-                    if (observable == null) {
-
-                        Edit.setDisable(true);
-                        Delete.setDisable(true);
-
-                    } else {
-
-                        Edit.setDisable(false);
-                        Delete.setDisable(false);
-                    }
-                } );
-
-        Edit.setDisable(true);
-        Delete.setDisable(true);
-
-        showCompanyDetails(null);
+        companiesTable.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
+            lastSelected = nv;
+            showDetails(lastSelected);
+            Edit.setDisable(nv == null);
+            Delete.setDisable(nv == null);
+        });
+        updateView();
     }
 
     @FXML
@@ -135,25 +96,17 @@ public class CompaniesViewController {
     @FXML
     private void handleEdit() {
 
-        Company selected = companiesTable.getSelectionModel().getSelectedItem();
-
-        if (selected != null) {
-
-            companiesTable.getSelectionModel().select(project.getCompany(
-                    Loader.loadDialogEditCompany(selected.hashCode())));
-        }
+        if (lastSelected == null) return;
+        companiesTable.getSelectionModel().select(project.getCompany(
+                Loader.loadDialogEditCompany(lastSelected.hashCode())));
     }
 
     @FXML
     private void handleDelete(){
 
-        Company company = companiesTable.getSelectionModel().getSelectedItem();
-
-        if (company == null) return;
-
-        if (AlertHandler.makeAlert(DELETE_CONFIRM).setOwner(Loader.getMainStage()).showAndGetResult()) {
-
-            project.remove(company);
+        if (lastSelected != null && AlertHandler.makeAlert(DELETE_CONFIRM)
+                .setOwner(Loader.getMainStage()).showAndGetResult()) {
+            project.remove(lastSelected);
             ViewUpdater.current().updateCompaniesView().updateLinksView();
         }
     }

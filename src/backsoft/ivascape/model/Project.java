@@ -100,14 +100,12 @@ public class Project implements Serializable {
         return graph.getEdge(companyOne,companyTwo);
     }
 
-    public List<String> getCompaniesList(){
+    public List<String> getCompaniesTitlesList(){
 
-        List<String> output = new ArrayList<>();
-
-        for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext();)
-            output.add(i.next().getTitle());
-
-        return output;
+        return new ArrayList<>(){{
+            for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext();)
+                add(i.next().getTitle());
+        }};
     }
 
     public IvascapeGraph applyPrimAlgorithm(){
@@ -153,6 +151,7 @@ public class Project implements Serializable {
 
     public void remove(Company company){
 
+        if (company == null) return;
         coorsMap.remove(company.hashCode());
         for (Iterator<Link> iterator = graph.getEdgeIteratorForVertex(company); iterator.hasNext();){
             remove(iterator.next());

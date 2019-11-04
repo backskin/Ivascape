@@ -3,8 +3,8 @@ package backsoft.ivascape.viewcontrol;
 import backsoft.ivascape.handler.FileHandler;
 import backsoft.ivascape.handler.Loader;
 import backsoft.ivascape.logic.Pair;
-import backsoft.ivascape.logic.CoorsMap;
 import backsoft.ivascape.model.IvascapeGraph;
+import backsoft.ivascape.model.Link;
 import backsoft.ivascape.model.Project;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -17,27 +17,23 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.util.Iterator;
+
 public class ResultWindowController {
 
     private Stage stage;
 
-    private final IvascapeGraph graph;
-    private final CoorsMap map;
-
     private Double totalPrice = 0.0;
+    private GraphViewController gvController;
 
     @FXML
     private Slider zoomSlider;
-
     @FXML
     private ToggleButton showHidePrices;
-
     @FXML
     private Label totalPriceLabel;
-
     @FXML
     private ScrollPane pane;
-
     @FXML
     private VBox resTable;
 
@@ -53,57 +49,35 @@ public class ResultWindowController {
         });
     }
 
-    public ResultWindowController(){
-
-        graph = Project.get().applyPrimAlgorithm();
-        map = Project.get().getCoorsMap();
-    }
+    public ResultWindowController(){}
 
     @FXML
     private void initialize(){
 
+        VisualVertex.setColor(Color.CORNFLOWERBLUE);
+        VisualEdge.setColor(Color.CORNFLOWERBLUE);
+
         Pair<Parent, GraphViewController> resultFxml = Loader.loadFXML("GraphView");
-
         pane.setContent(resultFxml.getOne());
+        gvController = resultFxml.getTwo();
 
-        GraphViewController gvController = resultFxml.getTwo();
-
-        gvController.setView(
-                graph, map,
-                Color.CORNFLOWERBLUE,
-                Color.CORNFLOWERBLUE,true);
-
-        zoomSlider.setValue(100.0);
-
-        zoomSlider.valueProperty().addListener((observable, oldValue, newValue) ->
-
-                gvController.setScale(newValue.doubleValue())
-        );
-
-        showHidePrices.selectedProperty().addListener((observable, oldValue, newValue) -> gvController.setPricesVisible(newValue));
+        gvController.setView(Project.get().applyPrimAlgorithm(), Project.get().getCoorsMap(),true);
+        gvController.scaleProperty().bind(zoomSlider.valueProperty());
+        gvController.priceShownProperty().bind(showHidePrices.selectedProperty());
 
         gvController.updateView();
 
-        for (int i = 0; i < graph.size(); i ++){
-
-            for (int j = i; j < graph.size(); j++){
-
-                if (graph.getEdge(i,j) != null){
-
-                    Pair<Parent, ResultTableElementController> fxml = Loader.loadFXML("ResultTableElement");
-
-                    resTable.getChildren().add(fxml.getOne());
-                    ResultTableElementController controller = fxml.getTwo();
-
-                    controller.setLink(graph.getEdge(i,j));
-
-                    totalPrice += graph.getEdge(i,j).getPrice();
-                }
-            }
+        for (Iterator<Link> it = gvController.getGraph().getEdgeIterator(); it.hasNext();){
+            Link link = it.next();
+            Pair<Parent, ResultTableElementController> fxml = Loader.loadFXML("ResultTableElement");
+            resTable.getChildren().add(fxml.getOne());
+            fxml.getTwo().setLink(link);
+            totalPrice += link.getPrice();
         }
+        totalPriceLabel.setText(String.format("%.2f", totalPrice));
 
-        totalPriceLabel.setText(String.format("%.2f", (Math.round(totalPrice*100)/100.0)));
-
+        VisualVertex.setColor(VisualVertex.defaultColor);
+        VisualEdge.setColor(VisualEdge.defaultColor);
     }
 
     @FXML
@@ -111,22 +85,18 @@ public class ResultWindowController {
 
         double sliderValue = zoomSlider.getValue();
         zoomSlider.setValue(100);
-        FileHandler.dialogSaveAs(null, graph, map);
+        FileHandler.dialogSaveAs(null, (IvascapeGraph) gvController.getGraph(), gvController.getCoorsMap());
         zoomSlider.setValue(sliderValue);
     }
 
     @FXML
     private void handleExport(){
 
-        FileHandler.dialogExport(graph, stage);
-
+        FileHandler.dialogExport((IvascapeGraph) gvController.getGraph(), stage);
     }
 
     @FXML
     private void handleClose(){
-
-        VisualVertex.setColor(VisualVertex.defaultColor);
-        VisualEdge.setColor(VisualEdge.defaultColor);
         stage.close();
     }
 }

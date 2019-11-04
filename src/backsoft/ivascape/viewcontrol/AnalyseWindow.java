@@ -25,8 +25,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 public class AnalyseWindow {
 
@@ -40,9 +40,11 @@ public class AnalyseWindow {
 
     public AnalyseWindow(){}
 
-    void setStage(Stage analyseStage) {
-        this.analyseStage = analyseStage;
-
+    void setStage(Stage stage) {
+        this.analyseStage = stage;
+        analyseStage.setTitle(prefs.getStringFromBundle("editwindows.analysetitle"));
+        analyseStage.initModality(Modality.WINDOW_MODAL);
+        analyseStage.initOwner(Loader.getMainStage());
         analyseStage.setOnCloseRequest(event -> {
             VisualVertex.setColor(VisualVertex.defaultColor);
             VisualEdge.setColor(VisualEdge.defaultColor);
@@ -51,20 +53,18 @@ public class AnalyseWindow {
 
     @FXML
     private void initialize(){
-        analyseStage.setTitle(prefs.getStringFromBundle("editwindows.analysetitle"));
-        analyseStage.initModality(Modality.WINDOW_MODAL);
-        analyseStage.initOwner(Loader.getMainStage());
 
-        List<IvascapeGraph> components =  project.getComponents();
+        int i = 0;
+        VisualVertex.setColor(Color.DARKCYAN);
+        VisualEdge.setColor(Color.DARKCYAN);
 
-        if (components.size() == 0) {
+        if (project.isEmpty()) {
+
             Label label = new Label(prefs.getStringFromBundle("editwindows.emptygraph"));
-
-            label.setFont(new Font("System",15));
+            label.setFont(new Font(15));
             componentTables.getChildren().add(label);
-        } else
-        for (IvascapeGraph component: components
-             ) {
+
+        } else for (IvascapeGraph component: project.getComponents()) {
 
             VBox form = new VBox();
             form.setFocusTraversable(false);
@@ -76,12 +76,7 @@ public class AnalyseWindow {
             surface.setMouseTransparent(true);
             GraphViewController controller = fxml.getTwo();
 
-            controller.setView(
-                    component,
-                    project.getCoorsMap(),
-                    Color.DARKCYAN,
-                    Color.DARKCYAN,
-                    false);
+            controller.setView(component, project.getCoorsMap(), false);
 
             ScrollPane scrollPane = new ScrollPane();
             form.getChildren().add(scrollPane);
@@ -92,9 +87,10 @@ public class AnalyseWindow {
             controller.updateView();
 
             controller.cropView();
-            controller.setScale(50);
+            controller.scaleProperty().set(50);;
 
             TableView<Company> componentTable = new TableView<>();
+            componentTable.setFocusTraversable(false);
             form.getChildren().add(componentTable);
             form.setFocusTraversable(false);
             VBox.setVgrow(componentTable, Priority.ALWAYS);
@@ -104,31 +100,27 @@ public class AnalyseWindow {
             componentTable.setSelectionModel(null);
             HBox.setHgrow(componentTable, Priority.ALWAYS);
 
-            ObservableList<Company> list = FXCollections.observableArrayList();
-
-            Iterator<Company> iterator = component.getVertexIterator();
-            while (iterator.hasNext()) list.add(iterator.next());
+            ObservableList<Company> list = FXCollections.observableList(new ArrayList<>(){{
+                for (Iterator<Company> iterator = component.getVertexIterator(); iterator.hasNext();)
+                    add(iterator.next());
+            }});
 
             componentTable.setItems(list);
-            componentTable.setFocusTraversable(false);
             TableColumn<Company,String> column = new TableColumn<>();
             column.setSortable(false);
-            column.setText((components.indexOf(component)+1)
-                    + prefs.getStringFromBundle("editwindows.component"));
+            column.setText(++i + prefs.getStringFromBundle("editwindows.component"));
 
             componentTable.getColumns().add(column);
             componentTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
             column.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         }
 
-        cAmount.setText(Integer.toString(components.size()));
+        cAmount.setText(String.valueOf(i));
     }
 
     @FXML
     private void handleClose(){
 
-        VisualVertex.setColor(VisualVertex.defaultColor);
-        VisualEdge.setColor(VisualEdge.defaultColor);
         analyseStage.close();
     }
 }

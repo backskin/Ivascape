@@ -11,7 +11,6 @@ import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 
 import java.util.*;
 
@@ -20,32 +19,28 @@ public class GraphViewController {
     private final Map<Integer, VisualVertex> visVerHashMap = new HashMap<>();
     private final Map<Link, VisualEdge> visEdgeMap = new HashMap<>();
     private CoorsMap coorsMap = new CoorsMap();
-
     private boolean draggable = false;
-
     private Graph<Company, Link> graph;
 
     @FXML
     private Pane surface;
 
-    private final DoubleProperty scaleProperty = new SimpleDoubleProperty(100.0);
-    private final BooleanProperty priceShownProperty =  new SimpleBooleanProperty(false);
-    private final BooleanProperty surfaceSavedProperty = new SimpleBooleanProperty(true);
+    private final DoubleProperty scale = new SimpleDoubleProperty(100.0);
+    private final BooleanProperty priceShown =  new SimpleBooleanProperty(false);
+    private final BooleanProperty surfaceSaved = new SimpleBooleanProperty(true);
 
+    void setPricesVisible(boolean visibility){ priceShown.setValue(visibility); }
+    DoubleProperty scaleProperty() { return scale; }
+    BooleanProperty priceShownProperty() { return priceShown; }
     void bindToSurfaceChanged(BooleanProperty property){
-        property.bindBidirectional(surfaceSavedProperty);
+        property.bindBidirectional(surfaceSaved);
     }
 
-    void setScale(double scale){ scaleProperty.setValue(scale); }
+    CoorsMap getCoorsMap() { return coorsMap; }
+    Graph<Company, Link> getGraph() { return graph; }
 
-    void setPricesVisible(boolean visibility){ priceShownProperty.setValue(visibility); }
-
-    void setView(GraphOnList<Company, Link> graph, CoorsMap coorsMap,
-                 Color vertexColor, Color edgeColor, boolean isDraggable) {
-
+    void setView(GraphOnList<Company, Link> graph, CoorsMap coorsMap, boolean isDraggable) {
         this.graph = graph;
-        VisualVertex.setColor(vertexColor);
-        VisualEdge.setColor(edgeColor);
         this.coorsMap = coorsMap;
         draggable = isDraggable;
     }
@@ -54,27 +49,22 @@ public class GraphViewController {
 
         double minX = Double.MAX_VALUE;
         double minY = Double.MAX_VALUE;
-
         for (VisualVertex vertex : visVerHashMap.values()) {
-
             minX = Math.min(minX, vertex.getPane().getLayoutX());
             minY = Math.min(minY, vertex.getPane().getLayoutY());
         }
-
         if (minX > 0 && minY > 0) shiftGraph(-minX,-minY);
-        surfaceSavedProperty.setValue(false);
+        surfaceSaved.setValue(false);
     }
 
     private void shiftGraph(double xShift, double yShift){
-
-        for (VisualVertex vertex : visVerHashMap.values())
-            vertex.moveXY(xShift, yShift);
+        for (VisualVertex vertex : visVerHashMap.values()) vertex.moveXY(xShift, yShift);
     }
 
     private void loadVertex(StringProperty title, int hashcode, double x, double y){
 
-        Double scaleValue = scaleProperty.getValue();
-        scaleProperty.setValue(100.0);
+        Double scaleValue = scale.getValue();
+        scale.setValue(100.0);
 
         Pair<Parent, VisualVertex> fxml = Loader.loadFXML("VisualVertex");
         surface.getChildren().add(fxml.getOne());
@@ -85,11 +75,11 @@ public class GraphViewController {
         coorsMap.put(hashcode, new CoorsMap.Coors(x, y));
         vertex.xCenterProperty().addListener((o, ov, nv) -> coorsMap.get(hashcode).x = nv.doubleValue());
         vertex.yCenterProperty().addListener((o, ov, nv) -> coorsMap.get(hashcode).y = nv.doubleValue());
-        vertex.bind(scaleProperty);
+        vertex.bind(scale);
         visVerHashMap.put(hashcode, vertex);
         if (draggable) makeNodeDraggable(vertex);
         vertex.setXY(x, y);
-        scaleProperty.setValue(scaleValue);
+        scale.setValue(scaleValue);
     }
 
     public void add(Company company){
@@ -99,8 +89,8 @@ public class GraphViewController {
     }
 
     public void add(Link link){
-        Double scaleValue = scaleProperty.getValue();
-        scaleProperty.setValue(100.0);
+        Double scaleValue = scale.getValue();
+        scale.setValue(100.0);
 
         VisualVertex one = visVerHashMap.get(link.one().hashCode());
         VisualVertex two = visVerHashMap.get(link.two().hashCode());
@@ -108,22 +98,22 @@ public class GraphViewController {
         VisualEdge edge =  new VisualEdge(
                 one.xCenterProperty(), one.yCenterProperty(),
                 two.xCenterProperty(), two.yCenterProperty(), link.priceProperty());
-        edge.getPriceLabel().visibleProperty().bind(priceShownProperty);
+        edge.getPriceLabel().visibleProperty().bind(priceShown);
 
-        scaleProperty.addListener(edge.getScaleListener());
+        scale.addListener(edge.getScaleListener());
         visEdgeMap.put(link, edge);
 
         surface.getChildren().add(0, edge.getLine());
         surface.getChildren().add(edge.getPriceLabel());
 
-        scaleProperty.setValue(scaleValue);
+        scale.setValue(scaleValue);
     }
 
     public void remove(Company company){
 
         for (Iterator<Link> it = graph.getEdgeIteratorForVertex(company); it.hasNext();)
             remove(it.next());
-        visVerHashMap.get(company.hashCode()).unbind(scaleProperty);
+        visVerHashMap.get(company.hashCode()).unbind(scale);
 
         surface.getChildren().remove(visVerHashMap.get(company.hashCode()).getPane());
 
@@ -139,7 +129,7 @@ public class GraphViewController {
         visEdgeMap.remove(link);
         surface.getChildren().remove(edge.getPriceLabel());
         surface.getChildren().remove(edge.getLine());
-        scaleProperty.removeListener(edge.getScaleListener());
+        scale.removeListener(edge.getScaleListener());
     }
 
     private VisualEdge getEdge(Link link) {
@@ -149,7 +139,7 @@ public class GraphViewController {
         return out;
     }
 
-    public void updateView(){
+    void updateView(){
 
         visEdgeMap.clear();
         visVerHashMap.clear();
@@ -177,6 +167,6 @@ public class GraphViewController {
             v.setDragContext(new Pair<>(event.getScreenX(), event.getScreenY()));
         });
 
-        v.getCircle().setOnMouseReleased(event -> surfaceSavedProperty.setValue(false));
+        v.getCircle().setOnMouseReleased(event -> surfaceSaved.setValue(false));
     }
 }

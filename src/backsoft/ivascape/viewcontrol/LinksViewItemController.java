@@ -20,7 +20,6 @@ public class LinksViewItemController {
     public Label promptTitleLabel;
 
     private Company company;
-
     private final Project project = Project.get();
 
     @FXML
@@ -28,6 +27,7 @@ public class LinksViewItemController {
 
     @FXML
     private void initialize(){
+        addButton.setDisable(project.companiesAmountProperty().getValue() < 2);
         addButton.setText(Preferences.get().getStringFromBundle("button.addlink"));
         promptAmountLabel.setText(Preferences.get().getStringFromBundle("bottombar.lnkamt"));
         promptTitleLabel.setText(Preferences.get().getStringFromBundle("tabletext.title"));
@@ -38,16 +38,10 @@ public class LinksViewItemController {
         Loader.loadDialogEditLink(company.hashCode());
     }
 
-    public void setCompany(Company company) {
+    void setItem(Company company, List<VBox> cells){
 
         this.company = company;
         titleLabel.setText(company.getTitle());
-
-        if (project.getCompaniesList().size() < 2)
-            addButton.setDisable(true);
-    }
-
-    void setCells(List<VBox> cells){
         amountLabel.setText(Integer.toString(cells.size()));
         cellsBox.getChildren().clear();
         cellsBox.getChildren().addAll(cells);

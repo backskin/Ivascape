@@ -36,12 +36,11 @@ public class MapViewController {
     void updateView(){
 
         zoomSlider.setValue(100);
-
+        VisualVertex.setColor(VisualVertex.defaultColor);
+        VisualEdge.setColor(VisualEdge.defaultColor);
         GVController.setView(
                 project.getGraph(),
                 project.getCoorsMap(),
-                VisualVertex.defaultColor,
-                VisualEdge.defaultColor,
                 true);
 
         GVController.updateView();
@@ -65,8 +64,7 @@ public class MapViewController {
         togglePricesVisible.selectedProperty().addListener((o, b0, value) ->
                 GVController.setPricesVisible(value));
 
-        zoomSlider.valueProperty().addListener((o, b0, value) ->
-                GVController.setScale(value.doubleValue()));
+        GVController.scaleProperty().bindBidirectional(zoomSlider.valueProperty());
 
         project.companiesAmountProperty().addListener(c -> {
             zoomSlider.setDisable(project.isEmpty());

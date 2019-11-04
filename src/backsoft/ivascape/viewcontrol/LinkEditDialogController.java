@@ -50,7 +50,7 @@ public class LinkEditDialogController {
 
         if (hashes == null || hashes.length < 2){
 
-            List<String> namesList = project.getCompaniesList();
+            List<String> namesList = project.getCompaniesTitlesList();
             if (hashes != null && hashes.length > 0){
                 com1 = project.getCompany(hashes[0]);
                 namesList.remove(com1.getTitle());

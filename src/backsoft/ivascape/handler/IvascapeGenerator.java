@@ -35,7 +35,7 @@ public class IvascapeGenerator {
             project.add(new Company(title,"null", 0, LocalDate.now()));
         }
         int realAmount = project.companiesAmountProperty().getValue();
-        List<String> list = project.getCompaniesList();
+        List<String> list = project.getCompaniesTitlesList();
 
         int lAm = r.nextInt(realAmount * realAmount / 4);
         for (int i = 0; i < lAm; i++) {
