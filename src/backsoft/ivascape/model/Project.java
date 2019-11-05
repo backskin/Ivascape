@@ -56,7 +56,7 @@ public class Project implements Serializable {
     public void setFile(File file) { this.file = file; saved.setValue(true);}
 
     public boolean isSaved() { return saved.get(); }
-    public void setSaved(boolean value) { saved.setValue(value); }
+
     public BooleanProperty savedProperty() { return saved; }
 
     public IntegerProperty linksAmountProperty() { return linksAmount; }

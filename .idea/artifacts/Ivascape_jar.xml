@@ -6,10 +6,10 @@
         <element id="file-copy" path="$PROJECT_DIR$/out/artifacts/Ivascape/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="Ivascape" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/lib/controlsfx/controlsfx-8.40.14.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/apache/poi-ooxml-3.17.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/apache/poi-3.17.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/apache/poi-excelant-3.17.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/controlsfx/controlsfx-8.40.14.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
