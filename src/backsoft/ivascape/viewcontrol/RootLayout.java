@@ -51,7 +51,7 @@ public class RootLayout {
 
     private final Stage mainStage = Loader.getMainStage();
     private Project project = Project.get();
-
+    private ViewUpdater viewUpdater;
     private final Preferences preferences = Preferences.get();
 
     @FXML
@@ -78,7 +78,8 @@ public class RootLayout {
         CompaniesViewController cvController = loadViewToTab("CompaniesView", CompaniesPane);
         LinksViewController lvController = loadViewToTab("LinksView", TablePane);
 
-        ViewUpdater.putTabControllers(cvController, lvController, mvController);
+        viewUpdater = ViewUpdater.putTabControllers(cvController, lvController, mvController);
+
         mvController.setSavedProperty(project.savedProperty());
 
         project.companiesAmountProperty().addListener((o, vo, vn) -> {
@@ -102,9 +103,7 @@ public class RootLayout {
         isSaved.setText(preferences.getStringFromBundle(newValue ? "bottombar.saved" : "bottombar.unsaved"));
         saveIcon.setFill(newValue ? GREEN : DARKRED);
         saveMenuItem.setDisable(newValue);
-        if (newValue)
-            filenameLabel.setText(project.getFile() != null ?
-                    project.getFile().getName() : "Empty");
+        if (newValue) filenameLabel.setText(project.getFile() == null ? "Empty" : project.getFile().getName());
     }
 
     @FXML
@@ -153,7 +152,6 @@ public class RootLayout {
         Pair<Parent, AnalyseWindow> fxmlData = Loader.loadFXML("AnalyseWindow");
         Stage stage = new Stage();
         fxmlData.getTwo().setStage(stage);
-
         Loader.openInAWindow(stage, fxmlData.getOne(), true);
     }
 
@@ -163,6 +161,7 @@ public class RootLayout {
         if ((project.isSaved() || AlertHandler.makeAlert(CLOSE_CURR_CONFIRM).setOwner(mainStage)
                 .showAndGetResult())) {
             project.load(FileHandler.dialogLoad(project.getFile()));
+            updateStatusBar(true);
         }
         ViewUpdater.current().updateAll();
     }
@@ -176,7 +175,7 @@ public class RootLayout {
 
             Project.get().erase();
         }
-        ViewUpdater.current().updateAll();
+        viewUpdater.updateAll();
     }
 
     @FXML
@@ -190,7 +189,7 @@ public class RootLayout {
     }
 
     @FXML
-    private void handleFileSaveAs(){
+    private void handleFileSaveAs() {
 
         if (!project.isEmpty()) {
 
@@ -199,9 +198,7 @@ public class RootLayout {
                     project.getGraph(),
                     project.getCoorsMap());
 
-            if (file == null) return;
-            project.setFile(file);
-            project.setSaved(true);
+            if (file != null) project.setFile(file);
         }
     }
 
@@ -226,7 +223,7 @@ public class RootLayout {
         String output = AlertHandler.makeAlert(DEBUG).debugGetInput();
         try {
             IvascapeGenerator.generate(Integer.parseInt(output));
-            ViewUpdater.current().updateLinksView().updateCompaniesView();
+            viewUpdater.updateLinksView().updateCompaniesView();
         } catch (NumberFormatException e){
             System.out.println(e.toString());
         }

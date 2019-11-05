@@ -15,5 +15,10 @@ public class CoorsMap extends HashMap<String, Coors> {
             this.x = x;
             this.y = y;
         }
+
+        public Coors(Coors copyOf){
+            this.x = copyOf.x;
+            this.y = copyOf.y;
+        }
     }
 }

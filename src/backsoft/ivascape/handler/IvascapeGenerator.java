@@ -26,6 +26,8 @@ public class IvascapeGenerator {
         ViewUpdater.current().updateAll();
 
         Random r = new Random();
+
+        ViewUpdater.current().getGVController().normalScale();
         for (int i = 0; i < amount; i++) {
 
             int adj = r.nextInt(adjectives.length);
@@ -34,6 +36,7 @@ public class IvascapeGenerator {
             String title = adjectives[adj] + nouns[non] + suffices[suf];
             project.add(Company.createCompany().setTitle(title));
         }
+        ViewUpdater.current().getGVController().restoreScale();
         int realAmount = project.companiesAmountProperty().getValue();
         List<String> list = project.getCompaniesTitlesList();
 

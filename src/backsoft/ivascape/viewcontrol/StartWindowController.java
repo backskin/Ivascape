@@ -4,6 +4,7 @@ import backsoft.ivascape.handler.FileHandler;
 import backsoft.ivascape.handler.Loader;
 import backsoft.ivascape.handler.Preferences;
 import backsoft.ivascape.model.Project;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -17,10 +18,8 @@ public class StartWindowController {
     private boolean restart = false;
     private boolean status = false;
 
-    private static double xOffset = .0;
-    private static double yOffset = .0;
-    private static double x = .0;
-    private static double y = .0;
+    private double xOffset = .0;
+    private double yOffset = .0;
 
     @FXML
     private ImageView splash;
@@ -33,25 +32,28 @@ public class StartWindowController {
         bckgImage.setImage(Loader.loadImageResource("startbg"));
 
         splash.setOnMousePressed(event -> {
-            xOffset = startStage.getX() - event.getScreenX();
-            yOffset = startStage.getY() - event.getScreenY();
+            xOffset = event.getScreenX();
+            yOffset = event.getScreenY();
         });
 
         splash.setOnMouseDragged(event -> {
-            startStage.setX(event.getScreenX() + xOffset);
-            startStage.setY(event.getScreenY() + yOffset);
-            x = startStage.getX();
-            y = startStage.getY();
+            startStage.setX(startStage.getX() + event.getScreenX() - xOffset);
+            startStage.setY(startStage.getY() + event.getScreenY() - yOffset);
+            xOffset = event.getScreenX();
+            yOffset = event.getScreenY();
         });
     }
 
     public void setStage(Stage stage){
 
         this.startStage = stage;
-        if (restart) {
-            startStage.setX(x > 0 ? x : 0);
-            startStage.setY(y > 0 ? y : 0);
-        }
+
+        startStage.setOnCloseRequest(windowEvent -> {
+            if (!restart) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
     }
 
     public boolean getStatus(){ return status;}

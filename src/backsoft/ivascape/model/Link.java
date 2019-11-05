@@ -38,7 +38,7 @@ public class Link implements Serializable, Complex<Company, Link> {
     public Double getPrice() { return price;}
     public void setPrice(double price) {
         this.price = price;
-        priceProp.setValue(price);
+        priceProperty().setValue(price);
     }
 
     @Override
@@ -48,15 +48,13 @@ public class Link implements Serializable, Complex<Company, Link> {
     public Company two() { return end; }
 
     @Override
-    public Link getMating() { return mate; }
-
-    @Override
-    public void setMating(Link mate) { this.mate = mate; }
-
-    @Override
-    public Link createMating() {
-
-        mate = new Link(end, start, price);
+    public Link getMating() {
+        if (mate == null) {
+            mate = new Link(end, start, price);
+            mate.setMating(this);
+        }
         return mate;
     }
+
+    private void setMating(Link mate) { this.mate = mate; }
 }

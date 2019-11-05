@@ -5,6 +5,7 @@ import backsoft.ivascape.logic.Pair;
 import backsoft.ivascape.model.Project;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Parent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -27,6 +28,8 @@ public class MapViewController {
     private Slider zoomSlider;
     @FXML
     private ScrollPane surfaceScrollPane;
+
+    private BooleanProperty emptiness = new SimpleBooleanProperty(true);
 
     GraphViewController getGVController(){
         return GVController;
@@ -54,17 +57,21 @@ public class MapViewController {
 
         Pair<Parent, GraphViewController> fxml = Loader.loadFXML("GraphView");
         surfaceScrollPane.setContent(fxml.getOne());
+
         GVController = fxml.getTwo();
 
         togglePricesVisible.selectedProperty().addListener((o, b0, value) ->
                 GVController.setPricesVisible(value));
 
-        project.companiesAmountProperty().addListener(c -> {
-            zoomSlider.setDisable(project.isEmpty());
-            togglePricesVisible.setDisable(project.isEmpty());
-            resetZoomButton.setDisable(project.isEmpty());
-            cropViewButton.setDisable(project.isEmpty());
-        });
+        emptiness.addListener(((o, ov, t1) -> {
+            zoomSlider.setDisable(t1);
+            togglePricesVisible.setDisable(t1);
+            resetZoomButton.setDisable(t1);
+            cropViewButton.setDisable(t1);
+        }));
+
+        emptiness.bind(project.companiesAmountProperty().lessThan(1));
+
 
         updateView();
     }

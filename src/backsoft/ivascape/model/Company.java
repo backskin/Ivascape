@@ -10,7 +10,7 @@ import java.util.UUID;
 public class Company implements Serializable, Comparable<Company> {
 
     private transient SimpleStringProperty titleProp;
-    private String ID;
+    private final String ID;
     private String title;
     private Double money;
     private String address;

@@ -26,38 +26,86 @@ public abstract class GraphHandler<Ver extends Comparable<Ver>, Edge extends Com
         return false;
     }
 
-    public boolean isStrong(){
+    private boolean dfs_opti(int start, int end, boolean[] visited){
+        if (start == end) return true;
+        visited[start] = true;
+        for (int i = 0; i < graph.size(); i++) {
+            if (graph.getEdge(start, i) != null && !visited[i] && dfs_opti(i, end, visited))
+                return true;
+        }
+        return false;
+    }
 
-        if (graph.size() < 1) return false;
+    public boolean isStrong_opti(){
 
-        for (Iterator<Ver> iterOne = graph.getVertexIterator(); iterOne.hasNext();){
-            Ver i = iterOne.next();
-            for (Iterator<Ver> iterTwo = graph.getVertexIterator(); iterTwo.hasNext();) {
-                Ver j = iterTwo.next();
-                if (!dfs(i, j, newMap()))
-                    return false;
-            }
+        int size = graph.size();
+        if (size < 1) return false;
+        for (int i = 0; i < size; i++) {
+           if (!dfs_opti(0,i, new boolean[graph.size()]))
+               return false;
         }
         return true;
     }
 
-    private void buildComponent(Ver ver, G original, G component, Map<Ver, Boolean> visited){
+    @Deprecated
+    public boolean isStrong_old() {
+
+        if (graph.size() < 1) return false;
+        Ver one = graph.getVertex(0);
+        for (Iterator<Ver> iterTwo = graph.getVertexIterator(); iterTwo.hasNext(); ) {
+            Ver j = iterTwo.next();
+            if (!dfs(one, j, newMap()))
+                return false;
+        }
+        return true;
+    }
+
+    public List<G> getComponents_opti(){
+
+        boolean[] visited = new boolean[graph.size()];
+        List<G> components = newList();
+        for (int i = 0; i < visited.length; i++) {
+            if (visited[i]) continue;
+            G newComponent = newGraph();
+            buildComponent_opti(i, newComponent, visited);
+            components.add(newComponent);
+        }
+        return components;
+    }
+
+    private void buildComponent_opti(int start, G component, boolean[] visited){
+        Ver ver = graph.getVertex(start);
+        component.addVertex(graph.getVertex(start));
+        visited[start] = true;
+
+        for (int i = 0; i < visited.length; i++) {
+            if (i == start) continue;
+            Edge e = graph.getEdge(start, i);
+            if (e == null) continue;
+            if (visited[i]) component.addEdge(ver, graph.getVertex(i), e);
+            else buildComponent_opti(i, component, visited);
+        }
+    }
+
+    @Deprecated
+    private void buildComponent(Ver ver, G component, Map<Ver, Boolean> visited){
 
         if (visited.get(ver) != null && visited.get(ver)) return;
         visited.put(ver, true);
 
         component.addVertex(ver);
         
-        for (Iterator<Ver> verIterator = original.getVertexIterator(); verIterator.hasNext();){
+        for (Iterator<Ver> verIterator = graph.getVertexIterator(); verIterator.hasNext();){
             Ver nextVer = verIterator.next();
-            Edge edge = original.getEdge(ver, nextVer);
+            Edge edge = graph.getEdge(ver, nextVer);
             if (edge != null ){
-                buildComponent(nextVer, original, component, visited);
+                buildComponent(nextVer, component, visited);
                 component.addEdge(ver, nextVer, edge);
             }
         }
     }
 
+    @Deprecated
     public List<G> getConnectComponents(){
 
         List<Ver> viewQueue = newList();
@@ -70,10 +118,10 @@ public abstract class GraphHandler<Ver extends Comparable<Ver>, Edge extends Com
         while (!viewQueue.isEmpty()){
 
             G newComponent = newGraph();
-            components.add(newComponent);
-            buildComponent(viewQueue.get(0), graph, newComponent, newMap());
+            buildComponent(viewQueue.get(0), newComponent, newMap());
             for (Iterator<Ver> it = newComponent.getVertexIterator(); it.hasNext();)
                 viewQueue.remove(it.next());
+            components.add(newComponent);
         }
 
         return components;
@@ -98,7 +146,7 @@ public abstract class GraphHandler<Ver extends Comparable<Ver>, Edge extends Com
 
     public G getPrimResult() {
 
-        if (!isStrong()) return null;
+        if (!isStrong_opti()) return null;
 
         Ver inspectVer = graph.getVertexIterator().next();
 

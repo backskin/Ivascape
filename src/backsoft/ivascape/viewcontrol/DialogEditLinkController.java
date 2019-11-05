@@ -85,12 +85,14 @@ public class DialogEditLinkController {
             if (null == project.getCompany(firstField.getText()) || null == project.getCompany(secondField.getText()))
                 throw new Exception("\n"+Preferences.get().getStringFromBundle("error.wrongcomname"));
 
+            ViewUpdater.current().getGVController().normalScale();
             project.add(firstField.getText(), secondField.getText(), price);
+            ViewUpdater.current().getGVController().restoreScale();
             confirmed = true;
             dialogStage.close();
 
         } catch (Exception e) {
-            AlertHandler.makeAlert(FIELDS_ISSUE).setOwner(dialogStage).customContent(e.getMessage()).show();
+            AlertHandler.makeAlert(FIELDS_ISSUE).setOwner(dialogStage).customContent(e.toString()).show();
         }
     }
 

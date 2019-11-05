@@ -12,6 +12,16 @@ public abstract class GraphOnList<K extends Comparable<K>, V extends Complex<K, 
     private final List<K> vers = new ArrayList<>();
     private final List<List<V>> edges = new ArrayList<>();
 
+    @Override
+    public K getVertex(int index) {
+        return vers.get(index);
+    }
+
+    @Override
+    public V getEdge(int start, int end) {
+        return edges.get(start).get(end);
+    }
+
     public int getEdgeSize(){
         int result = 0;
         for (int i = 0; i < edges.size(); i++){
@@ -25,16 +35,14 @@ public abstract class GraphOnList<K extends Comparable<K>, V extends Complex<K, 
     @Override
     public void addVertex(K vertex) {
 
-        vers.add(vertex);
         edges.add(new ArrayList<>());
-
-        for (int i = 0; i < vers.size(); i++) {
-
-            edges.get(edges.size()-1).add(null);
+        int len = edges.size()-1;
+        for (int i = 0; i < len; i++) {
             edges.get(i).add(null);
+            edges.get(len).add(null);
         }
-
-        edges.get(edges.size()-1).add(null);
+        edges.get(len).add(null);
+        vers.add(vertex);
     }
     @Override
     public boolean addEdge(K start, K end, V value) {
@@ -43,13 +51,16 @@ public abstract class GraphOnList<K extends Comparable<K>, V extends Complex<K, 
         int j = vers.indexOf(end);
 
         if (i < 0 || j < 0 || i == j) return false;
-
-        V mateValue = value.createMating();
-        mateValue.setMating(value);
-
         edges.get(i).set(j, value);
         edges.get(j).set(i, value.getMating());
         return true;
+    }
+
+    @Override
+    @Deprecated
+    public void addEdge(int start, int end, V value) {
+        edges.get(start).set(end, value);
+        edges.get(end).set(start, value.getMating());
     }
 
     @Override

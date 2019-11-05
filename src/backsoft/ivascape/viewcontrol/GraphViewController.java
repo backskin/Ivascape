@@ -16,6 +16,8 @@ import java.util.*;
 
 public class GraphViewController {
 
+    private static Random r = new Random();
+
     private final Map<Company, VisualVertex> visualVertexMap = new HashMap<>();
     private final Map<Link, VisualEdge> visualEdgeMap = new HashMap<>();
     private CoorsMap coorsMap = new CoorsMap();
@@ -24,7 +26,19 @@ public class GraphViewController {
 
     @FXML
     private Pane surface;
+
+    public void normalScale() {
+        scaleBackup = scale.get();
+        scale.set(100);
+    }
+
+    public void restoreScale(){
+        scale.set(scaleBackup);
+    }
+
     private DoubleProperty scale;
+    private double scaleBackup;
+
     private final BooleanProperty priceShown =  new SimpleBooleanProperty(false);
     private BooleanProperty saved;
 
@@ -35,7 +49,6 @@ public class GraphViewController {
         saved = property;
     }
 
-    CoorsMap getCoorsMap() { return coorsMap; }
     Graph<Company, Link> getGraph() { return graph; }
 
     void setView(DoubleProperty scaleProp, GraphOnList<Company, Link> graph, CoorsMap coorsMap, boolean isDraggable) {
@@ -47,9 +60,10 @@ public class GraphViewController {
         visualEdgeMap.clear();
         visualVertexMap.clear();
         surface.getChildren().clear();
-
+        normalScale();
         for (Iterator<Company> iterator = graph.getVertexIterator(); iterator.hasNext();) add(iterator.next());
         for (Iterator<Link> it = graph.getEdgeIterator(); it.hasNext();) add(it.next());
+        restoreScale();
     }
 
     void cropView(){
@@ -68,31 +82,6 @@ public class GraphViewController {
         for (VisualVertex vertex : visualVertexMap.values()) vertex.moveXY(xShift, yShift);
     }
 
-    public void add(Company company){
-
-        double scaleValue = scale.getValue();
-        scale.setValue(100.0);
-
-        Pair<Parent, VisualVertex> fxml = Loader.loadFXML("VisualVertex");
-        surface.getChildren().add(fxml.getOne());
-        VisualVertex vertex = fxml.getTwo();
-
-        vertex.setTitle(company.titleProperty());
-        if (coorsMap.get(company.getID()) == null) coorsMap.put(company.getID(),
-                new CoorsMap.Coors(
-                        surface.getLayoutX() + (new Random()).nextInt(1000),
-                        surface.getLayoutY() + (new Random()).nextInt(500)));
-
-        vertex.xCenterProperty().addListener((o, ov, nv) -> coorsMap.get(company.getID()).x = nv.doubleValue());
-        vertex.yCenterProperty().addListener((o, ov, nv) -> coorsMap.get(company.getID()).y = nv.doubleValue());
-        scale.addListener(vertex.scaleListener);
-        visualVertexMap.put(company, vertex);
-        if (draggable) makeNodeDraggable(vertex);
-        vertex.setXY(coorsMap.get(company.getID()));
-
-        scale.setValue(scaleValue);
-    }
-
     void flush(){
         for (VisualVertex vertex : visualVertexMap.values()){
             scale.removeListener(vertex.scaleListener);
@@ -109,25 +98,48 @@ public class GraphViewController {
         visualEdgeMap.clear();
     }
 
-    public void add(Link link){
-        Double scaleValue = scale.getValue();
-        scale.setValue(100.0);
+    public void add(Company company){
 
+        String ID = company.getID();
+        Pair<Parent, VisualVertex> fxml = Loader.loadFXML("VisualVertex");
+        surface.getChildren().add(fxml.getOne());
+        VisualVertex vertex = fxml.getTwo();
+        vertex.setTitle(company.titleProperty());
+
+        CoorsMap.Coors coors = coorsMap.get(ID);
+        if (coors == null) {
+            coors = new CoorsMap.Coors(r.nextInt(1000), r.nextInt(500));
+            coorsMap.put(ID, coors);
+        }
+        vertex.setXY(coors);
+        visualVertexMap.put(company, vertex);
+        scale.addListener(vertex.scaleListener);
+
+        if (draggable) {
+
+            vertex.getPane().layoutXProperty().addListener((o, ov, nv) -> coorsMap.get(ID).x = (Double) nv);
+            vertex.getPane().layoutYProperty().addListener((o, ov, nv) -> coorsMap.get(ID).y = (Double) nv);
+            makeNodeDraggable(vertex);
+        }
+    }
+
+    public void add(Link link){
         VisualVertex one = visualVertexMap.get(link.one());
         VisualVertex two = visualVertexMap.get(link.two());
 
         VisualEdge edge =  new VisualEdge(
                 one.xCenterProperty(), one.yCenterProperty(),
-                two.xCenterProperty(), two.yCenterProperty(), link.priceProperty());
-        edge.getPriceLabel().visibleProperty().bind(priceShown);
-
+                two.xCenterProperty(), two.yCenterProperty(), link.priceProperty(), draggable);
         scale.addListener(edge.getScaleListener());
-        visualEdgeMap.put(link, edge);
 
         surface.getChildren().add(0, edge.getLine());
-        surface.getChildren().add(edge.getPriceLabel());
+        visualEdgeMap.put(link, edge);
 
-        scale.setValue(scaleValue);
+        if (draggable) {
+
+            edge.getPriceLabel().visibleProperty().bind(priceShown);
+            surface.getChildren().add(1, edge.getPriceLabel());
+        }
     }
 
     public void remove(Company company){

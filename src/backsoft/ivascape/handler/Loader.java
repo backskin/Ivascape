@@ -70,6 +70,7 @@ public class Loader {
         primaryStage = mainStage;
         primaryStage.setOnCloseRequest(Preferences::onExit);
         Stage startScreenStage = new Stage();
+
         startScreenStage.initStyle(StageStyle.TRANSPARENT);
         if (welcomeScreen(startScreenStage) == TERMINATED) {
             Platform.exit();

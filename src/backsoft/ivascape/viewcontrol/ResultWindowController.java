@@ -2,6 +2,7 @@ package backsoft.ivascape.viewcontrol;
 
 import backsoft.ivascape.handler.FileHandler;
 import backsoft.ivascape.handler.Loader;
+import backsoft.ivascape.logic.CoorsMap;
 import backsoft.ivascape.logic.Pair;
 import backsoft.ivascape.model.IvascapeGraph;
 import backsoft.ivascape.model.Link;
@@ -24,8 +25,9 @@ public class ResultWindowController {
     private Stage stage;
 
     private Double totalPrice = 0.0;
-    private GraphViewController gvController;
-
+    private CoorsMap coorsMap;
+    private Project project = Project.get();
+    private IvascapeGraph primGraph;
     @FXML
     private Slider zoomSlider;
     @FXML
@@ -54,16 +56,17 @@ public class ResultWindowController {
     @FXML
     private void initialize(){
 
-        VisualVertex.setColor(Color.CORNFLOWERBLUE);
-        VisualEdge.setColor(Color.CORNFLOWERBLUE);
+        VisualVertex.setColor(Color.DODGERBLUE);
+        VisualEdge.setColor(Color.DODGERBLUE);
 
         Pair<Parent, GraphViewController> resultFxml = Loader.loadFXML("GraphView");
         pane.setContent(resultFxml.getOne());
-        gvController = resultFxml.getTwo();
-
-        gvController.setView(zoomSlider.valueProperty(), Project.get().applyPrimAlgorithm(),
-                Project.get().getCoorsMap(),true);
-
+        GraphViewController gvController = resultFxml.getTwo();
+        coorsMap = project.copyCoorsMap();
+        primGraph = project.applyPrimAlgorithm();
+        gvController.setView(zoomSlider.valueProperty(), primGraph,
+                coorsMap,true);
+        gvController.cropView();
         gvController.priceShownProperty().bind(showHidePrices.selectedProperty());
 
         for (Iterator<Link> it = gvController.getGraph().getEdgeIterator(); it.hasNext();){
@@ -84,14 +87,14 @@ public class ResultWindowController {
 
         double sliderValue = zoomSlider.getValue();
         zoomSlider.setValue(100);
-        FileHandler.dialogSaveAs(null, (IvascapeGraph) gvController.getGraph(), gvController.getCoorsMap());
+        FileHandler.dialogSaveAs(null, primGraph, coorsMap);
         zoomSlider.setValue(sliderValue);
     }
 
     @FXML
     private void handleExport(){
 
-        FileHandler.dialogExport((IvascapeGraph) gvController.getGraph(), stage);
+        FileHandler.dialogExport(primGraph, stage);
     }
 
     @FXML

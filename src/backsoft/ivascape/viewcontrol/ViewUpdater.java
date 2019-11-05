@@ -10,7 +10,7 @@ public class ViewUpdater {
     private LinksViewController LVController;
     private MapViewController MVController;
 
-    static void putTabControllers(
+    static ViewUpdater putTabControllers(
             CompaniesViewController companiesViewController,
             LinksViewController linksViewController,
             MapViewController mapViewController) {
@@ -19,6 +19,7 @@ public class ViewUpdater {
         viewUpdater.CVController = companiesViewController;
         viewUpdater.LVController = linksViewController;
         viewUpdater.MVController = mapViewController;
+        return viewUpdater;
     }
 
     public ViewUpdater updateCompaniesView() {

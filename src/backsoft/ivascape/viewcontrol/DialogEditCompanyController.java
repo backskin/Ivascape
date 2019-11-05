@@ -115,7 +115,6 @@ public class DialogEditCompanyController {
                 editCompany = Company.createCompany().setTitle(titleField.getText()).setAddress(
                         addressArea.getText()).setMoney(
                         Double.parseDouble(capitalField.getText())).setDate(datePicker.getValue());
-
                 project.add(editCompany);
             } else {
                 editCompany

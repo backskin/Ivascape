@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 
 <VBox fx:id="pane" alignment="CENTER" cacheShape="false" fillWidth="false" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.VisualVertex">
-    <Label fx:id="titleLabel" alignment="CENTER" cacheShape="false" centerShape="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" scaleShape="false" style="-fx-background-color: CORNFLOWERBLUE;" text="-" textFill="WHITE">
+    <Label fx:id="titleLabel" alignment="CENTER" cacheShape="false" centerShape="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" mouseTransparent="true" opacity="0.65" scaleShape="false" style="-fx-background-color: DODGERBLUE;" text="-" textFill="WHITE">
       <font>
          <Font size="14.0" />
       </font>

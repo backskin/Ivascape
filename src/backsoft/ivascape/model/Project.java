@@ -53,7 +53,7 @@ public class Project implements Serializable {
     public CoorsMap getCoorsMap() { return coorsMap; }
 
     public File getFile() { return file; }
-    public void setFile(File file) { this.file = file; }
+    public void setFile(File file) { this.file = file; saved.setValue(true);}
 
     public boolean isSaved() { return saved.get(); }
     public void setSaved(boolean value) { saved.setValue(value); }
@@ -66,12 +66,21 @@ public class Project implements Serializable {
 
     public boolean isEmpty() { return graph == null || graph.size() < 1; }
 
+    public CoorsMap copyCoorsMap(){
+
+        ViewUpdater.current().getGVController().normalScale();
+        CoorsMap map = new CoorsMap();
+        for (String s : coorsMap.keySet()) map.put(s, new CoorsMap.Coors(coorsMap.get(s)));
+        ViewUpdater.current().getGVController().restoreScale();
+        return map;
+    }
+
     public boolean load(Triplet<File, IvascapeGraph, CoorsMap> triplet) {
 
         if (triplet == null) return false;
 
-        setSaved(true);
-        setFile(triplet.getOne());
+        saved.setValue(true);
+        file = triplet.getOne();
         this.graph = triplet.getTwo();
         coorsMap = triplet.getThree();
         companiesAmount.setValue(graph.size());
@@ -84,7 +93,7 @@ public class Project implements Serializable {
     public void saveProject(){
 
         FileHandler.saveToFile(file, graph, coorsMap);
-        setSaved(true);
+        saved.setValue(true);
     }
 
     public <T extends Comparable<T>> Company getCompany(T tag){
@@ -114,15 +123,15 @@ public class Project implements Serializable {
     }
 
     public boolean isGraphStrong(){
-        return graphHandler.isStrong();
+        return graphHandler.isStrong_opti();
     }
 
     public void add(Company company){
         if (getCompany(company.getTitle()) == null) {
             graph.addVertex(company);
             companiesAmount.setValue(companiesAmount.getValue()+1);
+            saved.setValue(false);
             ViewUpdater.current().getGVController().add(company);
-            setSaved(false);
         }
     }
 
@@ -131,9 +140,9 @@ public class Project implements Serializable {
         Company two = getCompany(titleTwo);
 
         if (one == null || two == null || one.equals(two)) return;
-
-        if (graph.getEdge(one, two) == null) {
-            Link newLink = new Link(one, two, price);
+        Link newLink = graph.getEdge(one, two);
+        if (newLink == null) {
+            newLink = new Link(one, two, price);
             if (graph.addEdge(one, two, newLink)) {
                 linksAmount.setValue(linksAmount.get() + 1);
                 saved.setValue(false);
@@ -141,7 +150,7 @@ public class Project implements Serializable {
             }
         }
         else {
-            graph.getEdge(one, two).setPrice(price);
+            newLink.setPrice(price);
             saved.setValue(false);
         }
     }
@@ -175,6 +184,6 @@ public class Project implements Serializable {
     }
 
     public List<IvascapeGraph> getComponents(){
-        return graphHandler.getConnectComponents();
+        return graphHandler.getComponents_opti();
     }
 }

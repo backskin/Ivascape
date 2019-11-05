@@ -5,17 +5,35 @@ import backsoft.ivascape.handler.Loader;
 import backsoft.ivascape.model.Link;
 import backsoft.ivascape.model.Project;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.DELETE_CONFIRM;
 public class LinksViewCellController {
 
+    @FXML
+    private Button delButton;
+    @FXML
+    private Button editButton;
     @FXML
     private Label name;
     @FXML
     private Label price;
 
     private Link link;
+
+    @FXML
+    void initialize(){
+        ImageView view = new ImageView(Loader.loadImageResource("edit"));
+        view.setFitWidth(16);
+        view.setFitHeight(16);
+        editButton.setGraphic(view);
+        view = new ImageView(Loader.loadImageResource("del"));
+        view.setFitWidth(16);
+        view.setFitHeight(16);
+        delButton.setGraphic(view);
+    }
 
     void setFieldsFor(Link link) {
 
