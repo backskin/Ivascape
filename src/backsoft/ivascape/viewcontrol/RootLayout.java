@@ -125,7 +125,7 @@ public class RootLayout {
 
     @FXML
     private void handleAddVertex(){
-        Loader.loadDialogEditCompany(null);
+        Loader.loadDialogEditCompany("");
     }
 
     @FXML

@@ -10,6 +10,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.FIELDS_ISSUE;
@@ -46,15 +47,17 @@ public class DialogEditLinkController {
         dialogStage.initOwner(Loader.getMainStage());
     }
 
-    public void setFields(int... input) {
-        dialogStage.setTitle(Preferences.get().getStringFromBundle(input == null ?
+    public void setFields(String... companies) {
+
+        dialogStage.setTitle(Preferences.get().getStringFromBundle(companies == null ?
                 "edittabs.header.newlink" : "edittabs.header.editlink"));
 
-        if (input == null || input.length < 2){
+        if (companies == null || companies.length < 2){
 
-            List<String> namesList = project.getCompaniesTitlesList();
-            if (input != null && input.length > 0){
-                String firstCompanyName = project.getCompany(input[0]).getTitle();
+            List<String> namesList = new ArrayList<>();
+            project.getIteratorOfCompanies().forEachRemaining(company -> namesList.add(company.getTitle()));
+            if (companies != null && companies.length > 0){
+                String firstCompanyName = project.findCompany(companies[0]).getTitle();
                 namesList.remove(firstCompanyName);
                 firstField.setText(firstCompanyName);
                 firstField.setDisable(true);
@@ -63,11 +66,11 @@ public class DialogEditLinkController {
             }
             TextFields.bindAutoCompletion(secondField, namesList);
         } else {
-            firstField.setText(project.getCompany(input[0]).getTitle());
+            firstField.setText(project.findCompany(companies[0]).getTitle());
             firstField.setDisable(true);
-            secondField.setText(project.getCompany(input[1]).getTitle());
+            secondField.setText(project.findCompany(companies[1]).getTitle());
             secondField.setDisable(true);
-            priceField.setText(project.getLink(project.getCompany(input[0]), project.getCompany(input[1])).getPrice().toString());
+            priceField.setText(project.getLink(project.findCompany(companies[0]), project.findCompany(companies[1])).getPrice().toString());
         }
     }
 
@@ -82,7 +85,7 @@ public class DialogEditLinkController {
                 throw new NumberFormatException("\n"+Preferences.get().getStringFromBundle("error.wrongmoney"));
             if (firstField.getText().equals(secondField.getText()))
                 throw new Exception("\n"+Preferences.get().getStringFromBundle("error.reflex"));
-            if (null == project.getCompany(firstField.getText()) || null == project.getCompany(secondField.getText()))
+            if (null == project.findCompany(firstField.getText()) || null == project.findCompany(secondField.getText()))
                 throw new Exception("\n"+Preferences.get().getStringFromBundle("error.wrongcomname"));
 
             ViewUpdater.current().getGVController().normalScale();

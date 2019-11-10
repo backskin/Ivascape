@@ -4,6 +4,7 @@ import backsoft.ivascape.model.Company;
 import backsoft.ivascape.model.Project;
 import backsoft.ivascape.viewcontrol.ViewUpdater;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -38,7 +39,8 @@ public class IvascapeGenerator {
         }
         ViewUpdater.current().getGVController().restoreScale();
         int realAmount = project.companiesAmountProperty().getValue();
-        List<String> list = project.getCompaniesTitlesList();
+        List<String> list = new ArrayList<>();
+        project.getIteratorOfCompanies().forEachRemaining(company -> list.add(company.getID()));
 
         int lAm = r.nextInt(realAmount * realAmount) / 2;
         for (int i = 0; i < lAm; i++) {

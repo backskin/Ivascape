@@ -74,7 +74,8 @@ public class CompaniesViewController {
     }
 
     private void openEditDialog(Company company){
-        companiesTable.getSelectionModel().select((Company) Loader.loadDialogEditCompany(company));
+
+        companiesTable.getSelectionModel().select((Company) Loader.loadDialogEditCompany(company.getID()));
     }
 
     @FXML

@@ -45,7 +45,7 @@ public class LinksViewCellController {
     @FXML
     private void handleEdit(){
 
-        Loader.loadDialogEditLink(link.one().hashCode(), link.two().hashCode());
+        Loader.loadDialogEditLink(link.one().getID(), link.two().getID());
     }
 
     @FXML

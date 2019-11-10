@@ -96,25 +96,18 @@ public class Project implements Serializable {
         saved.setValue(true);
     }
 
-    public <T extends Comparable<T>> Company getCompany(T tag){
+    public <T extends Comparable<T>> Company findCompany(String tag){
 
         for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext();){
             Company c = i.next();
-            Object tempTag = tag instanceof String ? c.getTitle() : tag instanceof Integer ? c.hashCode() : null;
-            if (tag.equals(tempTag)) return c;
+            if (c.getID().equals(tag))
+                return c;
         }
         return null;
     }
 
     public Link getLink(Company companyOne, Company companyTwo){
         return graph.getEdge(companyOne,companyTwo);
-    }
-
-    public List<String> getCompaniesTitlesList(){
-
-        List<String> output = new ArrayList<>();
-        graph.getVertexIterator().forEachRemaining(company -> output.add(company.getTitle()));
-        return output;
     }
 
     public IvascapeGraph applyPrimAlgorithm(){
@@ -126,7 +119,7 @@ public class Project implements Serializable {
     }
 
     public void add(Company company){
-        if (getCompany(company.getTitle()) == null) {
+        if (findCompany(company.getID()) == null) {
             graph.addVertex(company);
             companiesAmount.setValue(companiesAmount.getValue()+1);
             saved.setValue(false);
@@ -134,9 +127,9 @@ public class Project implements Serializable {
         }
     }
 
-    public void add(String titleOne, String titleTwo, double price){
-        Company one = getCompany(titleOne);
-        Company two = getCompany(titleTwo);
+    public void add(String id1, String id2, double price){
+        Company one = findCompany(id1);
+        Company two = findCompany(id2);
 
         if (one == null || two == null || one.equals(two)) return;
         Link newLink = graph.getEdge(one, two);

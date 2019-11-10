@@ -2,7 +2,6 @@ package backsoft.ivascape.handler;
 
 import backsoft.ivascape.FXApp;
 import backsoft.ivascape.viewcontrol.*;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -19,7 +18,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.ISSUE;
-import static backsoft.ivascape.viewcontrol.StartWindowController.TERMINATED;
 
 public class Loader {
 
@@ -72,14 +70,11 @@ public class Loader {
         Stage startScreenStage = new Stage();
 
         startScreenStage.initStyle(StageStyle.TRANSPARENT);
-        if (welcomeScreen(startScreenStage) == TERMINATED) {
-            Platform.exit();
-            System.exit(0);
-        }
+        welcomeScreen(startScreenStage);
         reloadApp();
     }
 
-    private static boolean welcomeScreen(Stage stage) {
+    private static void welcomeScreen(Stage stage) {
 
         stage.setTitle(prefs.getStringFromBundle("welcome"));
         Pair<Parent, StartWindowController> fxmlData = loadFXML("StartWindow");
@@ -87,8 +82,7 @@ public class Loader {
         controller.setStage(stage);
 
         openInAWindow(stage, fxmlData.getOne(), false);
-
-        return controller.isLocaleChanged() ? welcomeScreen(stage) : controller.getStatus();
+        if (controller.isLocaleChanged()) welcomeScreen(stage);
     }
 
     public static void reloadApp() {
@@ -112,14 +106,14 @@ public class Loader {
         return fxmlData.getTwo();
     }
 
-    public static void loadDialogEditLink(int... coms) {
+    public static void loadDialogEditLink(String... companies) {
 
         Pair<Parent, DialogEditLinkController> fxmlData = loadFXML("DialogEditLink");
         DialogEditLinkController controller = fxmlData.getTwo();
 
         Stage dialogStage = new Stage();
         controller.setStage(dialogStage);
-        controller.setFields(coms);
+        controller.setFields(companies);
 
         openInAWindow(dialogStage, fxmlData.getOne(), false);
 
@@ -128,14 +122,14 @@ public class Loader {
         }
     }
 
-    public static Object loadDialogEditCompany(Object company) {
+    public static Object loadDialogEditCompany(String comID) {
 
         Pair<Parent, DialogEditCompanyController> fxmlData = loadFXML("DialogEditCompany");
         DialogEditCompanyController controller = fxmlData.getTwo();
 
         Stage dialogStage = new Stage();
         controller.setStage(dialogStage);
-        controller.setFields(company);
+        controller.setFields(comID);
 
         openInAWindow(dialogStage, fxmlData.getOne(), false);
 
