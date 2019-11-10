@@ -112,10 +112,9 @@ public class Project implements Serializable {
 
     public List<String> getCompaniesTitlesList(){
 
-        return new ArrayList<>(){{
-            for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext();)
-                add(i.next().getTitle());
-        }};
+        List<String> output = new ArrayList<>();
+        graph.getVertexIterator().forEachRemaining(company -> output.add(company.getTitle()));
+        return output;
     }
 
     public IvascapeGraph applyPrimAlgorithm(){

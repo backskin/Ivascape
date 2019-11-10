@@ -42,7 +42,7 @@ public class LinksViewController{
 
     private List<VBox> getTableViewItems() {
 
-        return new ArrayList<>() {{
+        return new ArrayList<VBox>() {{
             for (Iterator<Company> itCom = project.getIteratorOfCompanies(); itCom.hasNext(); ) {
 
                 Pair<Parent, LinksViewItemController> fxml = Loader.loadFXML("LinksViewItem");

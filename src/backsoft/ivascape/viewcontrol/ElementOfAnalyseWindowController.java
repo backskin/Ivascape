@@ -7,16 +7,12 @@ import backsoft.ivascape.model.Company;
 import backsoft.ivascape.model.IvascapeGraph;
 import backsoft.ivascape.model.Project;
 import javafx.beans.property.DoubleProperty;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class ElementOfAnalyseWindowController {
 
@@ -40,10 +36,7 @@ public class ElementOfAnalyseWindowController {
         fxml.getTwo().setView(scale, component, Project.get().copyCoorsMap(), false);
         fxml.getTwo().cropView();
         scrollPane.setContent(surface);
-        tableView.setItems(FXCollections.observableList(new ArrayList<>(){{
-            for (Iterator<Company> iterator = component.getVertexIterator(); iterator.hasNext();)
-                add(iterator.next());
-        }}));
+        component.getVertexIterator().forEachRemaining(company -> tableView.getItems().add(company));
         tableColumn.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         tableColumn.setText(number + Preferences.get().getStringFromBundle(
                 "editwindows.component"));
