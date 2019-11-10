@@ -26,7 +26,7 @@ public class FileHandler {
                         prefs.getStringFromBundle("filewindow.type.xls"),"*.xls")
         );
 
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+"\\Desktop"));
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 
         ExcelHandler.saveItAsXLS(graph, fileChooser.showSaveDialog(ownerStage));
     }
@@ -43,9 +43,7 @@ public class FileHandler {
         fileChooser.setTitle(prefs.getStringFromBundle("filewindow.title.open"));
 
         fileChooser.setInitialDirectory(
-                new File(file == null ?
-                        System.getProperty("user.home") + "\\Desktop"
-                        : file.getParent()));
+                new File(file == null ? System.getProperty("user.home") : file.getParent()));
 
         return openFile(fileChooser.showOpenDialog(Loader.getMainStage()));
     }
@@ -84,8 +82,9 @@ public class FileHandler {
                         prefs.getStringFromBundle("filewindow.type.ivp"), "*.ivp"));
 
         if (file == null) {
-            fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "\\Desktop"));
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
             file = fileChooser.showSaveDialog(Loader.getMainStage());
+            if (!file.getName().endsWith(".ivp")) file = new File(file.getName() + ".ivp");
         }
         else {
             fileChooser.setInitialFileName(file.getName());

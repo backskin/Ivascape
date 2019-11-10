@@ -100,7 +100,6 @@ public class DialogEditCompanyController {
 
         if (errorMessage.length() == 0) {
             return true;
-
         } else {
             AlertHandler.makeAlert(FIELDS_ISSUE).setOwner(dialogStage).customContent(errorMessage).show();
             return false;
