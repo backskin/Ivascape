@@ -55,9 +55,10 @@ public class StartWindowController {
 
     @FXML
     private void handleExit() {
-        startStage.close();
+
         Platform.exit();
         System.exit(0);
+        startStage.close();
     }
 
     @FXML

@@ -50,7 +50,7 @@ public class DialogEditCompanyController {
 
         if (IDtag == null || IDtag.isEmpty()) return;
 
-        editCompany = project.findCompany(IDtag);
+        editCompany = project.findCompanyByID(IDtag);
         titleField.setText(editCompany.getTitle());
         capitalField.setText(Double.toString(editCompany.getMoney()));
         addressArea.setText(editCompany.getAddress());
@@ -95,7 +95,7 @@ public class DialogEditCompanyController {
             errorMessage += "\n" + prefs.getStringFromBundle("error.emptyname");
 
         if (editCompany == null && !titleField.getText().isEmpty()
-                && project.findCompany(titleField.getText()) != null)
+                && project.findCompanyByID(titleField.getText()) != null)
                 errorMessage +=  "\n" + prefs.getStringFromBundle("error.dubc");
 
         if (errorMessage.length() == 0) {

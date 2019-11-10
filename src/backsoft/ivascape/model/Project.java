@@ -11,7 +11,6 @@ import javafx.beans.property.*;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -96,12 +95,20 @@ public class Project implements Serializable {
         saved.setValue(true);
     }
 
-    public <T extends Comparable<T>> Company findCompany(String tag){
+    public Company findCompanyByID(String tag){
 
         for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext();){
             Company c = i.next();
             if (c.getID().equals(tag))
                 return c;
+        }
+        return null;
+    }
+
+    public Company findCompanyByTitle(String tag){
+        for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext();){
+            Company c = i.next();
+            if (c.getTitle().equals(tag)) return c;
         }
         return null;
     }
@@ -119,7 +126,7 @@ public class Project implements Serializable {
     }
 
     public void add(Company company){
-        if (findCompany(company.getID()) == null) {
+        if (findCompanyByID(company.getID()) == null) {
             graph.addVertex(company);
             companiesAmount.setValue(companiesAmount.getValue()+1);
             saved.setValue(false);
@@ -128,8 +135,8 @@ public class Project implements Serializable {
     }
 
     public void add(String id1, String id2, double price){
-        Company one = findCompany(id1);
-        Company two = findCompany(id2);
+        Company one = findCompanyByID(id1);
+        Company two = findCompanyByID(id2);
 
         if (one == null || two == null || one.equals(two)) return;
         Link newLink = graph.getEdge(one, two);

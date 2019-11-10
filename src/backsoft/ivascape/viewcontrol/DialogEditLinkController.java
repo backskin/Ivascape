@@ -57,7 +57,7 @@ public class DialogEditLinkController {
             List<String> namesList = new ArrayList<>();
             project.getIteratorOfCompanies().forEachRemaining(company -> namesList.add(company.getTitle()));
             if (companies != null && companies.length > 0){
-                String firstCompanyName = project.findCompany(companies[0]).getTitle();
+                String firstCompanyName = project.findCompanyByID(companies[0]).getTitle();
                 namesList.remove(firstCompanyName);
                 firstField.setText(firstCompanyName);
                 firstField.setDisable(true);
@@ -66,11 +66,11 @@ public class DialogEditLinkController {
             }
             TextFields.bindAutoCompletion(secondField, namesList);
         } else {
-            firstField.setText(project.findCompany(companies[0]).getTitle());
+            firstField.setText(project.findCompanyByID(companies[0]).getTitle());
             firstField.setDisable(true);
-            secondField.setText(project.findCompany(companies[1]).getTitle());
+            secondField.setText(project.findCompanyByID(companies[1]).getTitle());
             secondField.setDisable(true);
-            priceField.setText(project.getLink(project.findCompany(companies[0]), project.findCompany(companies[1])).getPrice().toString());
+            priceField.setText(project.getLink(project.findCompanyByID(companies[0]), project.findCompanyByID(companies[1])).getPrice().toString());
         }
     }
 
@@ -82,10 +82,12 @@ public class DialogEditLinkController {
         try {
             double price = Double.parseDouble(priceField.getText());
             if (price <= 0.0)
-                throw new NumberFormatException("\n"+Preferences.get().getStringFromBundle("error.wrongmoney"));
+                throw new NumberFormatException("\n"+Preferences.get()
+                        .getStringFromBundle("error.wrongmoney"));
             if (firstField.getText().equals(secondField.getText()))
                 throw new Exception("\n"+Preferences.get().getStringFromBundle("error.reflex"));
-            if (null == project.findCompany(firstField.getText()) || null == project.findCompany(secondField.getText()))
+            if (null == project.findCompanyByTitle(firstField.getText())
+                    || null == project.findCompanyByTitle(secondField.getText()))
                 throw new Exception("\n"+Preferences.get().getStringFromBundle("error.wrongcomname"));
 
             ViewUpdater.current().getGVController().normalScale();

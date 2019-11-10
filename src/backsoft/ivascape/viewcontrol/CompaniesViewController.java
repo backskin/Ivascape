@@ -73,16 +73,11 @@ public class CompaniesViewController {
         updateView();
     }
 
-    private void openEditDialog(Company company){
-
-        companiesTable.getSelectionModel().select((Company) Loader.loadDialogEditCompany(company.getID()));
-    }
+    @FXML
+    public void handleNew(){ Loader.loadDialogEditCompany(""); }
 
     @FXML
-    public void handleNew(){ openEditDialog(null); }
-
-    @FXML
-    private void handleEdit() { openEditDialog(lastSelected); }
+    private void handleEdit() { Loader.loadDialogEditCompany(lastSelected.getID()); }
 
     @FXML
     private void handleDelete(){
