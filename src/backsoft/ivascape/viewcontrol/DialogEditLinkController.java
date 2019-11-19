@@ -11,7 +11,9 @@ import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.FIELDS_ISSUE;
 
@@ -19,7 +21,7 @@ public class DialogEditLinkController {
 
     private boolean confirmed = false;
     private final Project project = Project.get();
-
+    private Map<String, String> map;
     @FXML
     TextField firstField;
     @FXML
@@ -38,6 +40,8 @@ public class DialogEditLinkController {
             firstField.requestFocus();
         else
             secondField.requestFocus();
+        map = new HashMap<>();
+        project.getIteratorOfCompanies().forEachRemaining(company -> map.put(company.getTitle(),company.getID()));
     }
 
     public void setStage(Stage stage) {
@@ -91,7 +95,7 @@ public class DialogEditLinkController {
                 throw new Exception("\n"+Preferences.get().getStringFromBundle("error.wrongcomname"));
 
             ViewUpdater.current().getGVController().normalScale();
-            project.add(firstField.getText(), secondField.getText(), price);
+            project.add(map.get(firstField.getText()), map.get(secondField.getText()), price);
             ViewUpdater.current().getGVController().restoreScale();
             confirmed = true;
             dialogStage.close();
