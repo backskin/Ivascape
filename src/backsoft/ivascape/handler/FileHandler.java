@@ -26,7 +26,7 @@ public class FileHandler {
                         prefs.getValueFromBundle("filewindow.type.xls"),"*.xls")
         );
 
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+"\\Desktop"));
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+ File.separator + "Desktop"));
 
         ExcelHandler.saveItAsXLS(graph, fileChooser.showSaveDialog(ownerStage));
     }
