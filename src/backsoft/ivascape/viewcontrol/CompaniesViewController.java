@@ -105,7 +105,10 @@ public class CompaniesViewController implements ViewController {
         companiesTable.getSelectionModel().selectedItemProperty().
                 addListener((observable, oldValue, newValue) -> {
 
-                    lastSelected = companiesTable.getSelectionModel().getSelectedIndex() < 0 ? lastSelected : companiesTable.getSelectionModel().getSelectedIndex();
+                    lastSelected = companiesTable.getSelectionModel().getSelectedIndex() < 0 ?
+                            lastSelected :
+                            companiesTable.getSelectionModel().getSelectedIndex();
+
                     showCompanyDetails(newValue);
                     if (observable == null) {
 
