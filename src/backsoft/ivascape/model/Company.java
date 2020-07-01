@@ -5,68 +5,77 @@ import javafx.beans.property.StringProperty;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class Company implements Serializable, Comparable<Company> {
 
+    private transient SimpleStringProperty titleProp;
+    private final String ID;
     private String title;
-    private Double moneyCapital;
+    private Double money;
     private String address;
     private LocalDate date;
 
-    public Company(String title, String address, double moneyCapital, LocalDate date){
+    public static Company createCompany(){
+        return new Company(UUID.randomUUID().toString(), "no name", "", .0, LocalDate.now());
+    }
 
+    private Company(String ID, String title, String address, double money, LocalDate date){
+        this.ID = ID;
         this.title = title;
-
-        this.moneyCapital = Math.round(moneyCapital * 100) / 100.0;
+        this.money = money;
         this.address = address;
         this.date = date;
     }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getID() { return ID; }
 
     public StringProperty titleProperty() {
-        return new SimpleStringProperty(title);
+        if (titleProp == null) titleProp = new SimpleStringProperty(title);
+        else if (!titleProp.getValue().equals(title)) titleProp.setValue(title);
+        return titleProp;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public String getTitle() { return title; }
+    public Company setTitle(String newTitle) {
+        title = newTitle;
+        titleProperty().setValue(newTitle);
+        return this;
     }
 
-    public double getMoneyCapital() {
-        return moneyCapital;
+    public double getMoney() {
+        return money;
     }
-
-    private void setMoneyCapital(double moneyCapital) {
-        this.moneyCapital = moneyCapital;
+    public Company setMoney(double money) {
+        this.money = money;
+        return this;
     }
 
     public String getAddress() {
         return address;
     }
-
-    private void setAddress(String address) {
+    public Company setAddress(String address) {
         this.address = address;
+        return this;
     }
 
     public LocalDate getDate() {
         return date;
     }
 
-    private void setDate(LocalDate date) {
+    public Company setDate(LocalDate date) {
         this.date = date;
+        return this;
     }
 
-    void asCopyOf(Company other){
-        setTitle(other.title);
-        setAddress(other.address);
-        setDate(other.date);
-        setMoneyCapital(other.moneyCapital);
+    @Override
+    public boolean equals(Object o){
+        if (!(o instanceof Company)) return false;
+        return title.equals(((Company)o).title);
     }
 
     @Override
     public int compareTo(Company o) {
-        return title.compareTo(o.title);
+            return title.compareTo(o.title);
     }
 }

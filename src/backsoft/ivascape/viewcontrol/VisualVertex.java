@@ -1,11 +1,13 @@
 package backsoft.ivascape.viewcontrol;
 
+import backsoft.ivascape.logic.CoorsMap;
+import backsoft.ivascape.logic.Pair;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -16,78 +18,64 @@ public class VisualVertex {
     @FXML
     private Circle circle;
     @FXML
-    private VBox item;
+    private VBox pane;
     @FXML
-    private Label name;
-    @FXML
-    private Circle shadow;
-    @FXML
-    private StackPane stackPane;
+    private Label titleLabel;
 
     private static final Double defaultCircleRadius = 20.0;
     private static Color currentColor;
     static final Color defaultColor = Color.CRIMSON;
+    private Pair<Double,Double> dragContext;
+
+    Pair<Double, Double> getDragContext() {
+        return dragContext;
+    }
+    void setDragContext(Double x, Double y) { this.dragContext = new Pair<>(x, y); }
 
     public static void setColor(Color color) {
         VisualVertex.currentColor = color;
     }
 
-    private final DoubleProperty xCenter = new SimpleDoubleProperty();
-    private final DoubleProperty yCenter = new SimpleDoubleProperty();
+    private final DoubleProperty xCenter = new SimpleDoubleProperty(0);
+    private final DoubleProperty yCenter = new SimpleDoubleProperty(0);
     DoubleProperty xCenterProperty() { return xCenter; }
     DoubleProperty yCenterProperty() { return yCenter; }
-    double x() { return item.getLayoutX(); }
-    double y() { return item.getLayoutY(); }
 
     @FXML
     private void initialize(){
 
-        name.setMouseTransparent(true);
-        item.setPickOnBounds(false);
-        shadow.setMouseTransparent(true);
-        stackPane.setPickOnBounds(false);
-        circle.radiusProperty().addListener((observable, oldValue, newValue) -> {
-            shadow.setRadius(shadow.getRadius() * (newValue.doubleValue() / oldValue.doubleValue()));
-            name.fontProperty().setValue(Font.font("Arial",
-                    name.fontProperty().getValue().getSize()*(newValue.doubleValue() / oldValue.doubleValue())));
-        });
+        titleLabel.setMouseTransparent(true);
+        pane.setPickOnBounds(false);
         circle.setRadius(defaultCircleRadius);
         circle.setFill(currentColor);
-        item.layoutXProperty().addListener(
-                (ov, oldval, newval) -> xCenter.setValue(xCenter.get()
-                + (newval.doubleValue() - oldval.doubleValue())));
-        item.layoutYProperty().addListener(
-                (ov, oldval,newval) -> yCenter.setValue(yCenter.get()
-                + (newval.doubleValue() - oldval.doubleValue())));
-        item.widthProperty().addListener(
-                (ov, oldval, newval) -> xCenter.setValue(xCenter.get()
-                + 0.5*(newval.doubleValue() - oldval.doubleValue())));
-        item.heightProperty().addListener(
-                (ov, oldval, newval) -> yCenter.setValue(yCenter.get()
-                + 0.5*(newval.doubleValue() - oldval.doubleValue())));
+
+        xCenter.bind(pane.widthProperty().divide(2.0).add(pane.layoutXProperty()));
+        yCenter.bind(pane.layoutYProperty().add(circle.layoutYProperty()));
     }
 
-    void setTitle(String title) { name.setText(title); }
+    void setTitle(StringProperty title) {
+        titleLabel.textProperty().bind(title);
+    }
 
-    VBox getItem() { return item; }
+    VBox getPane() { return pane; }
 
     Circle getCircle() { return circle; }
 
-    void setAllCoors(double xCoors, double yCoors){
-        item.setLayoutX(xCoors);
-        item.setLayoutY(yCoors);
+    void setXY(CoorsMap.Coors coors){
+        pane.setLayoutX(coors.x);
+        pane.setLayoutY(coors.y);
     }
 
-    ChangeListener<Number> getScaleListener() {
-        return (observableValue, number, t1) -> {
-            getCircle().setRadius(
-                    VisualVertex.defaultCircleRadius
-                            + VisualVertex.defaultCircleRadius *
-                            (t1.doubleValue() - 100.0) / 120.0);
-            setAllCoors(
-                    getItem().getLayoutX()*(t1.doubleValue()/number.doubleValue()),
-                    getItem().getLayoutY()*(t1.doubleValue()/number.doubleValue())
-            );
-        };
+    void moveXY(double xAdd, double yAdd){
+        pane.setLayoutX(Math.max(0, pane.getLayoutX()+xAdd));
+        pane.setLayoutY(Math.max(0, pane.getLayoutY()+yAdd));
     }
+
+    ChangeListener<Number> scaleListener = (o, ov, nv) -> {
+        double scale = nv.doubleValue() / ov.doubleValue();
+        pane.setLayoutX(pane.getLayoutX() * scale);
+        pane.setLayoutY(pane.getLayoutY() * scale);
+        circle.setRadius(.20 * nv.doubleValue());
+        titleLabel.setFont(Font.font(.14 * nv.doubleValue()));
+    };
 }

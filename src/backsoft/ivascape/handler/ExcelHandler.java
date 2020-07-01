@@ -7,7 +7,6 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 
@@ -20,7 +19,7 @@ import static backsoft.ivascape.handler.AlertHandler.AlertType.ISSUE;
 
 class ExcelHandler {
 
-    private static final Preferences prefs = Preferences.getCurrent();
+    private static final Preferences prefs = Preferences.get();
     
     private static HSSFCellStyle createStyleForTitle(HSSFWorkbook workbook) {
         HSSFFont font = workbook.createFont();
@@ -60,135 +59,63 @@ class ExcelHandler {
         }
     }
 
-    private static void createFirstSheet(HSSFWorkbook workbook, IvascapeGraph graph){
-
-            HSSFSheet sheet = workbook.createSheet(prefs.getValueFromBundle("excelsheet.cmps"));
-            Cell cell;
-            Row row = sheet.createRow(0);
-
-            HSSFCellStyle styleForTitle = createStyleForTitle(workbook);
-            HSSFCellStyle styleRegular = createRegularStyle(workbook);
-
-            cell = row.createCell(0);
-            cell.setCellValue(prefs.getValueFromBundle("tabletext.title"));
-            cell.setCellStyle(styleForTitle);
-
-            cell = row.createCell(1);
-            cell.setCellValue(prefs.getValueFromBundle("tabletext.money"));
-            cell.setCellStyle(styleForTitle);
-
-            cell = row.createCell( 2);
-            cell.setCellValue(prefs.getValueFromBundle("tabletext.address"));
-            cell.setCellStyle(styleForTitle);
-
-            cell = row.createCell(3);
-            cell.setCellValue(prefs.getValueFromBundle("tabletext.date"));
-            cell.setCellStyle(styleForTitle);
-
-            Iterator<Company> iterator = graph.getVertexIterator();
-
-            while(iterator.hasNext()){
-
-                Company company = iterator.next();
-
-                row = sheet.createRow(sheet.getLastRowNum()+1);
-
-                cell = row.createCell(0);
-                cell.setCellValue(company.getTitle());
-
-                cell = row.createCell(1);
-                cell.setCellValue(company.getMoneyCapital());
-                cell.setCellStyle(styleRegular);
-
-                cell = row.createCell( 2);
-                cell.setCellValue(company.getAddress());
-                cell.setCellStyle(styleRegular);
-
-                cell = row.createCell(3);
-                cell.setCellValue(company.getDate().toString());
-                cell.setCellStyle(styleRegular);
-            }
-            sheet.autoSizeColumn(0);
-            sheet.autoSizeColumn(1);
-            sheet.autoSizeColumn(2);
-            sheet.autoSizeColumn(3);
+    private static void setRow(Row row, int length, HSSFCellStyle style){
+        for (int i = 0; i < length; i++) row.createCell(i).setCellStyle(style);
     }
 
+    private static void autosizecols(HSSFSheet sheet, int end){
+        for (int i = 0; i <= end; i++) sheet.autoSizeColumn(i);
+    }
+
+    private static void createFirstSheet(HSSFWorkbook workbook, IvascapeGraph graph){
+
+            HSSFSheet sheet = workbook.createSheet(prefs.getStringFromBundle("excelsheet.cmps"));
+            Row row = sheet.createRow(0);
+            setRow(row, 4, createStyleForTitle(workbook));
+            row.getCell(0).setCellValue(prefs.getStringFromBundle("tabletext.title"));
+            row.getCell(1).setCellValue(prefs.getStringFromBundle("tabletext.money"));
+            row.getCell(2).setCellValue(prefs.getStringFromBundle("tabletext.address"));
+            row.getCell(3).setCellValue(prefs.getStringFromBundle("tabletext.date"));
+
+            for (Iterator<Company> iterator = graph.getVertexIterator(); iterator.hasNext();){
+                Company company = iterator.next();
+                row = sheet.createRow(sheet.getLastRowNum()+1);
+                setRow(row, 4, createRegularStyle(workbook));
+                row.getCell(0).setCellValue(company.getTitle());
+                row.getCell(1).setCellValue(company.getMoney());
+                row.getCell(2).setCellValue(company.getAddress());
+                row.getCell(3).setCellValue(company.getDate().toString());
+            }
+
+           autosizecols(sheet, 3);
+    }
 
     private static void createSecondSheet(HSSFWorkbook workbook, IvascapeGraph graph){
 
-            HSSFSheet sheet = workbook.createSheet(prefs.getValueFromBundle("excelsheet.links"));
-            Cell cell;
+            HSSFSheet sheet = workbook.createSheet(prefs.getStringFromBundle("excelsheet.links"));
             Row row = sheet.createRow(0);
-            HSSFCellStyle styleForTitle = createStyleForTitle(workbook);
-            HSSFCellStyle styleRegular = createRegularStyle(workbook);
-            cell = row.createCell(0);
-            cell.setCellValue(prefs.getValueFromBundle("edittabs.neighbour"));
-            cell.setCellStyle(styleForTitle);
+            setRow(row,5,createStyleForTitle(workbook));
 
-            cell = row.createCell(1);
-            cell.setCellValue(prefs.getValueFromBundle("edittabs.neighbour"));
-            cell.setCellStyle(styleForTitle);
-
-            cell = row.createCell(2);
-            cell.setCellValue(prefs.getValueFromBundle("edittabs.price"));
-            cell.setCellStyle(styleForTitle);
-
-            cell = row.createCell(4);
-            cell.setCellValue(prefs.getValueFromBundle("excelsheet.summ"));
-            cell.setCellStyle(styleForTitle);
+            row.getCell(0).setCellValue(prefs.getStringFromBundle("edittabs.neighbour"));
+            row.getCell(1).setCellValue(prefs.getStringFromBundle("edittabs.neighbour"));
+            row.getCell(2).setCellValue(prefs.getStringFromBundle("edittabs.price"));
+            row.getCell(4).setCellValue(prefs.getStringFromBundle("excelsheet.summ"));
 
             int count = 1;
-
+            if (graph.getEdgeSize() == 0) sheet.createRow(1);
             for(Iterator<Link> iterator = graph.getEdgeIterator(); iterator.hasNext();) {
 
                 Link link = iterator.next();
-
                 row = sheet.createRow(count++);
-
-                cell = row.createCell(0);
-                cell.setCellValue(link.one().getTitle());
-                cell.setCellStyle(styleRegular);
-
-                cell = row.createCell(1);
-                cell.setCellValue(link.two().getTitle());
-                cell.setCellStyle(styleRegular);
-
-                cell = row.createCell(2);
-                cell.setCellValue(link.getPrice());
-                cell.setCellStyle(styleRegular);
+                setRow(row,3, createRegularStyle(workbook));
+                row.getCell(0).setCellValue(link.one().getTitle());
+                row.getCell(1).setCellValue(link.two().getTitle());
+                row.getCell(2).setCellValue(link.getPrice());
             }
 
-            for (int i = 0; i < graph.size(); i ++) {
+            sheet.getRow(1).createCell(4)
+                    .setCellFormula("SUM(C2:C" + count + ")");
 
-                for (int j = i; j < graph.size(); j ++){
-
-                    if (graph.getEdge(i,j) != null){
-
-                        row = sheet.createRow(count++);
-
-                        cell = row.createCell(0);
-                        cell.setCellValue(graph.getEdge(i,j).one().getTitle());
-                        cell.setCellStyle(styleRegular);
-
-                        cell = row.createCell(1);
-                        cell.setCellValue(graph.getEdge(i,j).two().getTitle());
-                        cell.setCellStyle(styleRegular);
-
-                        cell = row.createCell(2);
-                        cell.setCellValue(graph.getEdge(i,j).getPrice());
-                        cell.setCellStyle(styleRegular);
-                    }
-                }
-            }
-
-            row = sheet.createRow(count);
-            cell = row.createCell(4);
-            cell.setCellFormula("SUM(C2:C" + count + ")");
-
-            sheet.autoSizeColumn(0);
-            sheet.autoSizeColumn(1);
-            sheet.autoSizeColumn(2);
-            sheet.autoSizeColumn(4);
+            autosizecols(sheet, 4);
     }
 }

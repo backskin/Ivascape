@@ -1,34 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.effect.Shadow?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="item" alignment="CENTER" cacheShape="false" xmlns="http://javafx.com/javafx/8.0.171"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.VisualVertex">
-    <padding>
-        <Insets bottom="15.0" />
-    </padding>
-    <Label fx:id="name" alignment="CENTER" cacheShape="false" centerShape="false" maxWidth="170.0" minWidth="60.0" scaleShape="false" text="CompanyName">
-        <font>
-        <Font name="System Italic" size="12.0" />
-        </font>
+<VBox fx:id="pane" alignment="CENTER" cacheShape="false" fillWidth="false" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.VisualVertex">
+    <Label fx:id="titleLabel" alignment="CENTER" cacheShape="false" centerShape="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" mouseTransparent="true" opacity="0.65" scaleShape="false" style="-fx-background-color: DODGERBLUE;" text="-" textFill="WHITE">
+      <font>
+         <Font size="14.0" />
+      </font>
     </Label>
-    <StackPane fx:id="stackPane">
-        <Circle fx:id="shadow" radius="15.0" smooth="false" strokeLineCap="ROUND" strokeType="INSIDE" visible="false">
-          <effect>
-              <Shadow height="10.0" radius="4.5" width="10.0"/>
-          </effect>
-        </Circle>
-        <Circle fx:id="circle" fill="#1f93ff" radius="15.0" strokeLineCap="BUTT" strokeType="INSIDE" strokeWidth="3.0">
-        <cursor>
-            <Cursor fx:constant="MOVE"/>
-        </cursor>
-        </Circle>
-    </StackPane>
+     <Circle fx:id="circle" fill="CORNFLOWERBLUE" radius="15.0" strokeLineCap="BUTT" strokeType="INSIDE" strokeWidth="3.0">
+     <cursor>
+         <Cursor fx:constant="MOVE" />
+     </cursor>
+     </Circle>
 </VBox>

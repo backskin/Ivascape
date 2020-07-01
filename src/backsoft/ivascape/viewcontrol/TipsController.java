@@ -1,36 +1,31 @@
 package backsoft.ivascape.viewcontrol;
 
+import backsoft.ivascape.handler.Loader;
+import backsoft.ivascape.handler.Preferences;
 import javafx.fxml.FXML;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import java.util.Locale;
 
 public class TipsController {
 
     @FXML
     private ImageView splash;
-
     private Stage tipsStage;
 
     public void setStage(Stage stage){
 
         tipsStage = stage;
-    }
-
-    public TipsController(){
+        tipsStage.setTitle(Preferences.get().getStringFromBundle("tips.caption"));
+        tipsStage.initModality(Modality.WINDOW_MODAL);
+        tipsStage.initOwner(Loader.getMainStage());
     }
 
     @FXML
     private void initialize(){
-
-        splash.setImage(new Image("resources/" + Locale.getDefault().getLanguage() + "splash.png"));
+        splash.setImage(Loader.loadImageResource(Preferences.get().getCurrentLoc().getLanguage()+"splash"));
     }
 
     @FXML
-    private void handleGotIt(){
-
-        tipsStage.close();
-    }
+    private void handleClose(){ tipsStage.close(); }
 }

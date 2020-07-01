@@ -13,20 +13,20 @@ import static backsoft.ivascape.handler.AlertHandler.AlertType.SAVE_ISSUE;
 
 public class FileHandler {
 
-    private static final Preferences prefs = Preferences.getCurrent();
+    private static final Preferences prefs = Preferences.get();
 
     public static void dialogExport(IvascapeGraph graph, final Stage ownerStage){
 
         FileChooser fileChooser = new FileChooser();
 
-        fileChooser.setTitle(prefs.getValueFromBundle("filewindow.title.save"));
+        fileChooser.setTitle(prefs.getStringFromBundle("filewindow.title.save"));
 
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter(
-                        prefs.getValueFromBundle("filewindow.type.xls"),"*.xls")
+                        prefs.getStringFromBundle("filewindow.type.xls"),"*.xls")
         );
 
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+ File.separator + "Desktop"));
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 
         ExcelHandler.saveItAsXLS(graph, fileChooser.showSaveDialog(ownerStage));
     }
@@ -37,15 +37,13 @@ public class FileHandler {
 
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter(
-                        prefs.getValueFromBundle("filewindow.type.ivp"), "*.ivp")
+                        prefs.getStringFromBundle("filewindow.type.ivp"), "*.ivp")
         );
 
-        fileChooser.setTitle(prefs.getValueFromBundle("filewindow.title.open"));
+        fileChooser.setTitle(prefs.getStringFromBundle("filewindow.title.open"));
 
         fileChooser.setInitialDirectory(
-                new File(file == null ?
-                        System.getProperty("user.home") + "\\Desktop"
-                        : file.getParent()));
+                new File(file == null ? System.getProperty("user.home") : file.getParent()));
 
         return openFile(fileChooser.showOpenDialog(Loader.getMainStage()));
     }
@@ -77,15 +75,16 @@ public class FileHandler {
 
         FileChooser fileChooser = new FileChooser();
 
-        fileChooser.setTitle(prefs.getValueFromBundle("filewindow.title.save"));
+        fileChooser.setTitle(prefs.getStringFromBundle("filewindow.title.save"));
 
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter(
-                        prefs.getValueFromBundle("filewindow.type.ivp"), "*.ivp"));
+                        prefs.getStringFromBundle("filewindow.type.ivp"), "*.ivp"));
 
         if (file == null) {
-            fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "\\Desktop"));
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
             file = fileChooser.showSaveDialog(Loader.getMainStage());
+            if (!file.getName().endsWith(".ivp")) file = new File(file.getName() + ".ivp");
         }
         else {
             fileChooser.setInitialFileName(file.getName());

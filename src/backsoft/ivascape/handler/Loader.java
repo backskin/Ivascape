@@ -2,15 +2,15 @@ package backsoft.ivascape.handler;
 
 import backsoft.ivascape.FXApp;
 import backsoft.ivascape.viewcontrol.*;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.stage.Modality;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import backsoft.ivascape.logic.Pair;
+import javafx.stage.StageStyle;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,11 +18,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.ISSUE;
-import static backsoft.ivascape.viewcontrol.StartWindowController.TERMINATED;
 
 public class Loader {
 
-    private static final Preferences prefs = Preferences.getCurrent();
+    private static final Preferences prefs = Preferences.get();
     private static Stage primaryStage;
 
     public static Stage getMainStage() {
@@ -31,7 +30,7 @@ public class Loader {
 
     public static <T> Pair<Parent, T> loadFXML(String fxml) {
         try {
-            FXMLLoader loader = new FXMLLoader(FXApp.class.getResource("fxml/"+ fxml + ".fxml"), prefs.getBundle());
+            FXMLLoader loader = new FXMLLoader(FXApp.class.getResource("fxml"+File.separator+ fxml + ".fxml"), prefs.getBundle());
             return new Pair<>(loader.load(), loader.getController());
         } catch (IOException e) {
             AlertHandler.makeAlert(ISSUE).customContent(e.toString()).show();
@@ -45,12 +44,12 @@ public class Loader {
         stage.setResizable(resizable);
         stage.setScene(new Scene(parent));
 
-        Platform.runLater(()->{
+        if (stage == primaryStage) {
+            stage.show();
             stage.setMinHeight(stage.getHeight());
             stage.setMinWidth(stage.getWidth());
-        });
-
-        if (stage == primaryStage) stage.show(); else stage.showAndWait();
+            prefs.applyWinParams(primaryStage);
+        } else stage.showAndWait();
     }
 
     public static Image loadImageResource(String img) {
@@ -69,89 +68,76 @@ public class Loader {
         primaryStage = mainStage;
         primaryStage.setOnCloseRequest(Preferences::onExit);
         Stage startScreenStage = new Stage();
-        startScreenStage.initStyle(StageStyle.UNDECORATED);
 
-        if (welcomeScreen(startScreenStage) == TERMINATED) {
-            Platform.exit();
-            System.exit(0);
-        }
+        startScreenStage.initStyle(StageStyle.TRANSPARENT);
+        welcomeScreen(startScreenStage);
         reloadApp();
     }
 
-    private static boolean welcomeScreen(Stage stage) {
+    private static void welcomeScreen(Stage stage) {
 
-        stage.setTitle(prefs.getValueFromBundle("welcome"));
+        stage.setTitle(prefs.getStringFromBundle("welcome"));
         Pair<Parent, StartWindowController> fxmlData = loadFXML("StartWindow");
         StartWindowController controller = fxmlData.getTwo();
-        controller.setStartStage(stage);
+        controller.setStage(stage);
 
         openInAWindow(stage, fxmlData.getOne(), false);
-
-        stage.close();
-        if (controller.isLocaleChanged()) {
-            return welcomeScreen(stage);
-        }
-        return controller.getStatus();
+        if (controller.isLocaleChanged()) welcomeScreen(stage);
     }
 
     public static void reloadApp() {
 
         if (primaryStage.isShowing()) primaryStage.close();
-
-        primaryStage.setTitle(prefs.getValueFromBundle("maintitle"));
-        Pair<Parent, MainController> fxml = loadFXML("MainWindow");
-        ViewUpdater.current().putRootController(fxml.getTwo());
-        openInAWindow(primaryStage, fxml.getOne(),false);
-        prefs.applyWinParams(primaryStage);
+        openInAWindow(primaryStage, loadFXML("RootLayout").getOne(),true);
     }
 
-    public static void loadDialogEditLink(Integer... hashes) {
+    public static <T>T loadViewToTab(String path, AnchorPane tab) {
 
-        Pair<Parent, LinkEditDialogController> fxmlData = loadFXML("LinkEditDialog");
-        LinkEditDialogController controller = fxmlData.getTwo();
+        Pair<Parent, T> fxmlData = Loader.loadFXML(path);
+        Node tmp = fxmlData.getOne();
+
+        AnchorPane.setTopAnchor(tmp, 0.0);
+        AnchorPane.setLeftAnchor(tmp, 0.0);
+        AnchorPane.setRightAnchor(tmp, 0.0);
+        AnchorPane.setBottomAnchor(tmp, 0.0);
+
+        tab.getChildren().add(tmp);
+
+        return fxmlData.getTwo();
+    }
+
+    public static void loadDialogEditLink(String... companies) {
+
+        Pair<Parent, DialogEditLinkController> fxmlData = loadFXML("DialogEditLink");
+        DialogEditLinkController controller = fxmlData.getTwo();
 
         Stage dialogStage = new Stage();
-        dialogStage.setTitle(prefs.getValueFromBundle((hashes != null) ?
-                "edittabs.header.editlink" : "edittabs.header.newlink"));
-        dialogStage.initModality(Modality.WINDOW_MODAL);
-        dialogStage.initOwner(primaryStage);
-        controller.setDialogStage(dialogStage);
-        controller.setFields(hashes);
+        controller.setStage(dialogStage);
+        controller.setFields(companies);
 
         openInAWindow(dialogStage, fxmlData.getOne(), false);
 
         if (controller.isConfirmed()) {
-            ViewUpdater.current().updateLinksView().updateGraphView();
+            ViewUpdater.current().updateLinksView();
         }
     }
 
-    public static Integer loadDialogEditCompany(Integer comHash) {
+    public static Object loadDialogEditCompany(String comID) {
 
-        Pair<Parent, CompanyEditDialogController> fxmlData = loadFXML("CompanyEditDialog");
-        CompanyEditDialogController CEDController = fxmlData.getTwo();
+        Pair<Parent, DialogEditCompanyController> fxmlData = loadFXML("DialogEditCompany");
+        DialogEditCompanyController controller = fxmlData.getTwo();
 
         Stage dialogStage = new Stage();
-
-        dialogStage.setTitle(prefs.getValueFromBundle((comHash != 0) ?
-                "edittabs.header.editcmp" : "edittabs.header.newcmp"));
-
-        dialogStage.initModality(Modality.WINDOW_MODAL);
-        dialogStage.initOwner(primaryStage);
-        CEDController.setDialogStage(dialogStage);
-
-        CEDController.setEditCompany(comHash);
+        controller.setStage(dialogStage);
+        controller.setFields(comID);
 
         openInAWindow(dialogStage, fxmlData.getOne(), false);
 
-        if (CEDController.isOkClicked()) {
+        if (controller.isConfirmed()) {
 
-            ViewUpdater.current()
-                    .updateCompaniesView()
-                    .updateGraphView()
-                    .updateLinksView();
-
-            return CEDController.getEditCompany().hashCode();
+            ViewUpdater.current().updateLinksView().updateCompaniesView();
+            return controller.getEditCompany();
         }
-        return 0;
+        return null;
     }
 }

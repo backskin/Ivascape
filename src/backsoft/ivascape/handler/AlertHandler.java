@@ -2,6 +2,7 @@ package backsoft.ivascape.handler;
 
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import static javafx.scene.control.Alert.AlertType.*;
@@ -11,13 +12,13 @@ public class AlertHandler {
     public enum AlertType {
         EXIT_CONFIRM, CLOSE_CURR_CONFIRM, LOAD_ISSUE,
         SAVE_ISSUE, DELETE_CONFIRM, FIELDS_ISSUE, UPDATE_EDGE_CONFIRM,
-        ALGO_ISSUE, ISSUE, ABOUT
+        ALGO_ISSUE, ISSUE, ABOUT, DEBUG
     }
     private final Alert alert;
     private AlertType type;
     private String rsrcString;
 
-    private final Preferences prefs = Preferences.getCurrent();
+    private final Preferences prefs = Preferences.get();
     private AlertHandler(){
         alert = new Alert(NONE);
     }
@@ -40,6 +41,17 @@ public class AlertHandler {
         return alert.getResult().getButtonData().isDefaultButton();
     }
 
+    public String debugGetInput(){
+        alert.setAlertType(INFORMATION);
+        TextField field = new TextField();
+        field.setPromptText("debug value");
+        field.setText("");
+        alert.getDialogPane().setPrefHeight(150);
+        alert.getDialogPane().setContent(field);
+        alert.showAndWait();
+        return field.getText().isEmpty() ? null : field.getText();
+    }
+
     public AlertHandler customContent(String content){
         alert.setContentText(alert.getContentText().concat(content));
         return this;
@@ -55,34 +67,34 @@ public class AlertHandler {
         return this;
     }
     private AlertHandler setTitle(){
-        return customTitle(prefs.getValueFromBundle("alert.text.title."+ rsrcString));
+        return customTitle(prefs.getStringFromBundle("alert.text.title."+ rsrcString));
     }
 
     private AlertHandler setHeader(){
-        return customHeader(prefs.getValueFromBundle("alert.text.header."+ rsrcString));
+        return customHeader(prefs.getStringFromBundle("alert.text.header."+ rsrcString));
     }
 
     private AlertHandler setContent(){
-        return customContent(prefs.getValueFromBundle("alert.text.body."+ rsrcString));
+        return customContent(prefs.getStringFromBundle("alert.text.body."+ rsrcString));
     }
 
     private AlertHandler setConfirmButtons(){
         alert.getButtonTypes().setAll(
-                new ButtonType(prefs.getValueFromBundle("alert.confirm"), ButtonBar.ButtonData.OK_DONE),
-                new ButtonType(prefs.getValueFromBundle("alert.exit"), ButtonBar.ButtonData.CANCEL_CLOSE));
+                new ButtonType(prefs.getStringFromBundle("alert.confirm"), ButtonBar.ButtonData.OK_DONE),
+                new ButtonType(prefs.getStringFromBundle("alert.cancel"), ButtonBar.ButtonData.CANCEL_CLOSE));
         return this;
     }
 
     private AlertHandler setOkButton(){
         alert.getButtonTypes().setAll(
-                new ButtonType(prefs.getValueFromBundle("alert.OK"), ButtonBar.ButtonData.OK_DONE));
+                new ButtonType(prefs.getStringFromBundle("alert.OK"), ButtonBar.ButtonData.OK_DONE));
         return this;
     }
 
     private AlertHandler fill(){
         ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons()
                 .add(Loader.loadImageResource("ico"));
-
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         switch (type){
             case EXIT_CONFIRM:
             case CLOSE_CURR_CONFIRM:
@@ -105,7 +117,8 @@ public class AlertHandler {
                 alert.setGraphic(imageView);
                 return setTitle().setHeader().setContent().setOkButton();
             default:
-                return this;
+                alert.setAlertType(NONE);
+                return setOkButton();
         }
     }
 

@@ -7,48 +7,58 @@ import backsoft.ivascape.model.Link;
 import backsoft.ivascape.model.Project;
 import javafx.scene.Parent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Accordion;
-import javafx.scene.control.TitledPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class LinksViewController implements ViewController{
+public class LinksViewController{
 
-    public void updateView(){
-
-        table.getPanes().clear();
-        table.getPanes().addAll(getTableViewItems());
-    }
+    private String tempString = "Empty project. Nothing to see here. " +
+            "Load file or Go to 'Companies Tab' and add some.";
+    private StackPane tempStackPane = new StackPane(new Text(tempString));
+    private Project project = Project.get();
 
     @FXML
-    private Accordion table;
+    private VBox table;
+    @FXML
+    private void initialize(){
+        if (project.isEmpty())
+            table.getChildren().add(tempStackPane);
+        else updateView();
+        project.companiesAmountProperty().addListener(observable -> {
+            if (project.isEmpty()) table.getChildren().add(tempStackPane);
+        });
+    }
 
-    private List<TitledPane> getTableViewItems(){
+    void updateView(){
 
-        List<TitledPane> list = new ArrayList<>();
+        table.getChildren().clear();
+        table.getChildren().addAll(getTableViewItems());
+    }
 
-        for (Iterator<Company> itCom = Project.get().getIteratorOfCompanies(); itCom.hasNext(); ) {
+    private List<VBox> getTableViewItems() {
 
-            Pair<Parent, LinksViewItemController> fxml = Loader.loadFXML("LinksViewItem");
-            LinksViewItemController LVIController = fxml.getTwo();
-            Company nextCom = itCom.next();
-            LVIController.setCompany(nextCom);
-            List<VBox> cells = new ArrayList<>();
+        return new ArrayList<VBox>() {{
+            for (Iterator<Company> itCom = project.getIteratorOfCompanies(); itCom.hasNext(); ) {
 
-            for (Iterator<Link> itLink = Project.get().getIteratorOfLinks(nextCom); itLink.hasNext(); ) {
+                Pair<Parent, LinksViewItemController> fxml = Loader.loadFXML("LinksViewItem");
+                Company nextCom = itCom.next();
+                List<VBox> cells = new ArrayList<>();
 
-                Pair<Parent, LinksViewCellController> fxmlCell = Loader.loadFXML("LinksViewCell");
-                fxmlCell.getTwo().setFieldsFor(itLink.next());
-                cells.add((VBox) fxmlCell.getOne());
+                for (Iterator<Link> itLink = project.getIteratorOfLinksOf(nextCom); itLink.hasNext(); ) {
+
+                    Pair<Parent, LinksViewCellController> fxmlCell = Loader.loadFXML("LinksViewCell");
+                    fxmlCell.getTwo().setFieldsFor(itLink.next());
+                    cells.add((VBox) fxmlCell.getOne());
+                }
+
+                fxml.getTwo().setItem(nextCom, cells);
+                add((VBox) fxml.getOne());
             }
-
-            LVIController.setCells(cells);
-            list.add((TitledPane) fxml.getOne());
-        }
-
-        return list;
+        }};
     }
 }

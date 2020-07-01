@@ -18,7 +18,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.MainController">
+<BorderPane minHeight="440.0" minWidth="580.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.RootLayout">
     <top>
         <MenuBar style="-fx-background-color: #eaeaea;">
             <Menu mnemonicParsing="false" style="-fx-focus-color: crimson;" text="%menu.file">
@@ -77,11 +77,15 @@
                         <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#_debug_gen" text="(Debug) Generate">
+               <accelerator>
+                  <KeyCodeCombination alt="DOWN" code="Q" control="UP" meta="UP" shift="UP" shortcut="UP" />
+               </accelerator></MenuItem>
             </Menu>
             <Menu mnemonicParsing="false" style="-fx-focus-color: crimson;" text="%menu.help">
                 <Menu mnemonicParsing="false" text="%menubutton.lang">
-                    <CheckMenuItem fx:id="eng" mnemonicParsing="false" text="%menubutton.eng" />
-                    <CheckMenuItem fx:id="rus" mnemonicParsing="false" text="%menubutton.rus" />
+                    <CheckMenuItem fx:id="engItem" mnemonicParsing="false" text="%menubutton.eng" />
+                    <CheckMenuItem fx:id="rusItem" mnemonicParsing="false" text="%menubutton.rus" />
                 </Menu>
                 <MenuItem mnemonicParsing="false" onAction="#handleHelpTips" text="%menubutton.help">
                     <accelerator>
@@ -97,9 +101,9 @@
         </MenuBar>
     </top>
     <bottom>
-        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="28.0">
             <Separator />
-            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="0.0" spacing="12.0">
+            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="12.0">
                 <VBox.margin>
                     <Insets />
                 </VBox.margin>
@@ -156,7 +160,7 @@
         </VBox>
     </bottom>
    <center>
-       <TabPane fx:id="tabPane" cacheShape="false" centerShape="false" focusTraversable="false" minHeight="-Infinity" minWidth="-Infinity" pickOnBounds="false" side="LEFT" style="-fx-text-fill: #ffffff;" tabClosingPolicy="UNAVAILABLE" tabMinHeight="30.0" tabMinWidth="100.0">
+       <TabPane fx:id="tabPane" cacheShape="false" centerShape="false" focusTraversable="false" pickOnBounds="false" side="LEFT" style="-fx-text-fill: #ffffff;" tabClosingPolicy="UNAVAILABLE" tabMinHeight="30.0" tabMinWidth="100.0">
            <Tab closable="false" style="-fx-focus-color: crimson; -fx-text-fill: #ffffff;" text="%tabstitle.cmps">
                <AnchorPane fx:id="CompaniesPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
            </Tab>

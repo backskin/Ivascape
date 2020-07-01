@@ -16,145 +16,124 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-      xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="backsoft.ivascape.viewcontrol.CompaniesViewController">
-    <TableView fx:id="companiesTable" focusTraversable="false" maxHeight="1.7976931348623157E308"
-               maxWidth="1.7976931348623157E308" minWidth="300.0" HBox.hgrow="ALWAYS">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.CompaniesViewController">
+    <TableView fx:id="companiesTable" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="300.0" HBox.hgrow="ALWAYS">
         <columns>
-          <TableColumn fx:id="companyNameColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="80.0"
-                       sortable="false" style="-fx-background-color: transparent;" text="%tabletext.tabletitle"/>
+          <TableColumn fx:id="companyNameColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="80.0" sortable="false" style="-fx-background-color: transparent;" text="%tabletext.tabletitle" />
         </columns>
         <columnResizePolicy>
-          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
         </columnResizePolicy>
     </TableView>
     <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="300.0" HBox.hgrow="ALWAYS">
-        <GridPane minHeight="180.0" minWidth="200.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="241.0"
-                  prefWidth="286.0" style="-fx-background-color: white;" styleClass="table-com.ivascape.view"
-                  VBox.vgrow="ALWAYS">
+        <GridPane minHeight="180.0" minWidth="200.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="241.0" prefWidth="286.0" style="-fx-background-color: white;" styleClass="table-com.ivascape.view" VBox.vgrow="ALWAYS">
             <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="240.0" minWidth="110.0" prefWidth="110.0"/>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="240.0" minWidth="110.0" prefWidth="110.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="100.0" />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints maxHeight="36.0" minHeight="36.0" percentHeight="15.0" prefHeight="36.0"
-                                vgrow="SOMETIMES"/>
-                <RowConstraints vgrow="SOMETIMES"/>
-                <RowConstraints maxHeight="36.0" minHeight="36.0" percentHeight="15.0" prefHeight="36.0"
-                                vgrow="SOMETIMES"/>
-                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="128.0" percentHeight="55.0"
-                                prefHeight="128.0" vgrow="SOMETIMES"/>
-                <RowConstraints vgrow="SOMETIMES"/>
-                <RowConstraints maxHeight="36.0" minHeight="36.0" percentHeight="15.0" prefHeight="36.0"
-                                vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="36.0" minHeight="36.0" percentHeight="15.0" prefHeight="36.0" vgrow="SOMETIMES" />
+                <RowConstraints vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="36.0" minHeight="36.0" percentHeight="15.0" prefHeight="36.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="128.0" percentHeight="55.0" prefHeight="128.0" vgrow="SOMETIMES" />
+                <RowConstraints vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="36.0" minHeight="36.0" percentHeight="15.0" prefHeight="36.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <VBox.margin>
-                <Insets/>
+                <Insets />
             </VBox.margin>
             <Label text="%tabletext.title" textFill="#858585" GridPane.valignment="TOP">
                 <GridPane.margin>
-                    <Insets left="8.0" top="8.0"/>
+                    <Insets left="8.0" top="8.0" />
                 </GridPane.margin>
                 <font>
-                    <Font size="14.0"/>
+                    <Font size="14.0" />
                 </font>
             </Label>
             <Label text="%tabletext.money" textFill="#858585" GridPane.rowIndex="2">
                 <GridPane.margin>
-                    <Insets left="8.0"/>
+                    <Insets left="8.0" />
                 </GridPane.margin>
                 <font>
-                    <Font size="14.0"/>
+                    <Font size="14.0" />
                 </font>
             </Label>
-            <Label text="%tabletext.address" textFill="#858585" GridPane.rowIndex="3"
-                   GridPane.valignment="TOP">
+            <Label text="%tabletext.address" textFill="#858585" GridPane.rowIndex="3" GridPane.valignment="TOP">
                 <GridPane.margin>
-                    <Insets left="8.0" top="12.0"/>
+                    <Insets left="8.0" top="12.0" />
                 </GridPane.margin>
                 <font>
-                    <Font size="14.0"/>
+                    <Font size="14.0" />
                 </font>
             </Label>
-            <Label fx:id="Title" text="Label" textFill="#b44c4c" GridPane.columnIndex="1"
-                   GridPane.valignment="TOP">
+            <Label fx:id="Title" text="Label" textFill="#b44c4c" GridPane.columnIndex="1" GridPane.valignment="TOP">
                 <GridPane.margin>
-                    <Insets left="4.0" top="8.0"/>
+                    <Insets left="4.0" top="8.0" />
                 </GridPane.margin>
                 <font>
-                    <Font size="14.0"/>
+                    <Font size="14.0" />
                 </font>
             </Label>
-            <Label fx:id="Money" text="Label" GridPane.columnIndex="1"
-                   GridPane.rowIndex="2">
+            <Label fx:id="Money" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2">
                 <font>
-                    <Font size="14.0"/>
+                    <Font size="14.0" />
                 </font>
                 <GridPane.margin>
-                    <Insets left="4.0"/>
+                    <Insets left="4.0" />
                 </GridPane.margin>
             </Label>
             <Label text="%tabletext.date" textFill="#858585" GridPane.rowIndex="5">
                 <GridPane.margin>
-                    <Insets bottom="6.0" left="8.0"/>
+                    <Insets bottom="6.0" left="8.0" />
                 </GridPane.margin>
                 <font>
-                    <Font size="14.0"/>
+                    <Font size="14.0" />
                 </font>
             </Label>
-            <Label fx:id="Date" text="Label" GridPane.columnIndex="1"
-                   GridPane.rowIndex="5">
+            <Label fx:id="Date" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5">
                 <GridPane.margin>
-                    <Insets bottom="6.0" left="4.0"/>
+                    <Insets bottom="6.0" left="4.0" />
                 </GridPane.margin>
                 <font>
-                    <Font name="System Italic" size="14.0"/>
+                    <Font name="System Italic" size="14.0" />
                 </font>
             </Label>
-            <TextFlow prefHeight="200.0" prefWidth="200.0" textAlignment="JUSTIFY" GridPane.columnIndex="1"
-                      GridPane.rowIndex="3">
+            <TextFlow prefHeight="200.0" prefWidth="200.0" textAlignment="JUSTIFY" GridPane.columnIndex="1" GridPane.rowIndex="3">
                 <GridPane.margin>
-                    <Insets left="4.0"/>
+                    <Insets left="4.0" />
                 </GridPane.margin>
                 <padding>
-                    <Insets top="10.0"/>
+                    <Insets top="10.0" />
                 </padding>
                 <Text fx:id="Address" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
                     <font>
-                        <Font size="14.0"/>
+                        <Font size="14.0" />
                     </font>
                 </Text>
             </TextFlow>
-            <Separator prefWidth="200.0" GridPane.rowIndex="1"/>
-            <Separator prefWidth="200.0" GridPane.rowIndex="4"/>
+            <Separator prefWidth="200.0" GridPane.rowIndex="1" />
+            <Separator prefWidth="200.0" GridPane.rowIndex="4" />
         </GridPane>
-        <HBox alignment="BOTTOM_CENTER" fillHeight="false" minHeight="120.0" minWidth="200.0" prefWidth="320.0"
-              spacing="4.0" style="-fx-background-color: f0f0f0;" VBox.vgrow="ALWAYS">
+        <HBox alignment="BOTTOM_CENTER" fillHeight="false" minHeight="120.0" minWidth="200.0" prefWidth="320.0" spacing="4.0" style="-fx-background-color: f0f0f0;" VBox.vgrow="ALWAYS">
             <VBox.margin>
-                <Insets/>
+                <Insets />
             </VBox.margin>
             <padding>
-                <Insets bottom="8.0" left="8.0" right="8.0"/>
+                <Insets bottom="8.0" left="8.0" right="8.0" />
             </padding>
-            <Button defaultButton="true" focusTraversable="false" minWidth="80.0" mnemonicParsing="false"
-                    onAction="#handleNew" prefHeight="35.0" prefWidth="120.0" style="-fx-: magenta;"
-                    text="%button.add">
+            <Button defaultButton="true" focusTraversable="false" minWidth="80.0" mnemonicParsing="false" onAction="#handleNew" prefHeight="35.0" prefWidth="120.0" style="-fx-: magenta;" text="%button.add">
                 <cursor>
-                    <Cursor fx:constant="HAND"/>
+                    <Cursor fx:constant="HAND" />
                 </cursor>
             </Button>
-            <Button fx:id="Edit" focusTraversable="false" minWidth="0.0" mnemonicParsing="false"
-                    onAction="#handleEdit" prefHeight="35.0" prefWidth="120.0" text="%button.edit">
+            <Button fx:id="Edit" disable="true" focusTraversable="false" minWidth="0.0" mnemonicParsing="false" onAction="#handleEdit" prefHeight="35.0" prefWidth="120.0" text="%button.edit">
                 <cursor>
-                    <Cursor fx:constant="HAND"/>
+                    <Cursor fx:constant="HAND" />
                 </cursor>
             </Button>
-            <Button fx:id="Delete" focusTraversable="false" minWidth="0.0" mnemonicParsing="false"
-                    onAction="#handleDelete" prefHeight="35.0" prefWidth="120.0" text="%button.delete">
+            <Button fx:id="Delete" disable="true" focusTraversable="false" minWidth="0.0" mnemonicParsing="false" onAction="#handleDelete" prefHeight="35.0" prefWidth="120.0" text="%button.delete">
                 <cursor>
-                    <Cursor fx:constant="HAND"/>
+                    <Cursor fx:constant="HAND" />
                 </cursor>
             </Button>
         </HBox>

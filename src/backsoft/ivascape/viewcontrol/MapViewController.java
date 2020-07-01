@@ -5,6 +5,7 @@ import backsoft.ivascape.logic.Pair;
 import backsoft.ivascape.model.Project;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Parent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -12,7 +13,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 
-public class MapViewController implements ViewController {
+public class MapViewController {
 
     private GraphViewController GVController;
     private final Project project = Project.get();
@@ -21,7 +22,6 @@ public class MapViewController implements ViewController {
     private Button cropViewButton;
     @FXML
     private Button resetZoomButton;
-
     @FXML
     private ToggleButton togglePricesVisible;
     @FXML
@@ -29,31 +29,27 @@ public class MapViewController implements ViewController {
     @FXML
     private ScrollPane surfaceScrollPane;
 
-    void updateGraphView(){
-        GVController.updateView();
+    private BooleanProperty emptiness = new SimpleBooleanProperty(true);
+
+    GraphViewController getGVController(){
+        return GVController;
     }
 
-    @Override
-    public void updateView(){
+    void updateView(){
 
-        zoomSlider.setValue(100);
-
-        GVController.setGraph(
-                project.getGraph(),
-                project.getCoorsMap(),
-                VisualVertex.defaultColor,
-                VisualEdge.defaultColor,
-                true);
-
-        GVController.updateView();
+        VisualVertex.setColor(VisualVertex.defaultColor);
+        VisualEdge.setColor(VisualEdge.defaultColor);
+        GVController.flush();
+        GVController.setView(zoomSlider.valueProperty(),
+                project.getGraph(), project.getCoorsMap(), true);
     }
 
-    void bindToSurfaceChanged(BooleanProperty property){
-        GVController.bindToSurfaceChanged(property);
+    void setSavedProperty(BooleanProperty property){
+        GVController.setSavedProperty(property);
     }
 
     @FXML
-    private void handleCrop(){ GVController.cropIt(); }
+    private void handleCrop(){ GVController.cropView(); }
     @FXML
     private void handleResetZoom(){ zoomSlider.setValue(100); }
     @FXML
@@ -61,21 +57,22 @@ public class MapViewController implements ViewController {
 
         Pair<Parent, GraphViewController> fxml = Loader.loadFXML("GraphView");
         surfaceScrollPane.setContent(fxml.getOne());
+
         GVController = fxml.getTwo();
 
-        togglePricesVisible.selectedProperty().addListener(
-                (o, b0, value) -> GVController.setPricesVisible(value));
+        togglePricesVisible.selectedProperty().addListener((o, b0, value) ->
+                GVController.setPricesVisible(value));
 
-        zoomSlider.valueProperty().addListener(
-                (o, b0, value) -> GVController.setScale(value.doubleValue()));
+        emptiness.addListener(((o, ov, t1) -> {
+            zoomSlider.setDisable(t1);
+            togglePricesVisible.setDisable(t1);
+            resetZoomButton.setDisable(t1);
+            cropViewButton.setDisable(t1);
+        }));
 
-        project.sizeProperty().addListener(c -> {
-            zoomSlider.setDisable(project.isEmpty());
-            togglePricesVisible.setDisable(project.isEmpty());
-            resetZoomButton.setDisable(project.isEmpty());
-            cropViewButton.setDisable(project.isEmpty());
+        emptiness.bind(project.companiesAmountProperty().lessThan(1));
 
-            if (!project.isEmpty()) zoomSlider.setValue(100);
-        });
+
+        updateView();
     }
 }

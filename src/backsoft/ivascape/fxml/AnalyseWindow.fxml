@@ -7,44 +7,32 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
-<?import javafx.scene.text.TextFlow?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="backsoft.ivascape.viewcontrol.AnalyseWindowController">
-    <HBox alignment="CENTER_LEFT" maxHeight="40.0" prefHeight="40.0" spacing="8.0">
+<VBox alignment="CENTER" maxWidth="900.0" minHeight="400.0" minWidth="300.0" prefHeight="560.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="backsoft.ivascape.viewcontrol.AnalyseWindow">
+    <HBox alignment="CENTER_LEFT" fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" spacing="8.0" VBox.vgrow="NEVER">
         <padding>
-            <Insets left="48.0"/>
+            <Insets left="48.0" />
         </padding>
         <Label text="%editwindows.components">
             <font>
-                <Font name="System Bold Italic" size="14.0"/>
+                <Font name="System Bold Italic" size="14.0" />
             </font>
         </Label>
         <Label fx:id="cAmount" text="1">
             <font>
-                <Font size="14.0"/>
+                <Font size="14.0" />
             </font>
         </Label>
     </HBox>
-    <TextFlow maxHeight="36.0" maxWidth="1.7976931348623157E308" prefHeight="16.0" prefWidth="150.0"
-              textAlignment="CENTER" VBox.vgrow="NEVER">
-        <VBox.margin>
-            <Insets bottom="8.0" left="100.0" right="100.0"/>
-        </VBox.margin>
-        <Text boundsType="VISUAL" fill="#5f5f5f" strokeType="OUTSIDE" strokeWidth="0.0" text="%editwindows.analysetip"
-              textOrigin="CENTER">
-            <font>
-                <Font name="System Italic" size="13.0"/>
-            </font>
-        </Text>
-    </TextFlow>
-    <ScrollPane cacheShape="false" centerShape="false" fitToHeight="true" fitToWidth="true"
-                pickOnBounds="false" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
-        <HBox fx:id="componentTables" alignment="CENTER" cacheShape="false" centerShape="false" pickOnBounds="false"/>
+   <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="56.0" minHeight="-Infinity" prefHeight="56.0" prefWidth="497.0" text="%editwindows.analysetip" textAlignment="CENTER" wrapText="true" VBox.vgrow="NEVER">
+      <VBox.margin>
+         <Insets left="24.0" right="24.0" />
+      </VBox.margin>
+   </Label>
+    <ScrollPane cacheShape="false" centerShape="false" fitToHeight="true" fitToWidth="true" pickOnBounds="false" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+        <HBox fx:id="componentTables" alignment="CENTER" cacheShape="false" centerShape="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pickOnBounds="false" />
     </ScrollPane>
-    <HBox alignment="CENTER" maxHeight="40.0" prefHeight="40.0" spacing="12.0">
-        <Button defaultButton="true" mnemonicParsing="false" onAction="#handleClose" prefWidth="100.0"
-                text="%menubutton.close"/>
+    <HBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" spacing="12.0" VBox.vgrow="NEVER">
+        <Button defaultButton="true" mnemonicParsing="false" onAction="#handleClose" prefWidth="120.0" text="%menubutton.close" />
     </HBox>
 </VBox>

@@ -1,35 +1,45 @@
 package backsoft.ivascape.model;
 
 import backsoft.ivascape.logic.Complex;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 
 import java.io.Serializable;
 
 public class Link implements Serializable, Complex<Company, Link> {
 
+
     private final Company start;
     private final Company end;
-    private Double price;
+    private transient DoubleProperty priceProp;
+    private double price;
     private Link mate = null;
 
     public Link(Company start, Company end, double price) {
 
+        priceProp = new SimpleDoubleProperty(price);
+        this.price = price;
         this.start = start;
         this.end = end;
-        this.price = Math.round(price*100)/100.0;
     }
 
     @Override
     public int compareTo(Link o) {
 
-        return Double.compare(this.price, o.price);
+        return Double.compare(price, o.price);
     }
 
-    public void setPrice(double price) {
-
-        this.price = price;
+    public DoubleProperty priceProperty() {
+        if (priceProp == null) priceProp = new SimpleDoubleProperty(price);
+        else if (Double.compare(priceProp.getValue(), price) != 0) priceProp.setValue(price);
+        return priceProp;
     }
 
     public Double getPrice() { return price;}
+    public void setPrice(double price) {
+        this.price = price;
+        priceProperty().setValue(price);
+    }
 
     @Override
     public Company one() { return start; }
@@ -38,15 +48,13 @@ public class Link implements Serializable, Complex<Company, Link> {
     public Company two() { return end; }
 
     @Override
-    public Link getMating() { return mate; }
-
-    @Override
-    public void setMating(Link mate) { this.mate = mate; }
-
-    @Override
-    public Link createMating() {
-
-        mate = new Link(end, start, price);
+    public Link getMating() {
+        if (mate == null) {
+            mate = new Link(end, start, price);
+            mate.setMating(this);
+        }
         return mate;
     }
+
+    private void setMating(Link mate) { this.mate = mate; }
 }

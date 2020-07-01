@@ -8,248 +8,183 @@ import backsoft.ivascape.model.Company;
 import backsoft.ivascape.logic.CoorsMap;
 import backsoft.ivascape.model.Link;
 import javafx.beans.property.*;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.text.Font;
 
 import java.util.*;
 
 public class GraphViewController {
 
-    private final Map<Node, VisualVertex> dragMap = new HashMap<>();
-    private final Map<Company, VisualVertex> visVerMap = new HashMap<>();
-    private final Map<Link, VisualEdge> visEdgeMap = new HashMap<>();
+    private static Random r = new Random();
+
+    private final Map<String, VisualVertex> visualVertexMap = new HashMap<>();
+    private final Map<Link, VisualEdge> visualEdgeMap = new HashMap<>();
     private CoorsMap coorsMap = new CoorsMap();
-
     private boolean draggable = false;
-
-    private Pair<Double,Double> dragContext;
     private Graph<Company, Link> graph;
 
     @FXML
     private Pane surface;
 
-    private final DoubleProperty scaleProperty = new SimpleDoubleProperty(100.0);
-    private final BooleanProperty priceShownProperty =  new SimpleBooleanProperty(false);
-    private final BooleanProperty surfaceChangedProperty = new SimpleBooleanProperty(false);
-
-    void bindToSurfaceChanged(BooleanProperty property){
-        surfaceChangedProperty.bind(property);
+    public void normalScale() {
+        scaleBackup = scale.get();
+        scale.set(100);
     }
 
-    void setScale(double scaleProperty){
-
-        this.scaleProperty.setValue(scaleProperty);
+    public void restoreScale(){
+        scale.set(scaleBackup);
     }
 
+    private DoubleProperty scale;
+    private double scaleBackup;
 
-    void setPricesVisible(boolean answer){
+    private final BooleanProperty priceShown =  new SimpleBooleanProperty(false);
+    private BooleanProperty saved;
 
-        priceShownProperty.setValue(answer);
+    void setPricesVisible(boolean visibility){ priceShown.setValue(visibility); }
+
+    BooleanProperty priceShownProperty() { return priceShown; }
+    void setSavedProperty(BooleanProperty property){
+        saved = property;
     }
 
-    private void shiftGraph(double xShift, double yShift){
+    Graph<Company, Link> getGraph() { return graph; }
 
-        for (Iterator<Company> iterator = graph.getVertexIterator(); iterator.hasNext();) {
-            VisualVertex vv = visVerMap.get(iterator.next());
-            vv.setAllCoors(vv.x() + xShift, vv.y() + yShift);
-        }
+    void setView(DoubleProperty scaleProp, GraphOnList<Company, Link> graph, CoorsMap coorsMap, boolean isDraggable) {
+        this.graph = graph;
+        scale = scaleProp;
+        this.coorsMap = coorsMap;
+        draggable = isDraggable;
+
+        visualEdgeMap.clear();
+        visualVertexMap.clear();
+        surface.getChildren().clear();
+        normalScale();
+        for (Iterator<Company> iterator = graph.getVertexIterator(); iterator.hasNext();) add(iterator.next());
+        for (Iterator<Link> it = graph.getEdgeIterator(); it.hasNext();) add(it.next());
+        restoreScale();
     }
 
-    void cropIt(){
+    void cropView(){
 
         double minX = Double.MAX_VALUE;
         double minY = Double.MAX_VALUE;
-
-        for (Iterator<Company> iterator = graph.getVertexIterator(); iterator.hasNext();) {
-
-            VisualVertex vv = visVerMap.get(iterator.next());
-            minX = Math.min(minX, vv.x());
-            minY = Math.min(minY, vv.y());
-
-            if (minX == 0.0 && minY == 0.0)
-                return;
+        for (VisualVertex vertex : visualVertexMap.values()) {
+            minX = Math.min(minX, vertex.getPane().getLayoutX());
+            minY = Math.min(minY, vertex.getPane().getLayoutY());
         }
-
-        shiftGraph(-minX,-minY);
-
-        surfaceChangedProperty.setValue(true);
+        if (minX > 0 && minY > 0) shiftGraph(-minX,-minY);
+        if (saved != null) saved.setValue(false);
     }
 
-    private CoorsMap.Coors getCoors(Company company){
-
-        VisualVertex vv = visVerMap.get(company);
-        return new CoorsMap.Coors(vv.x(), vv.y());
+    private void shiftGraph(double xShift, double yShift){
+        for (VisualVertex vertex : visualVertexMap.values()) vertex.moveXY(xShift, yShift);
     }
 
-    void setGraph(GraphOnList<Company, Link> graph, CoorsMap coorsMap,
-                  Color vertexColor, Color edgeColor, boolean isDraggable) {
-
-        this.graph = graph;
-        VisualVertex.setColor(vertexColor);
-        VisualEdge.setColor(edgeColor);
-        this.coorsMap = coorsMap;
-        draggable = isDraggable;
+    void flush(){
+        for (VisualVertex vertex : visualVertexMap.values()){
+            scale.removeListener(vertex.scaleListener);
+            surface.getChildren().remove(vertex.getPane());
+        }
+        for (VisualEdge edge : visualEdgeMap.values()){
+            edge.getPriceLabel().textProperty().unbind();
+            scale.removeListener(edge.getScaleListener());
+            surface.getChildren().remove(edge.getPriceLabel());
+            surface.getChildren().remove(edge.getLine());
+        }
+        coorsMap.clear();
+        visualVertexMap.clear();
+        visualEdgeMap.clear();
     }
 
-    void addVertex(Company company){
+    public void add(Company company){
 
-        Pair<Parent, VisualVertex> fxml;
-
-        fxml = Loader.loadFXML("VisualVertex");
-
+        String ID = company.getID();
+        Pair<Parent, VisualVertex> fxml = Loader.loadFXML("VisualVertex");
+        surface.getChildren().add(fxml.getOne());
         VisualVertex vertex = fxml.getTwo();
-        vertex.setTitle(company.getTitle());
-        makeNodeDraggable(vertex, company.hashCode());
-        scaleProperty.addListener(vertex.getScaleListener());
+        vertex.setTitle(company.titleProperty());
 
-        dragMap.put(vertex.getCircle(),vertex);
-        visVerMap.put(company,vertex);
-        vertex.setAllCoors(
-                5.0 + (new Random()).nextInt(200),
-                5.0 + (new Random()).nextInt(200)
-        );
+        CoorsMap.Coors coors = coorsMap.get(ID);
+        if (coors == null) {
+            coors = new CoorsMap.Coors(r.nextInt(1000), r.nextInt(500));
+            coorsMap.put(ID, coors);
+        }
+        vertex.setXY(coors);
+        visualVertexMap.put(company.getID(), vertex);
+        scale.addListener(vertex.scaleListener);
 
-        coorsMap.put(company.hashCode(), getCoors(company));
+        if (draggable) {
+
+            vertex.getPane().layoutXProperty().addListener((o, ov, nv) -> coorsMap.get(ID).x = (Double) nv);
+            vertex.getPane().layoutYProperty().addListener((o, ov, nv) -> coorsMap.get(ID).y = (Double) nv);
+            makeNodeDraggable(vertex);
+        }
     }
 
-    void addEdge(Link link){
+    public void add(Link link){
+        VisualVertex one = visualVertexMap.get(link.one().getID());
+        VisualVertex two = visualVertexMap.get(link.two().getID());
 
-        VisualVertex one = visVerMap.get(link.one());
-        VisualVertex two = visVerMap.get(link.two());
         VisualEdge edge =  new VisualEdge(
-                one.xCenterProperty(), one.xCenterProperty(),
-                two.xCenterProperty(), two.yCenterProperty(), link.getPrice());
-        Label priceLabel = edge.getPriceLabel();
-        priceLabel.setVisible(priceShownProperty.getValue());
-        edge.getPriceLabel().setVisible(priceShownProperty.getValue());
-        priceShownProperty.addListener((val, bo, bn) -> edge.getPriceLabel().setVisible(bn));
-        scaleProperty.addListener((val, no, nn) -> { edge.getLine().setStrokeWidth(.05 * nn.doubleValue());
-            edge.getPriceLabel().setFont(Font.font("System", 10 + .05 * nn.doubleValue())); });
-        visEdgeMap.put(link, edge);
+                one.xCenterProperty(), one.yCenterProperty(),
+                two.xCenterProperty(), two.yCenterProperty(), link.priceProperty(), draggable);
+        scale.addListener(edge.getScaleListener());
+
+        surface.getChildren().add(0, edge.getLine());
+        visualEdgeMap.put(link, edge);
+
+        if (draggable) {
+
+            edge.getPriceLabel().visibleProperty().bind(priceShown);
+            surface.getChildren().add(1, edge.getPriceLabel());
+        }
     }
 
-    void removeVertex(Company company){
+    public void remove(Company company){
 
         for (Iterator<Link> it = graph.getEdgeIteratorForVertex(company); it.hasNext();)
-            removeEdge(it.next());
-        scaleProperty.removeListener(visVerMap.get(company).getScaleListener());
-        surface.getChildren().remove(visVerMap.get(company).getItem());
-        dragMap.remove(visVerMap.get(company).getCircle());
-        visVerMap.remove(company);
-        coorsMap.remove(company.hashCode());
+            remove(it.next());
+
+        scale.removeListener(visualVertexMap.get(company.getID()).scaleListener);
+        surface.getChildren().remove(visualVertexMap.get(company.getID()).getPane());
+
+        visualVertexMap.remove(company.getID());
+        coorsMap.remove(company.getID());
     }
 
-    void removeEdge(Link link) {
+    public void remove(Link link) {
 
         VisualEdge edge = getEdge(link);
-
         if (edge == null) return;
+
+        visualEdgeMap.remove(link);
         surface.getChildren().remove(edge.getPriceLabel());
         surface.getChildren().remove(edge.getLine());
-        visEdgeMap.remove(link);
+        scale.removeListener(edge.getScaleListener());
     }
 
     private VisualEdge getEdge(Link link) {
 
-        VisualEdge out = visEdgeMap.get(link);
-        if (out == null)
-            return visEdgeMap.get(link.getMating());
-        else
-            return out;
+        VisualEdge out = visualEdgeMap.get(link);
+        if (out == null) out = visualEdgeMap.get(link.getMating());
+        return out;
     }
 
-    void updateView(){
+    private void makeNodeDraggable(VisualVertex v) {
 
-        Double scaleValue = scaleProperty.getValue();
-        scaleProperty.setValue(100.0);
-        surface.getChildren().clear();
+        v.getCircle().setOnMousePressed(event ->
+                v.setDragContext(event.getScreenX(), event.getScreenY()));
 
-        for (Iterator<Link> iterator = graph.getEdgeIterator(); iterator.hasNext();){
+        v.getCircle().setOnMouseDragged(event -> {
+            v.moveXY(
+                    event.getScreenX() - v.getDragContext().getOne(),
+                    event.getScreenY() - v.getDragContext().getTwo());
 
-            Link link = iterator.next();
-            VisualEdge edge = getEdge(link);
+            v.setDragContext(event.getScreenX(), event.getScreenY());
+        });
 
-            if (edge == null) {
-
-                addEdge(link);
-                edge = getEdge(link);
-            }
-
-            surface.getChildren().add(edge.getLine());
-            surface.getChildren().add(edge.getPriceLabel());
-        }
-
-        for (Iterator<Company> iterator = graph.getVertexIterator(); iterator.hasNext();) {
-
-            Company company = iterator.next();
-            VisualVertex vertex = visVerMap.get(company);
-
-            if (vertex == null){
-                addVertex(company);
-                vertex = visVerMap.get(company);
-            }
-
-            vertex.setTitle(company.getTitle());
-            vertex.setAllCoors(
-                    surface.getLayoutX() + coorsMap.get(company.hashCode()).x,
-                    surface.getLayoutY() + coorsMap.get(company.hashCode()).y);
-
-            surface.getChildren().add(vertex.getItem());
-            if (draggable)
-                makeNodeDraggable(vertex, company.hashCode());
-        }
-
-        scaleProperty.setValue(scaleValue);
+        v.getCircle().setOnMouseReleased(event -> {if (saved != null) saved.setValue(false);});
     }
-
-    private void makeNodeDraggable(VisualVertex vertex, Integer hash) {
-
-        vertex.getCircle().setOnMousePressed(vertexPressedHandler);
-
-        vertex.getCircle().setOnMouseDragged(vertexDraggedHandler);
-
-        vertex.getCircle().setOnMouseReleased(event -> {
-            coorsMap.put(hash, new CoorsMap.Coors(vertex.x(), vertex.y()));
-            surfaceChangedProperty.setValue(true);});
-    }
-
-    private final EventHandler<MouseEvent> vertexPressedHandler = event -> {
-
-        Circle n = (Circle) event.getSource();
-        Bounds itemBounds = dragMap.get(n).getItem().getBoundsInParent();
-
-        dragContext = new Pair<>(
-                itemBounds.getMinX() - event.getScreenX(),
-                itemBounds.getMinY() - event.getScreenY());
-    };
-
-    private final EventHandler<MouseEvent> vertexDraggedHandler = event -> {
-
-        Circle n = (Circle) event.getSource();
-        Node item = dragMap.get(n).getItem();
-        double X = dragContext.getOne();
-        double Y = dragContext.getTwo();
-        item.relocate(
-                event.getScreenX() + X
-                        + item.getBoundsInParent().getWidth()/2.0
-                        - n.getRadius() > 0.0
-                        ?
-                        event.getScreenX() + X : item.getLayoutX(),
-
-                event.getScreenY() + Y
-                        + item.getBoundsInParent().getHeight()/2.0
-                        - n.getRadius() > 0.0
-                        ?
-                        event.getScreenY() + Y : item.getLayoutY()
-        );
-    };
 }

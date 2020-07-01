@@ -3,28 +3,23 @@ package backsoft.ivascape.viewcontrol;
 public class ViewUpdater {
 
     private static ViewUpdater viewUpdater;
-    public static ViewUpdater current(){
-        viewUpdater = viewUpdater == null ? new ViewUpdater() : viewUpdater;
+
+    public static ViewUpdater current(){ return viewUpdater; }
+
+    private CompaniesViewController CVController;
+    private LinksViewController LVController;
+    private MapViewController MVController;
+
+    static ViewUpdater putTabControllers(
+            CompaniesViewController companiesViewController,
+            LinksViewController linksViewController,
+            MapViewController mapViewController) {
+
+        viewUpdater = new ViewUpdater();
+        viewUpdater.CVController = companiesViewController;
+        viewUpdater.LVController = linksViewController;
+        viewUpdater.MVController = mapViewController;
         return viewUpdater;
-    }
-
-    private ViewController RLController;
-    private ViewController CVController;
-    private ViewController LVController;
-    private ViewController MVController;
-
-    public void putRootController(ViewController controller) {
-        RLController = controller;
-    }
-
-    public void putTabControllers(
-            ViewController companiesViewController,
-            ViewController linksViewController,
-            ViewController mapViewController) {
-
-        CVController = companiesViewController;
-        LVController = linksViewController;
-        MVController = mapViewController;
     }
 
     public ViewUpdater updateCompaniesView() {
@@ -37,15 +32,13 @@ public class ViewUpdater {
         return this;
     }
 
-    public ViewUpdater updateGraphView() {
-        ((MapViewController) MVController).updateGraphView();
-        return this;
+    public GraphViewController getGVController(){
+        return MVController.getGVController();
     }
 
-    void updateAll() {
+    public void updateAll() {
         CVController.updateView();
         LVController.updateView();
         MVController.updateView();
-        RLController.updateView();
     }
 }
