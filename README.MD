@@ -8,6 +8,6 @@
 <i>--module-path $PATH_TO_FX$ --add-modules javafx.controls,javafx.fxml,javafx.base --add-exports javafx.base/com.sun.javafx.event=ALL-UNNAMED </i>
 
 
-где $PATH_TO_FX$ это путь по типу D:\dev\jdk_13.0.1\lib
+где $PATH_TO_FX$ это путь по типу D:\dev\jfx_13.0.1\lib
 
 Чтобы JAVAFX не ругалась и программа нормально отработала - не забываем)
