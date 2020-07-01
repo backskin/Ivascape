@@ -5,17 +5,12 @@ import backsoft.ivascape.handler.Loader;
 import backsoft.ivascape.handler.Preferences;
 import backsoft.ivascape.model.Company;
 import backsoft.ivascape.model.Project;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.DELETE_CONFIRM;
 
@@ -42,20 +37,13 @@ public class CompaniesViewController {
     @FXML
     private Button Delete;
 
-    private ObservableList<Company> getCompaniesViewItems(){
-
-        return FXCollections.observableList(new ArrayList<>(){{
-            for (Iterator<Company> i = project.getIteratorOfCompanies(); i.hasNext();)
-                add(i.next());
-        }});
-    }
-
     void updateView() {
 
         companiesTable.getItems().clear();
         showDetails(null);
         if (!project.isEmpty()) {
-            companiesTable.setItems(getCompaniesViewItems());
+            companiesTable.getItems().clear();
+            project.getIteratorOfCompanies().forEachRemaining(company -> companiesTable.getItems().add(company));
             companiesTable.getSelectionModel().select(lastSelected);
         }
     }
@@ -85,15 +73,11 @@ public class CompaniesViewController {
         updateView();
     }
 
-    private void openEditDialog(Company company){
-        companiesTable.getSelectionModel().select((Company) Loader.loadDialogEditCompany(company));
-    }
+    @FXML
+    public void handleNew(){ Loader.loadDialogEditCompany(""); }
 
     @FXML
-    public void handleNew(){ openEditDialog(null); }
-
-    @FXML
-    private void handleEdit() { openEditDialog(lastSelected); }
+    private void handleEdit() { Loader.loadDialogEditCompany(lastSelected.getID()); }
 
     @FXML
     private void handleDelete(){

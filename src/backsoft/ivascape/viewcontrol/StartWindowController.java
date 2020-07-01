@@ -11,12 +11,9 @@ import javafx.stage.Stage;
 
 public class StartWindowController {
 
-    public static final boolean TERMINATED = true;
-
     public ImageView bckgImage;
     private Stage startStage;
     private boolean restart = false;
-    private boolean status = false;
 
     private double xOffset = .0;
     private double yOffset = .0;
@@ -56,10 +53,13 @@ public class StartWindowController {
         });
     }
 
-    public boolean getStatus(){ return status;}
-
     @FXML
-    private void handleExit(){ startStage.close(); status = TERMINATED;}
+    private void handleExit() {
+
+        Platform.exit();
+        System.exit(0);
+        startStage.close();
+    }
 
     @FXML
     private void handleNew(){

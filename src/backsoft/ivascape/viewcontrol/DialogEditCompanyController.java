@@ -43,14 +43,14 @@ public class DialogEditCompanyController {
         return editCompany;
     }
 
-    public void setFields(Object company){
+    public void setFields(String IDtag){
 
-        dialogStage.setTitle(prefs.getStringFromBundle(company == null ?
+        dialogStage.setTitle(prefs.getStringFromBundle(IDtag == null ?
                 "edittabs.header.newcmp" : "edittabs.header.editcmp"));
 
-        if (company == null) return;
+        if (IDtag == null || IDtag.isEmpty()) return;
 
-        editCompany = (Company) company;
+        editCompany = project.findCompanyByID(IDtag);
         titleField.setText(editCompany.getTitle());
         capitalField.setText(Double.toString(editCompany.getMoney()));
         addressArea.setText(editCompany.getAddress());
@@ -95,12 +95,11 @@ public class DialogEditCompanyController {
             errorMessage += "\n" + prefs.getStringFromBundle("error.emptyname");
 
         if (editCompany == null && !titleField.getText().isEmpty()
-                && project.getCompany(titleField.getText()) != null)
+                && project.findCompanyByID(titleField.getText()) != null)
                 errorMessage +=  "\n" + prefs.getStringFromBundle("error.dubc");
 
         if (errorMessage.length() == 0) {
             return true;
-
         } else {
             AlertHandler.makeAlert(FIELDS_ISSUE).setOwner(dialogStage).customContent(errorMessage).show();
             return false;

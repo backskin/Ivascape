@@ -18,7 +18,7 @@ public class GraphViewController {
 
     private static Random r = new Random();
 
-    private final Map<Company, VisualVertex> visualVertexMap = new HashMap<>();
+    private final Map<String, VisualVertex> visualVertexMap = new HashMap<>();
     private final Map<Link, VisualEdge> visualEdgeMap = new HashMap<>();
     private CoorsMap coorsMap = new CoorsMap();
     private boolean draggable = false;
@@ -112,7 +112,7 @@ public class GraphViewController {
             coorsMap.put(ID, coors);
         }
         vertex.setXY(coors);
-        visualVertexMap.put(company, vertex);
+        visualVertexMap.put(company.getID(), vertex);
         scale.addListener(vertex.scaleListener);
 
         if (draggable) {
@@ -124,8 +124,8 @@ public class GraphViewController {
     }
 
     public void add(Link link){
-        VisualVertex one = visualVertexMap.get(link.one());
-        VisualVertex two = visualVertexMap.get(link.two());
+        VisualVertex one = visualVertexMap.get(link.one().getID());
+        VisualVertex two = visualVertexMap.get(link.two().getID());
 
         VisualEdge edge =  new VisualEdge(
                 one.xCenterProperty(), one.yCenterProperty(),
@@ -147,10 +147,10 @@ public class GraphViewController {
         for (Iterator<Link> it = graph.getEdgeIteratorForVertex(company); it.hasNext();)
             remove(it.next());
 
-        scale.removeListener(visualVertexMap.get(company).scaleListener);
-        surface.getChildren().remove(visualVertexMap.get(company).getPane());
+        scale.removeListener(visualVertexMap.get(company.getID()).scaleListener);
+        surface.getChildren().remove(visualVertexMap.get(company.getID()).getPane());
 
-        visualVertexMap.remove(company);
+        visualVertexMap.remove(company.getID());
         coorsMap.remove(company.getID());
     }
 

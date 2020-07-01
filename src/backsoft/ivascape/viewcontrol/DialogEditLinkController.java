@@ -10,7 +10,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static backsoft.ivascape.handler.AlertHandler.AlertType.FIELDS_ISSUE;
 
@@ -18,7 +21,7 @@ public class DialogEditLinkController {
 
     private boolean confirmed = false;
     private final Project project = Project.get();
-
+    private Map<String, String> map;
     @FXML
     TextField firstField;
     @FXML
@@ -37,6 +40,8 @@ public class DialogEditLinkController {
             firstField.requestFocus();
         else
             secondField.requestFocus();
+        map = new HashMap<>();
+        project.getIteratorOfCompanies().forEachRemaining(company -> map.put(company.getTitle(),company.getID()));
     }
 
     public void setStage(Stage stage) {
@@ -46,15 +51,17 @@ public class DialogEditLinkController {
         dialogStage.initOwner(Loader.getMainStage());
     }
 
-    public void setFields(int... input) {
-        dialogStage.setTitle(Preferences.get().getStringFromBundle(input == null ?
+    public void setFields(String... companies) {
+
+        dialogStage.setTitle(Preferences.get().getStringFromBundle(companies == null ?
                 "edittabs.header.newlink" : "edittabs.header.editlink"));
 
-        if (input == null || input.length < 2){
+        if (companies == null || companies.length < 2){
 
-            List<String> namesList = project.getCompaniesTitlesList();
-            if (input != null && input.length > 0){
-                String firstCompanyName = project.getCompany(input[0]).getTitle();
+            List<String> namesList = new ArrayList<>();
+            project.getIteratorOfCompanies().forEachRemaining(company -> namesList.add(company.getTitle()));
+            if (companies != null && companies.length > 0){
+                String firstCompanyName = project.findCompanyByID(companies[0]).getTitle();
                 namesList.remove(firstCompanyName);
                 firstField.setText(firstCompanyName);
                 firstField.setDisable(true);
@@ -63,11 +70,11 @@ public class DialogEditLinkController {
             }
             TextFields.bindAutoCompletion(secondField, namesList);
         } else {
-            firstField.setText(project.getCompany(input[0]).getTitle());
+            firstField.setText(project.findCompanyByID(companies[0]).getTitle());
             firstField.setDisable(true);
-            secondField.setText(project.getCompany(input[1]).getTitle());
+            secondField.setText(project.findCompanyByID(companies[1]).getTitle());
             secondField.setDisable(true);
-            priceField.setText(project.getLink(project.getCompany(input[0]), project.getCompany(input[1])).getPrice().toString());
+            priceField.setText(project.getLink(project.findCompanyByID(companies[0]), project.findCompanyByID(companies[1])).getPrice().toString());
         }
     }
 
@@ -79,14 +86,16 @@ public class DialogEditLinkController {
         try {
             double price = Double.parseDouble(priceField.getText());
             if (price <= 0.0)
-                throw new NumberFormatException("\n"+Preferences.get().getStringFromBundle("error.wrongmoney"));
+                throw new NumberFormatException("\n"+Preferences.get()
+                        .getStringFromBundle("error.wrongmoney"));
             if (firstField.getText().equals(secondField.getText()))
                 throw new Exception("\n"+Preferences.get().getStringFromBundle("error.reflex"));
-            if (null == project.getCompany(firstField.getText()) || null == project.getCompany(secondField.getText()))
+            if (null == project.findCompanyByTitle(firstField.getText())
+                    || null == project.findCompanyByTitle(secondField.getText()))
                 throw new Exception("\n"+Preferences.get().getStringFromBundle("error.wrongcomname"));
 
             ViewUpdater.current().getGVController().normalScale();
-            project.add(firstField.getText(), secondField.getText(), price);
+            project.add(map.get(firstField.getText()), map.get(secondField.getText()), price);
             ViewUpdater.current().getGVController().restoreScale();
             confirmed = true;
             dialogStage.close();

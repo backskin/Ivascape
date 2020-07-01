@@ -11,7 +11,6 @@ import javafx.beans.property.*;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -96,26 +95,26 @@ public class Project implements Serializable {
         saved.setValue(true);
     }
 
-    public <T extends Comparable<T>> Company getCompany(T tag){
+    public Company findCompanyByID(String tag){
 
         for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext();){
             Company c = i.next();
-            Object tempTag = tag instanceof String ? c.getTitle() : tag instanceof Integer ? c.hashCode() : null;
-            if (tag.equals(tempTag)) return c;
+            if (c.getID().equals(tag))
+                return c;
+        }
+        return null;
+    }
+
+    public Company findCompanyByTitle(String tag){
+        for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext();){
+            Company c = i.next();
+            if (c.getTitle().equals(tag)) return c;
         }
         return null;
     }
 
     public Link getLink(Company companyOne, Company companyTwo){
         return graph.getEdge(companyOne,companyTwo);
-    }
-
-    public List<String> getCompaniesTitlesList(){
-
-        return new ArrayList<>(){{
-            for (Iterator<Company> i = graph.getVertexIterator(); i.hasNext();)
-                add(i.next().getTitle());
-        }};
     }
 
     public IvascapeGraph applyPrimAlgorithm(){
@@ -127,7 +126,7 @@ public class Project implements Serializable {
     }
 
     public void add(Company company){
-        if (getCompany(company.getTitle()) == null) {
+        if (findCompanyByID(company.getID()) == null) {
             graph.addVertex(company);
             companiesAmount.setValue(companiesAmount.getValue()+1);
             saved.setValue(false);
@@ -135,9 +134,9 @@ public class Project implements Serializable {
         }
     }
 
-    public void add(String titleOne, String titleTwo, double price){
-        Company one = getCompany(titleOne);
-        Company two = getCompany(titleTwo);
+    public void add(String id1, String id2, double price){
+        Company one = findCompanyByID(id1);
+        Company two = findCompanyByID(id2);
 
         if (one == null || two == null || one.equals(two)) return;
         Link newLink = graph.getEdge(one, two);
