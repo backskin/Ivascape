@@ -1,0 +1,38 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="Ivascape jfx">
+    <output-path>$PROJECT_DIR$/out/artifacts/Ivascape_jfx</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="backsoft.ivascape.handler.FXApp" />
+        <option name="description" value="Ivascape alpha ver.0.9" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="icons">
+          <JavaFxApplicationIcons>
+            <option name="linuxIcon" value="$PROJECT_DIR$/resources/ico.png" />
+            <option name="windowsIcon" value="$PROJECT_DIR$/resources/icon.ico" />
+          </JavaFxApplicationIcons>
+        </option>
+        <option name="title" value="Ivascape" />
+        <option name="vendor" value="" />
+        <option name="version" value="0.9.1.0" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="Ivascape.jar">
+        <element id="module-output" name="Ivascape" />
+      </element>
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/controlsfx/controlsfx-8.40.14.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PATH_TO_FX$/javafx-swt.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PATH_TO_FX$/javafx.base.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PATH_TO_FX$/javafx.controls.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PATH_TO_FX$/javafx.fxml.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PATH_TO_FX$/javafx.graphics.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PATH_TO_FX$/javafx.media.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PATH_TO_FX$/javafx.swing.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PATH_TO_FX$/javafx.web.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/apache/poi-ooxml-3.17.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/apache/poi-3.17.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/apache/poi-excelant-3.17.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,23 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="Ivascape">
+    <output-path>$PROJECT_DIR$/out/artifacts/Ivascape</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="backsoft.ivascape.handler.FXApp" />
+        <option name="description" value="" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="title" value="Ivascape" />
+        <option name="vendor" value="" />
+        <option name="version" value="" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="Ivascape.jar">
+        <element id="module-output" name="Ivascape" />
+        <element id="library" level="project" name="apache" />
+        <element id="library" level="project" name="controlsfx" />
+        <element id="library" level="project" name="javafx-swt" />
+      </element>
+    </root>
+  </artifact>
+</component>

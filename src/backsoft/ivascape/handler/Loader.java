@@ -32,7 +32,7 @@ public class Loader {
 
     public static <T> Pair<Parent, T> loadFXML(String fxml) {
         try {
-            FXMLLoader loader = new FXMLLoader(FXApp.class.getResource("fxml/"+ fxml + ".fxml"), prefs.getBundle());
+            FXMLLoader loader = new FXMLLoader(FXApp.class.getResource("fxml"+File.separator+ fxml + ".fxml"), prefs.getBundle());
             return new Pair<>(loader.load(), loader.getController());
         } catch (IOException e) {
             AlertHandler.makeAlert(ISSUE).customContent(e.toString()).show();

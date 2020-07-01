@@ -12,5 +12,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="apache" level="project" />
     <orderEntry type="library" name="controlsfx" level="project" />
+    <orderEntry type="library" name="javafx-swt" level="project" />
   </component>
 </module>
